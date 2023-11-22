@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.InquiryMapper">
+	
+  <resultMap type="InquiryDto"      id="InquiryMap">
+    <id      column="INQUIRY_NO"    property="inquiryNo"/>
+    <result  column="TITLE"        property="title"/>
+    <result  column="CONTENTS"     property="contents"/>
+    <result  column="CREATED_AT"   property="createdAt"/>
+    <result  column="TEXT_PW"   property="textPw"/>
+    <result  column="CHECK_FLAG"   property="checkFlag"/>
+    <result  column="STATUS"   property="status"/>
+    <result  column="DEPTH"  property="depth"/>
+    <result  column="GROUP_NO" property="groupNo"/>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="JOIN_STATE"          property="joinState" />
+      <result    column="PW_MODIFIED_AT" property="pwModifiedAt" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="ADMIN_AUTHOR_STATE"      property="adminAuthorState" />
+      <result    column="POINT"      property="point" />
+    </association>
+  </resultMap>
+
+  <insert id="insertInquiry" parameterType="inquiryDto">
+    <selectKey order="BEFORE" resultType="int" keyProperty="inquiryNo">
+      SELECT INQUIRY_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO INQUIRY_T (
+        INQUIRY_NO
+      , USER_NO
+      , TITLE
+      , CONTENTS
+      , CREATED_AT
+      , TEXT_PW
+      , CHECK_FLAG
+      , STATUS
+      , DEPTH
+      , GROUP_NO
+    ) VALUES (
+        #{inquiryNo}
+      , #{userDto.userNo}
+      , #{title}
+      , #{contents}
+      , TO_CHAR(SYSDATE, 'YY-MM-DD')
+      , #{textPw}
+      , #{checkFlag}
+      , 1
+      , 1
+      , #{groupNo}
+    )
+  </insert>
+  
+  <insert id="insertIattach" parameterType="IattachDto">
+    INSERT INTO IATTACH_T (
+        IATTACH_NO
+      , INQUIRY_NO  
+      , PATH
+      , ORIGINAL_FILENAME
+      , FILESYSTEM_NAME
+    ) VALUES (
+        IATTACH_SEQ.NEXTVAL
+      , #{inquiryNo}
+      , #{path}
+      , #{originalFilename}
+      , #{filesystemName}
+    )
+  </insert>
+  
+  <select id="getInquiryCount" resultType="int">
+    SELECT COUNT(*)
+      FROM INQUIRY_T
+  </select>
+  
+  <select id="getInquiryList" parameterType="Map" resultMap="InquiryMap">
+    SELECT A.INQUIRY_NO, A.TITLE, A.CONTENTS, A.CREATED_AT, A.CHECK_FLAG, A.STATUS, A.DEPTH, A.GROUP_NO, A.USER_NO, A.EMAIL, A.NAME        
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO ASC) AS RN, 
+                   INQ.INQUIRY_NO, INQ.TITLE, INQ.CONTENTS, INQ.CREATED_AT, INQ.CHECK_FLAG, INQ.STATUS, INQ.DEPTH, INQ.GROUP_NO,
+                   USR.USER_NO, USR.EMAIL, USR.NAME
+              FROM INQUIRY_T INQ LEFT OUTER JOIN USER_T USR
+                ON INQ.USER_NO = USR.USER_NO) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+   <select id="getInquiry" parameterType="int" resultMap="InquiryMap">
+    SELECT INQ.INQUIRY_NO, INQ.TITLE, INQ.CONTENTS, INQ.CREATED_AT, INQ.CHECK_FLAG, INQ.STATUS, INQ.DEPTH, INQ.GROUP_NO,
+           USR.USER_NO, USR.EMAIL, USR.NAME
+      FROM INQUIRY_T INQ LEFT OUTER JOIN USER_T USR
+        ON INQ.USER_NO = USR.USER_NO
+     WHERE INQ.INQUIRY_NO = #{inquiryNo}
+  </select>
+  
+  <select id="getIattachList" parameterType="int" resultType="IattachDto">
+    SELECT IATTACH_NO, INQUIRY_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME
+      FROM IATTACH_T
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </select>
+  
+  <select id="getIattach" parameterType="int" resultType="IattachDto">
+    SELECT IATTACH_NO, INQUIRY_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME
+      FROM IATTACH_T
+     WHERE IATTACH_NO = #{iattachNo}
+  </select>
+  
+  <update id="updateInquiry" parameterType="InquiryDto">
+    UPDATE INQUIRY_T
+       SET TITLE = #{title}
+         , CONTENTS = #{contents}
+         , TEXT_PW = #{textPw}
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </update>
+  
+   <delete id="deleteIattach" parameterType="int">
+    DELETE
+      FROM IATTACH_T
+     WHERE IATTACH_NO = #{iattachNo}
+  </delete>
+  
+  <delete id="deleteInquiry" parameterType="int">
+    DELETE
+      FROM INQUIRY_T
+     WHERE INQUIRY_NO = #{inquiryNo}
+  </delete>
+ 
+</mapper>
