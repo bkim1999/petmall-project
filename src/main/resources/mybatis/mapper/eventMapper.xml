@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.EventMapper">
+   <resultMap type="EventDto" id="EventMap">
+      <id     column="EVENT_NO"               property="eventNo"/>
+      <result column="TITLE"                  property="title"/>
+      <result column="CONTENTS"               property="contents"/>
+      <result column="HIT"                    property="hit"/>
+      <result column="STATE"                  property="state"/>
+      <result column="EVENT_THUMNAIL_URL"     property="eventThumnailUrl"/>
+      <result column="DISCOUNT_PERCENT"       property="discountPercent"/>
+      <result column="DISCOUNT_PRICE"         property="discountPrice"/>
+      <result column="START_AT"               property="startAt"/>
+      <result column="END_AT"                 property="endAt"/>
+      <association javaType="EventImageDto"   property="eventImageDto">
+        <result    column="EVENT_NO"          property="eventNo"/>
+        <result    column="PATH"              property="path" />
+        <result    column="ORIGINAL_FILENAME" property="originalFilename" />
+        <result    column="FILESYSTEM_NAME"   property="FilesystemName" />
+      </association>
+   </resultMap> 
+ 
+  <select id="getEventList" parameterType="Map" resultMap="EventMap">
+   SELECT A.EVENT_NO, A.EVENT_THUMNAIL_URL, A.TITLE, A.CONTENTS
+     FROM (SELECT ROW_NUMBER() OVER(ORDER BY EVENT_NO DESC) AS RN, EVENT_NO,EVENT_THUMNAIL_URL,TITLE,CONTENTS
+             FROM EVENT_T) A
+    WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getTotalList" resultMap="EventMap">
+    SELECT EVENT_NO, TITLE, CONTENTS, HIT, STATE, EVENT_THUMNAIL_URL, DISCOUNT_PERCENT, DISCOUNT_PRICE, START_AT,END_AT
+      FROM EVENT_T
+     ORDER BY EVENT_NO DESC
+  </select>
+  
+   <select id="getEventCount" resultType="int">
+     SELECT COUNT(*)
+       FROM EVENT_T
+   </select>
+  
+  <select id="getEventDetailList" parameterType="int"  resultMap="EventMap">
+    SELECT E.EVENT_NO,E.EVENT_THUMNAIL_URL,E.TITLE,E.CONTENTS,E.HIT,E.START_AT,E.END_AT, I.PATH
+      FROM EVENT_T E LEFT OUTER JOIN EVENT_IMAGE_T I
+        ON E.EVENT_NO = I.EVENT_NO
+     WHERE E.EVENT_NO = #{eventNo}
+  </select>
+  
+  <update id="updateHit" parameterType="int">
+    UPDATE EVENT_T
+       SET HIT = HIT +1
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+  
+  <insert id="insertEventWrite" parameterType="EventDto">
+    <selectKey order="BEFORE" keyProperty="eventNo" resultType="int">
+      SELECT EVENT_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO EVENT_T (
+          EVENT_NO
+        , TITLE
+        , CONTENTS
+        , HIT
+        , STATE
+        , EVENT_THUMNAIL_URL
+        , DISCOUNT_PERCENT
+        , DISCOUNT_PRICE
+        , START_AT
+        , END_AT
+        ) VALUES (
+          #{eventNo}
+        , #{title}
+        , #{contents}
+        , 0
+        , 1
+        , #{eventThumnailUrl}
+        , #{discountPercent}
+        , #{discountPrice}
+        , #{startAt}
+        , #{endAt}
+        )
+  </insert>
+  
+  <insert id="insertEventImage" parameterType="eventImageDto">
+    INSERT INTO EVENT_IMAGE_T (
+      EVENT_NO
+    , PATH
+    , ORIGINAL_FILENAME
+    , FILESYSTEM_NAME
+    ) VALUES (
+      #{eventNo}
+      #{path}
+      #{originalFilename}
+      #{filesystemName}
+    )
+  </insert>
+  
+  <update id="eventEnd" parameterType="int">
+    UPDATE EVENT_T
+       SET STATE = 0
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+  
+  <update id="eventStart" parameterType="int">
+    UPDATE EVENT_T
+       SET STATE = 1
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+  
+   <update id="changeDiscountPercent" parameterType="Map" >
+    UPDATE EVENT_T
+       SET DISCOUNT_PERCENT = #{discountPercent}
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+  
+   <update id="changeDiscountPrice" parameterType="Map" >
+    UPDATE EVENT_T
+       SET DISCOUNT_PRICE = #{discountPrice}
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+ 
+  
+</mapper>
