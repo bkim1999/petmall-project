@@ -24,6 +24,7 @@ spring:
 mybatis:
   config-location: mybatis/config/mybatis-config.xml
   mapper-locations: mybatis/mapper/*.xml
+  type-aliases-package: com.gdu.petmall.dto
 
 #server
 server:
