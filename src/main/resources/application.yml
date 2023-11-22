@@ -1,0 +1,42 @@
+#Connection Pool, javax.mail
+spring:
+  datasource:
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: ENC(d9gDLKL5h/xu4g/e8qojeSyp9i8BtaNpI/mQxLV8h4G/hAO8Bscdude1NAquAc0XNgzVfhMWET8=)
+      username: ENC(+33+jn4TvwZOtwVrckRhQQ==)
+      password: ENC(QkWwSrPf1coy2prvfTwNgQ==)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(Kq5AKuvEhpUjb/DYoYNjFeBl2b7SCsEJh8ITpSblI00=)
+    password: ENC(Vpa80ioC445JbaPkOFMUGR723HWw6w5NtiIfK8kXF0Y=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+#  main:
+#    web-application-type: none # Do not use embedded tomcat
+    
+#mybatis
+mybatis:
+  config-location: mybatis/config/mybatis-config.xml
+  mapper-locations: mybatis/mapper/*.xml
+
+#server
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    session:
+      timeout: 1800
+      
+# jasypt
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
