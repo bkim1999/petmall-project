@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.QnaMapper">
+
+  <resultMap type="com.gdu.petmall.dto.QnaDto" id="QnaMap">
+    <id column="QNA_NO" property="qnaNo" />
+    <result column="TITLE" property="title" />
+    <result column="CONTENTS" property="contents" />
+    <result column="CREATED_AT" property="createdAt" />
+    <result column="MODIFIED_AT" property="modifiedAt" />
+    <result column="TEXT_PW" property="textPw" />
+    <result column="CHECK_FLAG" property="checkFlag"/>
+    <result column="PRODUCT_NO" property="productNo"/>
+    <result column="GROUP_NO" property="groupNo"/>
+    <result column="DEPTH" property="depth"/>
+    <result column="STATUS" property="status"/>
+   <association javaType="UserDto"      property="userDto">
+      <id column="USER_NO" property="userNo" />
+      <result column="EMAIL" property="email"/>
+      <result column="NAME"  property="name"/>
+    </association>
+  </resultMap>
+
+	<!-- 게시글 추가 -->
+	<insert id="insertQna" parameterType="com.gdu.petmall.dto.QnaDto">
+	    <selectKey keyProperty="qnaNo" resultType="int" order="BEFORE">
+	        SELECT QNA_SEQ.NEXTVAL AS qnaNo FROM DUAL
+	    </selectKey>
+	    INSERT INTO QNA_T (
+	        QNA_NO,
+	        TITLE,
+	        CONTENTS,
+	        USER_NO,
+	        CREATED_AT,
+	        TEXT_PW,
+	        PRODUCT_NO,
+	        STATUS,
+	        DEPTH,
+	        GROUP_NO,
+	        CHECK_FLAG
+	    ) VALUES (
+	        #{qnaNo},
+	        #{title},
+	        #{contents},
+	        #{userDto.userNo},
+	        TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),
+	        #{textPw},
+	        #{productNo},
+	        1,
+	        0,
+	        #{qnaNo},
+	        #{checkFlag}
+	    )
+	</insert>
+	
+	
+	<!-- 첨부파일 추가  -->
+	<insert id="insertQattach" parameterType="QattachDto">
+	    INSERT INTO QATTACH_T (
+	        QATTACH_NO,
+	        QNA_NO,
+	        PATH,
+	        ORIGINAL_FILENAME,
+	        FILESYSTEM_NAME
+	    ) VALUES (
+	         QATTACH_SEQ.NEXTVAL,
+	         #{qnaNo},
+	         #{path},
+	         #{originalFilename},
+	         #{filesystemName}
+	    )
+	</insert>  
+	
+	<!-- 전체 게시글 갯수   -->
+   <select id="getQnaList" resultType="int">
+    SELECT COUNT (*)
+     FROM QNA_T
+   </select>
+   
+	<!--  전체 게시글 조회 -->   
+   <select id="getMyPostList" parameterType="java.util.Map" resultType="QnaDto">
+       SELECT *
+       FROM QNA_T
+       WHERE USER_NO = #{userNo}
+   </select>
+ 
+	<!-- 전체 통합 기능   -->   
+   <select id="getQna" parameterType="int" resultMap="QnaMap">
+       SELECT Q.QNA_NO, Q.TITLE, Q.CONTENTS, Q.CREATED_AT, Q.PRODUCT_NO, Q.STATUS, Q.USER_NO, Q.GROUP_NO
+       FROM USER_T U, QNA_T Q
+       WHERE U.USER_NO = Q.USER_NO
+       AND Q.QNA_NO = #{qnaNo}
+       AND Q.CHECK_FLAG = '0'
+        AND Q.GROUP_NO = #{groupNo}
+   </select>
+
+	<!-- 특정 정보로 게시글 삭제 -->   
+   <delete id="deleteQna" parameterType="int">
+       <![CDATA[
+       DELETE FROM QNA_T WHERE QNA_NO = #{qnaNo}
+       ]]>
+   </delete>
+
+	<!-- 댓글 추가  -->
+    <insert id="insertReply" parameterType="QnaDto">
+        <selectKey keyProperty="qnaNo" order="BEFORE" resultType="int">
+            SELECT QNA_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO QNA_T(
+            USER_NO,
+            QNA_NO,
+            CONTENTS,
+            CREATED_AT,
+            STATUS,
+            DEPTH,
+            GROUP_NO,
+            CHECK_FLAG
+        ) VALUES (
+            #{userDto.userNo},
+            #{qnaNo}, 
+            #{contents},
+            TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),
+            1,
+            #{depth},
+            #{groupNo},
+            1
+        )  
+    </insert>
+    
+  	<!-- 답변이 필요한 게시글 전체 조회  -->  
+	   <select id="qnaTotalCount" resultType="int">
+	    SELECT COUNT (*)
+	     FROM QNA_T
+	    WHERE DEPTH =0
+	   </select>
+  
+ 	<!-- 전체 게시글 순서조회 --> 
+	  <select id="getAllQnalist" resultMap="QnaMap">
+		SELECT QN.QNA_NO, QN.TITLE, QN.CONTENTS, QN.CREATED_AT, USR.USER_NO, USR.EMAIL, USR.NAME, QN.CHECK_FLAG, QN.GROUP_NO
+		FROM QNA_T QN
+		LEFT OUTER JOIN USER_T USR ON QN.USER_NO = USR.USER_NO
+		ORDER BY QN.QNA_NO DESC
+	  </select>
+	  
+	  	<!--  답변이 필요한 게시글 조회 -->
+	  <select id="getQnaCount" parameterType="int">
+	    SELECT COUNT(CHECK_FLAG)
+	     FROM QNA_T
+	    <if test="checkFlag != 0">
+	      WHERE CHECK_FLAG= #{checkFlag}
+	    </if>
+	  </select>
+	  
+	  	<!-- 첨부파일 리스트 조회 -->
+	  <select id="getQattachList" parameterType="int" resultType="QattachDto">
+	    SELECT QATTACH_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME
+	      FROM QATTACH_T
+	     WHERE QNA_NO = #{qnaNo}
+	  </select>
+	  
+	<!-- 첨부파일 다운로드 -->	
+	  <select id="getQattach" parameterType="int" resultType="QattachDto">
+	    SELECT QATTACH_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME
+	    FROM QATTACH_T
+	    WHERE QATTACH_NO = #{qattachNo}
+	</select>	  
+
+	<!-- 댓글조회 -->	 
+    <select id="getCommentList" parameterType="int" resultMap="QnaMap">
+        SELECT Q.QNA_NO, Q.CONTENTS, Q.STATUS, Q.GROUP_NO, Q.DEPTH, U.USER_NO, U.EMAIL, U.NAME 
+        FROM USER_T U, QNA_T Q
+        WHERE U.USER_NO = Q.USER_NO       
+        AND Q.GROUP_NO = #{groupNo}
+        AND Q.STATUS =1
+        AND Q.DEPTH =1
+    </select> 	 
+  
+</mapper>
+
+  	
