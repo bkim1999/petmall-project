@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.UserMapper">
+	
+  
+<!-- 회원 조회  -->
+  
+  <select id="getUser"  parameterType="Map" resultType="UserDto">
+ SELECT USER_NO USER_NO,EMAIL,PW,NAME,GENDER,MOBILE,POSTCODE,ROAD_ADDRESS,JIBUN_ADDRESS,DETAIL_ADDRESS,AGREE,JOIN_STATE,PW_MODIFIED_AT,JOINED_AT,ADMIN_AUTHOR_STATE,POINT
+ FROM USER_T 
+ <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+    </where>
+  </select>
+  
+<!-- 접속 기록  -->
+   <insert id="insertAccess" parameterType="String">
+    INSERT INTO ACCESS_USER_T (
+        EMAIL
+      , LOGIN_AT
+    ) VALUES (
+        #{email}
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+    )
+    </insert>
+  
+  
+<!-- 휴면회원조회 -->  
+  <select id="getInactiveUser" parameterType="Map" resultType="InactiveUserDto">
+      SELECT USER_NO USER_NO,EMAIL,PW,NAME,GENDER,MOBILE,POSTCODE,ROAD_ADDRESS,JIBUN_ADDRESS,DETAIL_ADDRESS,AGREE,JOIN_STATE,PW_MODIFIED_AT,JOINED_AT,INACTIVED_AT,ADMIN_AUTHOR_STATE,POINT
+      FROM INACTIVE_USER_T
+    <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+    </where>
+  </select>
+  
+ <!-- 탈퇴회원 조회  -->
+   <select id="getLeaveUser" parameterType="Map" resultType="LeaveUserDto">
+    SELECT EMAIL, JOINED_AT, LEAVED_AT
+      FROM LEAVE_USER_T
+     WHERE EMAIL = #{email}
+  </select>
+    
+ 
+ <!--회원 포인트 조회 -->
+ <select id="getPoint" parameterType="Map" resultType="int">
+ SELECT POINT 
+ FROM USER_T
+ WHERE USER_NO = #{userNo}
+ </select>
+      
+    
+ <!-- 활성 회원 중 아이디 찾기  -->  
+   <select id="getEmail" parameterType="Map" resultType="String">
+   SELECT EMAIL
+   FROM USER_T
+   WHERE NAME=#{name} AND MOBILE=#{mobile} 
+   </select>
+  
+ <!--휴면 회원 중 아이디 찾기  --> 
+ 
+    
+ <!--  일치하는 이메일 조회 -->   
+   <select id="getEmailforPw" parameterType="Map" resultType="int">
+      SELECT COUNT(EMAIL)
+      FROM USER_T  
+      WHERE EMAIL= #{email}
+    </select>
+
+
+
+    
+ <!-- 회원 정보 등록 (회원가입) -->   
+      <insert id="insertUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+        USER_NO
+      , EMAIL
+      , PW
+      , NAME
+      , GENDER
+      , MOBILE
+      , POSTCODE
+      , ROAD_ADDRESS
+      , JIBUN_ADDRESS
+      , DETAIL_ADDRESS
+      , AGREE
+      , JOIN_STATE
+      , PW_MODIFIED_AT
+      , JOINED_AT
+      ,ADMIN_AUTHOR_STATE
+      ,POINT
+    ) VALUES (
+        USER_SEQ.NEXTVAL
+      , #{email}
+      , #{pw}
+      , #{name}
+      , #{gender}
+      , #{mobile}
+      , #{postcode}
+      , #{roadAddress}
+      , #{jibunAddress}
+      , #{detailAddress}
+      , #{agree}
+      , 0
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      ,#{adminAuthorState}
+      ,0
+    )
+  </insert>
+    
+    
+ <!-- 회원 정보 수정  -->   
+   <update id="updateUser" parameterType="UserDto">
+    UPDATE USER_T
+       SET NAME = #{name}
+         , GENDER = #{gender}
+         , MOBILE = #{mobile}
+         , POSTCODE = #{postcode}
+         , ROAD_ADDRESS = #{roadAddress}
+         , JIBUN_ADDRESS = #{jibunAddress}
+         , DETAIL_ADDRESS = #{detailAddress}
+         , AGREE = #{agree}
+     WHERE USER_NO = #{userNo}
+  </update>   
+  
+ <!-- 비밀번호 분실시 비밀번호 변경  -->
+  <update id="updatePw" parameterType="UserDto">
+  UPDATE USER_T
+  SET PW =#{pw}
+  WHERE EMAIL = #{email}
+  </update>
+  
+ 
+  <!--회원탈퇴 기록 -->
+    <insert id="insertLeaveUser" parameterType="UserDto">
+    INSERT INTO LEAVE_USER_T (
+        EMAIL
+      , JOINED_AT
+      , LEAVED_AT
+    ) VALUES (
+        #{email}
+      , #{joinedAt}
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+    ) 
+  </insert> 
+  
+ <!-- 회원 삭제  --> 
+   <delete id="deleteUser" parameterType="UserDto">
+    DELETE
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+  
+  
+  <!-- 네이버로 가입한 회원 등록 -->
+    <insert id="insertNaverUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+        USER_NO
+      , EMAIL
+      , NAME
+      , GENDER
+      , MOBILE
+      , AGREE
+      , JOIN_STATE
+      , PW_MODIFIED_AT
+      , JOINED_AT
+      ,ADMIN_AUTHOR_STATE
+    ) VALUES (
+        USER_SEQ.NEXTVAL
+      , #{email}
+      , #{name}
+      , #{gender}
+      , #{mobile}
+      , #{agree}
+      , 1
+      , SYSDATE
+      , SYSDATE
+      , 0
+    )
+  </insert>
+  
+  
+  
+  
+  
+  
+ <!-- 휴면처리(휴면목록에 추가)  --> 
+ <insert id="insertInactiveUser">
+INSERT INTO INACTIVE_USER_T(
+ SELECT U.USER_NO, U.EMAIL, PW, NAME, GENDER, MOBILE, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, AGREE, JOIN_STATE,PW_MODIFIED_AT, JOINED_AT, SYSDATE,ADMIN_AUTHOR_STATE ,POINT
+  FROM USER_T U LEFT OUTER JOIN ACCESS_USER_T A
+    ON U.EMAIL = A.EMAIL
+ WHERE MONTHS_BETWEEN(SYSDATE, TO_DATE(LOGIN_AT,'YYYY-MM-DD_HH24:MI:SS')) >= 12
+  OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE,TO_DATE(JOINED_AT,'YYYY-MM-DD_HH24:MI:SS')) >= 12)
+)
+ </insert>
+ 
+ 
+ <!--휴면처리(회원목록에서 삭제) -->
+ <delete id="deleteUserForInactive">
+ DELETE
+  FROM USER_T
+ WHERE EMAIL IN(SELECT U.EMAIL
+                  FROM USER_T U LEFT OUTER JOIN ACCESS_USER_T A
+                    ON U.EMAIL = A.EMAIL
+                 WHERE MONTHS_BETWEEN(SYSDATE, TO_DATE(LOGIN_AT,'YYYY-MM-DD_HH24:MI:SS')) >= 12
+                    OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, TO_DATE(JOINED_AT,'YYYY-MM-DD_HH24:MI:SS')) >= 12))
+ </delete>
+ 
+ 
+ <!-- 휴면복원(복원목록에 추가)  -->
+ <insert id="insertActiveUser" parameterType="String">
+  INSERT INTO USER_T(
+   SELECT USER_NO, EMAIL, PW, NAME, GENDER, MOBILE, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, AGREE, JOIN_STATE,PW_MODIFIED_AT, JOINED_AT,ADMIN_AUTHOR_STATE,POINT
+  FROM INACTIVE_USER_T
+ WHERE EMAIL = #{email}
+  )
+ </insert>
+ 
+ <!-- 휴면복원(휴면목록에서 삭제)  -->
+ <delete id="deleteInactiveUser" parameterType="String">
+ DELETE
+  FROM INACTIVE_USER_T
+ WHERE EMAIL =  #{email}
+ </delete>
+ 
+ 
+ 
+ 
+ 
+    <!-- 포인트 증감 
+   <update id="updatePoint" parameterType="UserDto" >
+    UPDATE USER_T
+       SET POINT = #{point}
+     WHERE USER_NO = #{userNo}
+  </update>   
+    -->   
+</mapper>
+
+ 
