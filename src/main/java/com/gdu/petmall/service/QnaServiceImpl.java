@@ -51,7 +51,6 @@ import lombok.RequiredArgsConstructor;
            }
 
            String contents = multipartRequest.getParameter("contents");
-           String textPw = multipartRequest.getParameter("textPw");
 
            int userNo = 0;
            String userNoString = multipartRequest.getParameter("userNo");
@@ -72,7 +71,6 @@ import lombok.RequiredArgsConstructor;
            QnaDto qna = QnaDto.builder()
                   .title(title)
                   .contents(contents)
-                  .textPw(textPw)
                   .userDto(userDto) 
                   .productNo(productNo)
                   .build();

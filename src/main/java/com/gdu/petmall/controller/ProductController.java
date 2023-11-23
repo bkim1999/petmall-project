@@ -34,8 +34,14 @@ public class ProductController {
   }
   
   @ResponseBody
-  @GetMapping(value="/getList.do", produces="application/json")
-  public Map<String, Object> loadList(HttpServletRequest request) {
+  @GetMapping(value="/getCategoryList.do", produces="application/json")
+  public Map<String, Object> loadCategoryList() {
+    return productService.loadCategoryList();
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getProductList.do", produces="application/json")
+  public Map<String, Object> loadProductList(HttpServletRequest request) {
     return productService.loadProductList(request);
   }
   
