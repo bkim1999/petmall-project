@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
   @Override
   public void getList(HttpServletRequest request, Model model) {
     
-    int userNo = 2;
+    int userNo = 1;
     //Integer.parseInt(request.getSession().getAttribute("user").getUserNo(userNo));
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
