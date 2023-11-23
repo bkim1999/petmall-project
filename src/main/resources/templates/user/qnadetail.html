@@ -36,16 +36,16 @@
     <hr class="my-3">
     <h5>첨부 다운로드</h5>
     <div>
-      <c:if test="${empty qattachList}">
+      <th:if test="${empty qattachList}">
         <div>첨부 없음</div>
-      </c:if>
-      <c:if test="${not empty qattachList}">
-		<c:forEach items="${qattachList}" var="atc">
-		    <div class="qattach" data-qattach_no="${atc.qattachNo}">
-		        <a th:href="@{/user/qnadetail/download.do(qattachNo=${atc.qattachNo})}" th:text="${atc.originalFilename}"></a>
-		    </div>
-		</c:forEach>
-      </c:if>
+      </th:block>
+	<th:block th:if test="${not empty qattachList}">
+	    <div th:each items="${qattachList}" var="atc">
+	        <div class="qattach" data-qattach_no="${atc.qattachNo}">
+	            <a th:href="@{/user/qnadetail/download.do(qattachNo=${atc.qattachNo})}" th:text="${atc.originalFilename}"></a>
+	        </div>
+	    </divh>
+	</th:block>
     </div>
 
     <hr>
