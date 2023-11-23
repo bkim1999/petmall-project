@@ -43,10 +43,14 @@ public class ProductServiceImpl implements ProductService {
   private final MyFileUtils myFileUtils;
   
   @Override
-  public Map<String, Object> loadProductList(HttpServletRequest request) {
-    
+  public Map<String, Object> loadCategoryList() {
     // 카테고리 목록 DB에 요청
     List<CategoryDto> categoryList = productMapper.getCategoryList(); 
+    return Map.of("categoryList", categoryList);
+  }
+  
+  @Override
+  public Map<String, Object> loadProductList(HttpServletRequest request) {
     
     // 카테고리 번호 NULL 체크
     Optional<String> opt = Optional.ofNullable(request.getParameter("categoryNo"));
@@ -62,7 +66,6 @@ public class ProductServiceImpl implements ProductService {
     int productCount = productMapper.getProductCount(map);
     if(productCount == 0) {
       map = new HashMap<>();
-      map.put("categoryList", categoryList);
       map.put("productList", null);
       map.put("message", "아직 상품이 준비되지 않았습니다.");
       return map;
@@ -80,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     opt = Optional.ofNullable(request.getParameter("order"));
     String order = opt.orElse("PRODUCT_SALES");
     
-    // 카테고리, 순서, 페이지 시작/끝 map에 저장
+    // 카테고리번호, 순서, 페이지 시작/끝 map에 저장
     map = Map.of("categoryNo", categoryNo
                                    , "order", order
                                    , "begin", begin
@@ -88,9 +91,8 @@ public class ProductServiceImpl implements ProductService {
     
     // 상품 목록 DB에 요청(map 전달)
     List<ProductDto> productList = productMapper.getProductList(map);
-    // Map에 담아 반환(카테고리 목록, 상품 목록, 총 페이지수) 
-    return Map.of("categoryList", categoryList
-                , "productList", productList
+    // Map에 담아 반환(상품 목록, 총 페이지수) 
+    return Map.of("productList", productList
                 , "totalPage", myPageUtils.getTotalPage());
     
   }
