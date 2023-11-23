@@ -12,7 +12,7 @@ public interface CartService {
   
   public void addCart(HttpServletRequest request, Model model);
   public void getList(HttpServletRequest request, Model model);
-  public Map<String, Object> modifyCart(HttpServletRequest request,CartDto cartDto);
+  public void modifyCart(HttpServletRequest request, Model model);
   public Map<String, Object> removeCart(HttpServletRequest request) throws Exception;
 
   

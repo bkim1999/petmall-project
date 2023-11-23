@@ -37,15 +37,12 @@
                 <input type="" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}">
                 <input type="" class="" th:value="적립금">
                 <span>
-                  <input type="" class="totalCount" th:value="${cartList.cartDto.count}">
+                  <input type="" class="totalCount" th:value="${cartProduct.count}">
                     <button type="button" class="plus_btn">+</button>
-                      <input type="hidden" class="plus_cartcount" th:value="${cartList.cartDto.count}"></input>
-                      <input type="text" class="count" th:value="1" readonly>';
-                    <button class="minus_btn">-</button>
+                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
                     <button type="button" class="minus_btn">-</button>
-                      <input type="hiddn" class="minus_cartcount" th:value="${cartList.cartDto.count}"></input>
+                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
                 </span>
-                  <a class="modify_btn"  data-Count="${count}"></a>
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit"  class="btn_remove">삭제</button>
               </td>
@@ -86,11 +83,7 @@
  
  </div>
 
-<script>
-
-</script>
-
-<script>
+<script th:inline="javascript">
    
    $(document).ready(function(){
        setTotalInfo();
@@ -143,16 +136,26 @@
 
 </script>
 
-<script>
+<script th:inline="javascript">
   
-  const fnModifyUpdate = () =>{
-    $(document).on('click', '')  
+  const fnModifyUpdate = () => {
+    $(document).on('click', 'plus_btn', function(){
+      var count = $(this).siblings('.plus_cartcount');
+      if(count.val() === '999') {
+        alert('상품을 더이상 담을수 없습니다.')
+        return;
+      } 
+      $.ajax({
+        type: 'post',
+        url: '/order/modify.do',
+        data: '',
+        dataType: 'json',
+        success:(resData) =>{
+          
+        }
+      });
+    });  
   }
-  
-  
-  
-  
-  
   
   
   
@@ -162,7 +165,7 @@
              return;
            }
           $.ajax({
-             type: 'post',
+            type: 'post',
             url: '/order/delete.do',
             data: $('#frm_btn').serialize(),
             dataType: 'json',
@@ -182,16 +185,6 @@
   fnDeleteCart();
  
 </script>
-
-<div class="selected_option" data-option-no="' + optionNo + '">';
-optionName + '  ';
-<button type="button" class="btn btn-link minus_count">-</button>';
-<input type="hidden" class="option_no" value="' + optionNo + '">';
-<input type="text" class="count" value="1" readonly>';
-
-<button type="button" class="btn btn-link plus_count">+</button>';
-<p class="calculated_price">' + (${product.productPrice} + addPrice) + '</p>';
-<input type="hidden" class="option_price" value="' + (${product.productPrice} + addPrice) + '">';
 
 
 

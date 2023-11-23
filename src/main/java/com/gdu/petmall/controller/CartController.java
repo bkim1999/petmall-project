@@ -40,13 +40,19 @@ public class CartController {
     return cartService.removeCart(request);
   }
   
-  @PostMapping(value = "/order/addCart.do")
+  @PostMapping(value ="/order/addCart.do")
   public String addCart(HttpServletRequest request, Model model) {
           cartService.addCart(request, model);
           return "redirect:/order/cart.go"; 
   }   
  
   
+  @ResponseBody
+  @PostMapping(value="/order/modify.do", produces="application/json")
+  public String UpdateCart(HttpServletRequest request, Model model) {
+    cartService.modifyCart(request, model);
+    return "redirect:/order/cart.go";
+  }
 
 
 

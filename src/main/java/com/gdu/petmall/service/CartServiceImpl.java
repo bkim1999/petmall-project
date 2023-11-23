@@ -64,27 +64,25 @@ public class CartServiceImpl implements CartService {
     
   }
   
-  public Map<String, Object> modifyCart(HttpServletRequest request, CartDto cartDto) {
-    Map<String, Object> map = new HashMap<>();
-    String countParam = request.getParameter("count");
-    int count = (countParam != null && !countParam.isEmpty()) ? Integer.parseInt(countParam) : 0;
-    int userNo = 1;
-    //Integer.parseInt(request.getSession().getAttribute("user").getUserNo());
+  @Override
+  public void modifyCart(HttpServletRequest request, Model model) {
     
-    Optional<String> opt = Optional.ofNullable(request.getParameter("optionNo"));
-    int optionNo = Integer.parseInt(opt.orElse("0"));
-  
-    CartDto mdCart = CartDto.builder()
-                            .count(count)
-                            .userDto(UserDto.builder().userNo(userNo).build())
-                            .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
-                            .build();
-
-    int modifyResult = cartMapper.updateCart(mdCart);
-
-    map.put("modifyResult", modifyResult);
-    return map;
+    int count = Integer.parseInt(request.getParameter("count"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    int optionNo = Integer.parseInt(request.getParameter("optionNo"));
+    
+    CartDto updateCart = CartDto.builder()
+                                .userDto(UserDto.builder().userNo(userNo).build())
+                                .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+                                .count(count)
+                                .build();
+    
+    int modifyResult = cartMapper.updateCart(updateCart);
   }
+  
 
+  
+  
+  
 
  }
