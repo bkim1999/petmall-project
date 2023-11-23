@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+
+<body>
+  
+<div th:fragment="mypage_nav">
+  <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/main.do}">PetMall</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarColor03">
+    
+      <ul class="navbar-nav me-auto">
+      
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/user/mypage}">MyPage
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/main.do}">Order</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/user/mypage/profile.form}">Profile</a>
+        </li>
+        
+        <li class="nav-item">
+          <form th:action="@{/user/mypage/point}" method="post">
+             <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+             <button class="nav-link">Point</button>
+          </form>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/user/myPostList}">MyPosts</a>
+        </li>
+
+
+      </ul>
+      
+    </div>
+  </div>
+</nav>
+
+</div>
+
+
+<div>
+   <div> 반가워요, <span th:text="| ${session.user.name} 님|"></span></div>
+   <div> 적립금    <span th:text="|${user.point}원|"></span></div>
+</div>
+
+</div>
+
+
+
+</body>  
+</html>
+
+    
+
