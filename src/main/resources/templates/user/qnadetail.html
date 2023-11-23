@@ -36,16 +36,16 @@
     <hr class="my-3">
     <h5>첨부 다운로드</h5>
     <div>
-      <th:if test="${empty qattachList}">
+      <th:block th:if="${#lists.isEmpty(qattachList)}">
         <div>첨부 없음</div>
       </th:block>
-	<th:block th:if test="${not empty qattachList}">
-	    <div th:each items="${qattachList}" var="atc">
-	        <div class="qattach" data-qattach_no="${atc.qattachNo}">
-	            <a th:href="@{/user/qnadetail/download.do(qattachNo=${atc.qattachNo})}" th:text="${atc.originalFilename}"></a>
-	        </div>
-	    </divh>
-	</th:block>
+      <th:block th:if="${not #lists.isEmpty(qattachList)}">
+        <th:block th:each="atc : ${qattachList}">
+          <div class="qattach" th:data-qattach_no="${atc.qattachNo}">
+            <a th:href="@{/user/qnadetail/download.do(qattachNo=${atc.qattachNo})}" th:text="${atc.originalFilename}"></a>
+          </div>
+        </th:block>
+      </th:block>
     </div>
 
     <hr>
@@ -57,49 +57,49 @@
 
     <hr>
 
-    <h5>문의 내용 추가 작성하기</h5>
+		<h5>문의 내용 추가 작성하기</h5>
+		
+		<div class="blind write_tr">
+		  <div>
+		    <c:set var="groupNo" value="${param.groupNo}" />
+		    <form method="post" th:action="@{/user/qnadetail/addReply.do}" id="reply_form">
+		      <div class="input-group mb-3">
+		        <label class="input-group-text" id="inputGroup-sizing-default">작성자</label>
+		        <input type="text" name="email" th:value="${session.user.email}" readonly class="form-control">
+		        <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+		      </div>
+		      <div class="input-group">
+		        <c:set var="groupNo" value="${param.groupNo}" />
+		        <label for="contents" class="input-group-text">내용</label>
+		        <textarea name="contents" id="contents" class="form-control" aria-label="With textarea"></textarea>
+		        <hr>
+		        <input type="hidden" name="groupNo" th:value="${groupNo}">
+		        <input type="hidden" name="depth" th:value="${qna.depth}">
+		        <input type="hidden" name="parentNo" th:value="${qna.qnaNo}">
+		        <button type="submit" class="btn btn-primary btn-sm">댓글달기</button>
+		      </div>
+		    </form>
+		  </div>
+		</div>
 
-    <tr class="blind write_tr">
-      <td colspan="4">
-        <div>
-          <c:set var="groupNo" value="${param.groupNo}" />
-          <form method="post" th:action="@{/user/qnadetail/addReply.do}" id="reply_form">
-            <div class="input-group mb-3">
-              <label class="input-group-text" id="inputGroup-sizing-default">작성자</label>
-              <input type="text" name="email" value="${session.user.email}" readonly class="form-control">
-              <input type="hidden" name="userNo" value="${session.user.userNo}">
-            </div>
-            <div class="input-group">
-              <c:set var="groupNo" value="${param.groupNo}" />
-              <label for="contents" class="input-group-text">내용</label>
-              <textarea name="contents" id="contents" class="form-control" aria-label="With textarea"></textarea>
-              <hr>
-              <input type="hidden" name="groupNo" value="${groupNo}">
-              <input type="hidden" name="depth" value="${qna.depth}">
-              <input type="hidden" name="parentNo" value="${qna.qnaNo}">
-              <button type="submit" class="btn btn-primary btn-sm">댓글달기</button>
-            </div>
-          </form>
-        </div>
-      </td>
-    </tr>
 
     <hr>
+	
+	<h1>답변</h1>
+	<div th:if="${commentList}">
+	    <div th:each="com : ${commentList}">
+	        <div>
+	            <div>작성자 이메일: <span th:text="${com.userDto.email}"></span></div>
+	            <div>이름: <span th:text="${com.userDto.name}"></span></div>
+	            <div>질문 번호: <span th:text="${com.qnaNo}"></span></div>
+	            <div>유저번호: <span th:text="${com.userDto.userNo}"></span></div>
+	            <div>상태: <span th:text="${com.status}"></span></div>
+	            <div>내용: <span th:text="${com.contents}"></span></div>
+	            <div>답글여부: <span th:text="${com.depth}"></span></div>
+	        </div>
+	    </div>
+	</div>
 
-    <h1>답변</h1>
-    <div>
-      <c:forEach items="${commentList}" var="com">
-        <div>
-          <div>작성자 이메일: <span th:text="${com.userDto.email}"></span></div>
-          <div>이름: <span th:text="${com.userDto.name}"></span></div>
-          <div>질문 번호: <span th:text="${com.qnaNo}"></span></div>
-          <div>유저번호: <span th:text="${com.userDto.userNo}"></span></div>
-          <div>상태: <span th:text="${com.status}"></span></div>
-          <div>내용: <span th:text="${com.contents}"></span></div>
-          <div>답글여부: <span th:text="${com.depth}"></span></div>
-        </div>
-      </c:forEach>
-    </div>
 
     <hr>
 
