@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::head('Q&A 문의글 상세보기')}"></head>
+
+<body>
+  <div th:replace="~{/layout/header::header}"></div>
+  <div class="main_wrap">
+   
+    <div>전체 문의 답변을 기다리는 남은 갯수: [[${qnaTotalCount}]]</div>
+        
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <td>순번</td>
+                    <td>작성글번호</td>
+                    <td>문의한 제품 번호</td>
+                    <td>제목</td>
+                    <td>작성일자</td>
+                    <td>그룹번호</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="post, vs : ${myPostList}" th:if="${post.depth == 0}">
+                    <td th:text="${vs.index + 1}"></td>
+                    <td>
+                        <a th:href="@{/user/qnadetail.do(qnaNo=${post.qnaNo},groupNo=${post.groupNo})}" th:text="${post.qnaNo}"></a>
+                    </td>
+                    <td th:text="${post.productNo}"></td>
+                    <td th:text="${post.title}"></td>
+                    <td th:text="${post.createdAt}"></td>
+                    <td th:text="${post.groupNo}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div> 
+    
+    <div th:replace="~{/layout/footer::footer}"></div>
+  </div>
+</body>
+</html>
