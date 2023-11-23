@@ -22,6 +22,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/**")
     .addResourceLocations("classpath:/static/", "classpath:/templates/");
+    registry.addResourceHandler("/product/**")
+    .addResourceLocations("file:///product/");
+    registry.addResourceHandler("/event/**")
+    .addResourceLocations("file:///event/");
   }
   
 }

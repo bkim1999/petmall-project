@@ -5,28 +5,42 @@
   div {
     box-sizing: border-box;
   }
-  .product_list {
-    width: 1000px;
+  #category_list {
+    font-size: 30px;
+  }
+  #product_list {
     margin: 100px auto;
     display: flex;
     flex-wrap: wrap;
    }
   .product {
-    width: 400px;
+    width: 450px;
     height: 600px;
     text-align: left;
-    margin: 20px 10px;
+    margin: 20px 40px;
   }
   .product_thumbnail {
     margin: 0;
-    height: 400px;
+    height: 450px;
     text-align: center;
   }
-  .product_thumbnail > img {
-    height: 100%;
+  .card-img-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 50px;
+    text-align: center;
+    color: red;
+    height: 450px;
+    line-height: 450px;
   }
   .product:hover {
     cursor: pointer;
+  }
+  #searchbox {
+    margin: 30px;
+    height: 50px;
+  }
+  #searchText {
+    width: 200px;
   }
   
   h1 {
@@ -38,7 +52,14 @@
   <div th:replace="~{layout/header :: header}"></div>
   <div>
     <h1>상품 목록</h1>
-    <div id="product_list" class="d-flex justify-content-evenly product_list"></div>
+    <ul id="category_list" class="nav nav-tabs d-flext justify-content-center" role="tablist">
+    </ul>
+    <div id="searchbox" class="d-flex justify-content-end">
+        <input id="searchText" class="form-control me-sm-2" type="search" placeholder="검색">
+        <button id="btn_search" class="btn btn-secondary my-2 my-sm-0" type="submit">검색</button>
+    </div>
+    <div></div>
+    <div id="product_list" class="d-flex justify-content-center product_list"></div>
   </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
@@ -47,49 +68,103 @@
   // 전역 변수
   var categoryNo = 0;
   var page = 1;
-  var order = 'PRODUCT_NAME';
-  var ascDesc = 'ASC';
+  var order = 'PRODUCT_SALES';
   var totalPage = 0;
-
+  
+  // 카테고리 목록
+  const fnGetCategoryList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '/product/getCategoryList.do',
+      // 응답
+      dataType: 'json',
+      success: (resData) => {  // resData = {"categoryList": []}
+        // 카테고리 목록이 없을 경우: 버튼을 만들지 않는다
+        if(resData.categoryList === null){
+          $('#category_btn_list').text('카테고리 준비 중...');
+          return;
+        }
+        // 카테고리 목록이 있을 경우: 버튼 생성
+        $.each(resData.categoryList, function(i, category){
+          let str = '<li class="nav-item category" role="presentation" data-category-no="' + category.categoryNo + '">';
+          str += '  <a class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab">' + category.categoryName + '</a>';
+          str += '</li>';
+          $('#category_list').append(str);
+        })
+        $('#category_list > li > a').first().addClass('active');
+      }
+    });
+  }
+    
+  // 카테고리 버튼 클릭 시 data에서 카테고리번호 가져오기
+  const fnGetCategoryProductList = () => {
+    $(document).on('click', '.category', function(){
+      categoryNo = $(this).data('category-no');
+      fnGetProductList();
+    });
+  }
+    
+  // 해당 카테고리 상품목록
   const fnGetProductList = () => {
     $.ajax({
       // 요청
       type: 'get',
-      url: '${contextPath}/product/getList.do',
+      url: '/product/getProductList.do',
       data: {'categoryNo' : categoryNo,
              'page' : page,
              'order' : order,
-             'ascDesc' : ascDesc
+             'searchText' : $('#searchText').val()
             },
       // 응답
       dataType: 'json',
-      success: (resData) => {  // resData = {"uploadList": [], "totalPage": 10}
+      success: (resData) => {  // resData = {"": [], "totalPage": 10}
+      
+        // 상품 목록이 없을 경우: 반환된 메세지 알림
         if(resData.productList === null){
-          alert(resData.message);
+          $('#product_list').text(resData.message);
           return;
         }
+        // 상품 목록이 있을 경우: 화면에 출력
         totalPage = resData.totalPage;
+        $('#product_list').empty();
         $.each(resData.productList, (i, product) => {
-        	let str = '<div class="card product" data-product_no="' + product.productNo + '">';        	
-        	str += '  <div class="product_thumbnail">';
+        	let str = '<div class="card product" data-product-no="' + product.productNo + '">';        	
+        	str += '  <div class="product_thumbnail d-flex align-items-center">';
           if(product.productImageDto === null){
               str += '썸네일 없음';
           } else {
-            str += '    <img class= "col-md-11" src="${contextPath}' + product.productImageDto.path + '/' + product.productImageDto.filesystemName + '">';
+            str += '    <img class= "card-img-top" src="' + product.productImageDto.path + '/' + product.productImageDto.filesystemName + '">';
           }
           str += '  </div>';
+          if(product.productCount === 0) {
+            str += '  <div class="card-img-overlay">품절</div>';
+          } else if(product.productCount < 10) {
+            str += '  <div class="card-img-overlay">' + product.productCount + '개 남음</div>';
+          }
+          console.log(product.productName + ': ' + product.productCount);
           str += '  <div class="card-body">';
           str += '  <h4 class="card-title">' + product.productName + '</h4>';
           str += '  <h6 class="card-subtitle mb-2 text-muted">' + product.productTitle + '</h6>';
           str += '  <p class="card-text">' + product.productPrice + '원</p>';
           str += '  <p class="card-text">' + product.reviewCount + '개의 리뷰</p>';
           str += '  </div>';
-          str += '</div>';        	
+          str += '</div>';     	
           $('#product_list').append(str);
+          
         });
       }
     })
   }
+
+  
+  // 검색 버튼 클릭 시 상품 목록 다시 가져오기
+  const fnSearchProduct = () => {
+    $(document).on('click', '#btn_search',function(){
+      fnGetProductList();
+    });
+  }
+  
   
   const fnScroll = () => {
     var timerId;
@@ -103,11 +178,10 @@
         let windowHeight = $(ev.target).height();
         let documentHeight = $(document).height();
         
-        if(scrollTop + windowHeight + 100 >= documentHeight){
-          if(page > totalPage){
+        if(scrollTop + windowHeight + 50 >= documentHeight){
+          if(page >= totalPage){
             return;
           }
-          console.log('페이지 로딩')
           page++;
           fnGetProductList();
         }
@@ -116,7 +190,7 @@
   }
 
   const fnAddProductResult = () => {
-    let addProductResult = '${addProductResult}';  // '', 'true', 'false'
+    let addProductResult = /*[[${addProductResult}]]*/ '';  // '', 'true', 'false'
     if(addProductResult !== ''){
       if(addProductResult === '1'){
         alert('성공적으로 업로드 되었습니다.');
@@ -128,12 +202,14 @@
   
   const fnDetail = () => {
     $(document).on('click', '.product', function(){
-      console.log('clicking upload')      
-      location.href = '${contextPath}/product/detail.do?productNo=' + $(this).data('product_no');
+      location.href = '/product/detail.do?productNo=' + $(this).data('product-no');
     });
   }
   
+  fnGetCategoryList();
   fnGetProductList();
+  fnGetCategoryProductList();
+  fnSearchProduct();
   fnScroll();
   fnAddProductResult();
   fnDetail();
