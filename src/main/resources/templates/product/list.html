@@ -6,7 +6,6 @@
     box-sizing: border-box;
   }
   .product_list {
-    width: 1000px;
     margin: 100px auto;
     display: flex;
     flex-wrap: wrap;
@@ -28,6 +27,13 @@
   .product:hover {
     cursor: pointer;
   }
+  #searchbox {
+    margin: 30px;
+    height: 50px;
+  }
+  #searchText {
+    width: 200px;
+  }
   
   h1 {
     margin: 100px 0;
@@ -38,7 +44,12 @@
   <div th:replace="~{layout/header :: header}"></div>
   <div>
     <h1>상품 목록</h1>
-    <div id="product_list" class="d-flex justify-content-evenly product_list"></div>
+    <div id="category_btn_list" class="d-flex justify-content-evenly"></div>
+    <div id="searchbox" class="d-flex justify-content-end">
+        <input id="searchText" class="form-control me-sm-2" type="search" placeholder="검색">
+        <button id="btn_search" class="btn btn-secondary my-2 my-sm-0" type="submit">검색</button>
+    </div>
+    <div id="product_list" class="d-flex justify-content-center product_list"></div>
   </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
@@ -47,28 +58,44 @@
   // 전역 변수
   var categoryNo = 0;
   var page = 1;
-  var order = 'PRODUCT_NAME';
-  var ascDesc = 'ASC';
+  var order = 'PRODUCT_SALES';
   var totalPage = 0;
-
+  
+  // 해당 카테고리 상품목록
   const fnGetProductList = () => {
     $.ajax({
       // 요청
       type: 'get',
-      url: '${contextPath}/product/getList.do',
+      url: '/product/getList.do',
       data: {'categoryNo' : categoryNo,
              'page' : page,
              'order' : order,
-             'ascDesc' : ascDesc
+             'searchText' : $('#searchText').val()
             },
       // 응답
       dataType: 'json',
       success: (resData) => {  // resData = {"uploadList": [], "totalPage": 10}
-        if(resData.productList === null){
-          alert(resData.message);
+      
+        // 카테고리 목록이 없을 경우: 버튼을 만들지 않는다
+        if(resData.categoryList === null){
+          $('#category_btn_list').text('카테고리 준비 중...');
           return;
         }
+        // 카테고리 목록이 있을 경우: 버튼 생성
+        let category_btn_list = $('#category_btn_list');
+        category_btn_list.empty();
+        $.each(resData.categoryList, function(i, category){
+          category_btn_list.append('<button type="button" class="btn btn-primary btn_category" data-category-no="' + category.categoryNo + '">' + category.categoryName + '</button>');
+        })
+      
+        // 상품 목록이 없을 경우: 반환된 메세지 알림
+        if(resData.productList === null){
+          $('#product_list').text(resData.message);
+          return;
+        }
+        // 상품 목록이 있을 경우: 화면에 출력
         totalPage = resData.totalPage;
+        $('#product_list').empty();
         $.each(resData.productList, (i, product) => {
         	let str = '<div class="card product" data-product_no="' + product.productNo + '">';        	
         	str += '  <div class="product_thumbnail">';
@@ -91,6 +118,20 @@
     })
   }
   
+  const fnGetCategoryProductList = () => {
+    $(document).on('click', '.btn_category',function(){
+      categoryNo = $(this).data('category-no');
+      fnGetProductList();
+    });
+  }
+  
+  const fnSearchProduct = () => {
+    $(document).on('click', '#btn_search',function(){
+      fnGetProductList();
+    });
+  }
+  
+  
   const fnScroll = () => {
     var timerId;
     $(window).on('scroll', (ev) => {
@@ -103,11 +144,10 @@
         let windowHeight = $(ev.target).height();
         let documentHeight = $(document).height();
         
-        if(scrollTop + windowHeight + 100 >= documentHeight){
-          if(page > totalPage){
+        if(scrollTop + windowHeight + 50 >= documentHeight){
+          if(page >= totalPage){
             return;
           }
-          console.log('페이지 로딩')
           page++;
           fnGetProductList();
         }
@@ -116,7 +156,7 @@
   }
 
   const fnAddProductResult = () => {
-    let addProductResult = '${addProductResult}';  // '', 'true', 'false'
+    let addProductResult = /*[[${addProductResult}]]*/ '';  // '', 'true', 'false'
     if(addProductResult !== ''){
       if(addProductResult === '1'){
         alert('성공적으로 업로드 되었습니다.');
@@ -128,12 +168,13 @@
   
   const fnDetail = () => {
     $(document).on('click', '.product', function(){
-      console.log('clicking upload')      
-      location.href = '${contextPath}/product/detail.do?productNo=' + $(this).data('product_no');
+      location.href = '/product/detail.do?productNo=' + $(this).data('product_no');
     });
   }
   
   fnGetProductList();
+  fnGetCategoryProductList();
+  fnSearchProduct();
   fnScroll();
   fnAddProductResult();
   fnDetail();
