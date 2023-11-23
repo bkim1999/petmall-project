@@ -15,6 +15,8 @@
     <result column="PRODUCT_WARNING"      property="productWarning" />
     <result column="PRODUCT_HIT"          property="productHit" />
     <result column="PRODUCT_RATING"       property="productRating" />
+    <result column="PRODUCT_COUNT"        property="productCount" />
+    <result column="REVIEW_COUNT"        property="reviewCount" />
     <association javaType="ProductImageDto"  property="productImageDto">
       <id     column="IMAGE_CODE"          property="imageCode" />
       <result column="POSITION"      property="position" />

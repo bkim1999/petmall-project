@@ -14,6 +14,7 @@ import com.gdu.petmall.dto.ProductOptionDto;
 
 
 public interface ProductService {
+  public Map<String, Object> loadCategoryList();
   public Map<String, Object> loadProductList(HttpServletRequest request);
   public void loadProductInfo(HttpServletRequest request, Model model);
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest);
