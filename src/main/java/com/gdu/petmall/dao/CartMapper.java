@@ -19,5 +19,5 @@ public interface CartMapper {
   public int deleteCart(int optionNo);
   
   // 카트 수량 수정
-  public int updateCart(CartDto cartDto);
+  public int updateCart(int count);
 }

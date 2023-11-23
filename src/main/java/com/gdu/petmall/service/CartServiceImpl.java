@@ -8,7 +8,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -26,11 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
-  private final SqlSession sqlSession;
+  private final HttpSession session;
   
-  
-  
-  @Override
   public void addCart(HttpServletRequest request,Model model) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
@@ -47,42 +43,41 @@ public class CartServiceImpl implements CartService {
   
   @Override
   public void getList(HttpServletRequest request, Model model) {
+   
     
-    int userNo = 1;
+    int userNo = 2;
     //Integer.parseInt(request.getSession().getAttribute("user").getUserNo(userNo));
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
   }
   
   @Override
-  public Map<String, Object> removeCart(HttpServletRequest request) throws Exception {
+  public Map<String, Object> deleteCart(HttpServletRequest request){
     Optional<String> opt = Optional.ofNullable(request.getParameter("optionNo"));
-    int optionNo = Integer.parseInt(opt.orElse(null));
-    Map<String, Object> map = Map.of("optionNo", cartMapper.deleteCart(optionNo));
+    int optionNo = Integer.parseInt(opt.orElse("0"));
     int removeResult = cartMapper.deleteCart(optionNo);
     return Map.of("removeResult", removeResult);
-    
   }
   
   @Override
-  public void modifyCart(HttpServletRequest request, Model model) {
+  public Map<String, Object> modifyCart(HttpServletRequest request) {
     
     int count = Integer.parseInt(request.getParameter("count"));
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
-    CartDto updateCart = CartDto.builder()
-                                .userDto(UserDto.builder().userNo(userNo).build())
-                                .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
-                                .count(count)
-                                .build();
-    
-    int modifyResult = cartMapper.updateCart(updateCart);
+    Map<String, Object> map = new HashMap<>();
+    map.put("count", count);
+    System.out.println(count);
+    map.put("optionNo", optionNo);
+    map.put("userNo", userNo);
+    return map;
   }
-  
+    
+}
 
   
   
   
 
- }
+ 

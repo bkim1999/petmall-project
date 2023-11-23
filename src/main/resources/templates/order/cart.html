@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head></head>
+<head th:replace="~{/layout/header::head('cart')}"></head>
 
 
 <body>
 
+  <div th:replace="~{/layout/header::header}"></div>
   <div>
     
   </div>
@@ -39,9 +40,9 @@
                 <span>
                   <input type="" class="totalCount" th:value="${cartProduct.count}">
                     <button type="button" class="plus_btn">+</button>
-                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.productOptionDto.optionNo}"></input>
                     <button type="button" class="minus_btn">-</button>
-                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.productOptionDto.optionNo}"></input>
                 </span>
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit"  class="btn_remove">삭제</button>
@@ -138,25 +139,26 @@
 
 <script th:inline="javascript">
   
-  const fnModifyUpdate = () => {
-    $(document).on('click', 'plus_btn', function(){
-      var count = $(this).siblings('.plus_cartcount');
-      if(count.val() === '999') {
-        alert('상품을 더이상 담을수 없습니다.')
-        return;
-      } 
-      $.ajax({
-        type: 'post',
-        url: '/order/modify.do',
-        data: '',
-        dataType: 'json',
-        success:(resData) =>{
-          
-        }
+  const fnModifyCart = () => {
+    $(document).ready(function() {
+      $('.plus_btn, .minus_btn').click(function() {
+           var count =
+           $.ajax({
+              type: 'post',
+              url: '/order/update.do/' + '',
+              data: {'count' : count},
+              success: function (response) {
+                  if (response.message === 'success') {
+                  alert('장바구니 수량이 업데이트되었습니다.');
+                  }
+              },
+              error: function () {
+                  alert('장바구니 수량 업데이트에 실패했습니다.');
+              }
+          });
       });
-    });  
+    })
   }
-  
   
   
   const fnDeleteCart = () => {
@@ -167,7 +169,7 @@
           $.ajax({
             type: 'post',
             url: '/order/delete.do',
-            data: $('#frm_btn').serialize(),
+            data:$('#frm_btn').serialize(),
             dataType: 'json',
             success: (resData) => {  
                if(resData.removeResult === 1){
@@ -181,7 +183,9 @@
            })
        })
      }
-      
+     
+       
+  fnModifyCart();  
   fnDeleteCart();
  
 </script>

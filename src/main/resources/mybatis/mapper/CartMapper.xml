@@ -72,7 +72,7 @@
       )
    </insert>
    
-   <update id="updateCart" parameterType="CartDto">
+   <update id="updateCart" parameterType="int">
       UPDATE CART_T
         SET COUNT = #{count}
         WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
@@ -82,7 +82,6 @@
       DELETE
         FROM CART_T
        WHERE OPTION_NO = #{optionNo}
-       AND USER_NO = #{userNo}
    </delete>           
    
 </mapper>
