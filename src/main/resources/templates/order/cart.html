@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
+<head></head>
+
+
 <body>
 
   <div>
@@ -23,27 +26,31 @@
         </thead>
         <tbody>
         <caption>장바구니</caption>
-          <c:forEach var="cartProduct" items="${cartList}">
+          <th:block th:each="cartProduct:${cartList}">
             <tr class="a">
               <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <input type="" class="image" value="이미지">
-                <input type="" class="pr_Name" value="${cartProduct.productDto.productName}">
-                <input type="" class="totalPrice" value="${cartProduct.productDto.productPrice}">
-                <input type="" class="deliveryPrice" value="3000원">
-                <input type="" class="finaltotalprice"value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}">
-                <input type="" class="" value="적립금">
+                <input type="" class="image" th:value="이미지">
+                <input type="" class="pr_Name" th:value="${cartProduct.productDto.productName}">
+                <input type="" class="totalPrice" th:value="${cartProduct.productDto.productPrice}">
+                <input type="" class="deliveryPrice" th:value="3000원">
+                <input type="" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}">
+                <input type="" class="" th:value="적립금">
                 <span>
-                  <input type="" class="totalCount" value="${cartProduct.count}">
-                  <button class="plus_btn" >+</button>
-                  <button class="minus_btn">-</button>
+                  <input type="" class="totalCount" th:value="${cartList.cartDto.count}">
+                    <button type="button" class="plus_btn">+</button>
+                      <input type="hidden" class="plus_cartcount" th:value="${cartList.cartDto.count}"></input>
+                      <input type="text" class="count" th:value="1" readonly>';
+                    <button class="minus_btn">-</button>
+                    <button type="button" class="minus_btn">-</button>
+                      <input type="hiddn" class="minus_cartcount" th:value="${cartList.cartDto.count}"></input>
                 </span>
                   <a class="modify_btn"  data-Count="${count}"></a>
-                <input type="hidden" name="optionNo" class="delete_option" value="${cartProduct.productOptionDto.optionNo}">
+                <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit"  class="btn_remove">삭제</button>
               </td>
             </tr>  
-          </c:forEach>
+          </th:block>
         </tbody>
         </table>
       </form>
@@ -64,21 +71,16 @@
         </tbody>
       </table>
       <div>
-        <a href="${contextPath}/order/detail.do">
+        <a th:href="@{/order/detail.do}">
           <button type="button">구매</button>
         </a>
-        <a href="${contextPath}/product/list.do">
+        <a th:href="@{/product/list.do}">
           <button type="button">리스트로 돌아가기</button>
         </a>
     </div>
    </div>
     
-    <form action="${contextPath}/order/modify.do" method="post" class="modify_frm">
-      <input type="hidden" name="count" class="modify_count">
-      <div>11111
-      <input type="hidden" name="optionNo" class="modify_optionNo" value="${optionNo}">
-      </div>
-    </form>
+    
     
     
  
@@ -86,32 +88,6 @@
 
 <script>
 
-   var quantity;
-   
-   $('.plus_btn').on('click', function(){
-      quantity = $(this).parent('span').find('input').val();
-      $(this).parent('span').find('input').val(++quantity);   
-   });
-   
-   $('.minus_btn').on('click', function(){
-      quantity = $(this).parent('span').find('input').val();
-         if(quantity > 1){
-            $(this).parent('span').find('input').val(--quantity);   
-         }
-   });
-   
-   $('.modify_btn').on('click', function(){
-      var optionNo = $(this).data('optionNo');
-      var count = $(this).parent('span').find('input').val();
-      $('.modify_count').val(count);
-      $('.modify_optionNo').val(optionNo);
-      $('.modify_frm').submit();
-      
-   });
-   
-   
-   
-   
 </script>
 
 <script>
@@ -128,10 +104,10 @@
       
       var totalPrice = 0;            // 총 가격
       var totalCount = 0;            // 총 갯수
-      var totalKind = 0;            // 총 종류
+      var totalKind = 0;             // 총 종류
       var totalPoint = 0;            // 총 마일리지
-      var deliveryPrice = 0;      // 배송비
-      var finalTotalPrice = 0; 
+      var deliveryPrice = 0;         // 배송비
+      var finalTotalPrice = 0;  
    
       $('.cart_info_td').each(function(index, e){
          if($(e).find('.cart_checkbox').is(':checked') === true){
@@ -167,35 +143,18 @@
 
 </script>
 
-
-
-
 <script>
-   
-  const fnModify = (optionNo, count) => {
-    $.ajax({
-      type: 'post',
-      url: '${contextPath}/order/modify.do',
-      contentType: 'application/json',
-      data: JSON.stringify({
-          optionNo: optionNo,
-          count: count,
-      }),
-      success: (reseData) => {
-         
-      },
-    })
+  
+  const fnModifyUpdate = () =>{
+    $(document).on('click', '')  
   }
-    
-    const handleModifyResponse = (response) => {
-       console.log(response);
-    };
-       
-    //fnModify();
-    
-</script>
-
-<script>
+  
+  
+  
+  
+  
+  
+  
   
   const fnDeleteCart = () => {
         $(document).on('click', '.btn_remove', (ev) => {
@@ -204,7 +163,7 @@
            }
           $.ajax({
              type: 'post',
-            url: '${contextPath}/order/delete.do',
+            url: '/order/delete.do',
             data: $('#frm_btn').serialize(),
             dataType: 'json',
             success: (resData) => {  
@@ -223,5 +182,18 @@
   fnDeleteCart();
  
 </script>
+
+<div class="selected_option" data-option-no="' + optionNo + '">';
+optionName + '  ';
+<button type="button" class="btn btn-link minus_count">-</button>';
+<input type="hidden" class="option_no" value="' + optionNo + '">';
+<input type="text" class="count" value="1" readonly>';
+
+<button type="button" class="btn btn-link plus_count">+</button>';
+<p class="calculated_price">' + (${product.productPrice} + addPrice) + '</p>';
+<input type="hidden" class="option_price" value="' + (${product.productPrice} + addPrice) + '">';
+
+
+
 </body>
 </html>
