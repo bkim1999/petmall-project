@@ -84,7 +84,7 @@
    <select id="getMyPostList" parameterType="java.util.Map" resultType="QnaDto">
        SELECT *
        FROM QNA_T
-       WHERE USER_NO = #{userNo}
+       WHERE USER_NO = #{userDto.userNo}
    </select>
  
 	<!-- 전체 통합 기능   -->   
