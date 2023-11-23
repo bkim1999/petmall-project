@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.dao.ProductMapper;
+import com.gdu.petmall.dto.CategoryDto;
 import com.gdu.petmall.dto.ProductDto;
 import com.gdu.petmall.dto.ProductImageDto;
 import com.gdu.petmall.dto.ProductOptionDto;
@@ -42,14 +44,31 @@ public class ProductServiceImpl implements ProductService {
   
   @Override
   public Map<String, Object> loadProductList(HttpServletRequest request) {
+    
+    // 카테고리 목록 DB에 요청
+    List<CategoryDto> categoryList = productMapper.getCategoryList(); 
+    
+    // 카테고리 번호 NULL 체크
     Optional<String> opt = Optional.ofNullable(request.getParameter("categoryNo"));
     int categoryNo = Integer.parseInt(opt.orElse("0"));
     
-    int productCount = productMapper.getProductCount(Map.of("categoryNo", categoryNo));
+    // 검색어 구하기
+    String searchText = request.getParameter("searchText");
+    
+    // 해당 카테고리 상품 개수 DB에 요청, 0일시 메세지 반환
+    Map<String, Object> map = new HashMap<>();
+    map.put("categoryNo", categoryNo);
+    map.put("searchText", searchText);
+    int productCount = productMapper.getProductCount(map);
     if(productCount == 0) {
-      return Map.of("message", "아직 상품이 준비되지 않았습니다.");
+      map = new HashMap<>();
+      map.put("categoryList", categoryList);
+      map.put("productList", null);
+      map.put("message", "아직 상품이 준비되지 않았습니다.");
+      return map;
     }
-
+    
+    // 상품 개수로 페이지 생성
     opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
     int display = 10;
@@ -57,20 +76,21 @@ public class ProductServiceImpl implements ProductService {
     int begin = myPageUtils.getBegin();
     int end = myPageUtils.getEnd();
     
+    // 순서 기준 NULL 체크
     opt = Optional.ofNullable(request.getParameter("order"));
-    String order = opt.orElse("PRODUCT_NAME");
-    opt = Optional.ofNullable(request.getParameter("ascDesc"));
-    String ascDesc = opt.orElse("ASC");
+    String order = opt.orElse("PRODUCT_SALES");
     
-    Map<String, Object> map = Map.of("categoryNo", categoryNo
+    // 카테고리, 순서, 페이지 시작/끝 map에 저장
+    map = Map.of("categoryNo", categoryNo
                                    , "order", order
-                                   , "ascDesc", ascDesc
                                    , "begin", begin
                                    , "end", end);
     
+    // 상품 목록 DB에 요청(map 전달)
     List<ProductDto> productList = productMapper.getProductList(map);
-    
-    return Map.of("productList", productList
+    // Map에 담아 반환(카테고리 목록, 상품 목록, 총 페이지수) 
+    return Map.of("categoryList", categoryList
+                , "productList", productList
                 , "totalPage", myPageUtils.getTotalPage());
     
   }

@@ -23,17 +23,27 @@
     </association>
   </resultMap>
   
+  <select id="getCategoryList" resultType="CategoryDto">
+    SELECT CATEGORY_NO, CATEGORY_NAME
+      FROM CATEGORY_T
+  </select>
+  
   <select id="getProductCount" parameterType="Map" resultType="int">
     SELECT COUNT(*)
       FROM PRODUCT_T
-    <if test="categoryNo != 0">
-     WHERE CATEGORY_NO = #{categoryNo}
-    </if>
+    <where>
+      <if test="categoryNo != 0">
+        CATEGORY_NO = #{categoryNo}
+      </if>
+      <if test="searchText != null">
+        AND PRODUCT_NAME LIKE '%' || #{searchText} || '%'
+      </if>
+    </where>
   </select>
   
   <select id="getProductList" parameterType="Map" resultMap="ProductMap">
      SELECT A.PRODUCT_NO, A.PRODUCT_NAME, A.PRODUCT_TITLE, A.PRODUCT_PRICE, A.PRODUCT_CREATED_AT, A.PRODUCT_SALES, A.PRODUCT_HIT, A.PRODUCT_RATING, A.PRODUCT_COUNT, A.REVIEW_COUNT, A.PATH, A.FILESYSTEM_NAME
-       FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} ${ascDesc}) AS RN, P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_SALES, P.PRODUCT_HIT, P.PRODUCT_RATING
+       FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_SALES, P.PRODUCT_HIT, P.PRODUCT_RATING
                   , (SELECT SUM(OPTION_COUNT) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
                   , (SELECT COUNT(*) FROM REVIEW_T R WHERE R.OPTION_NO IN (SELECT OPT.OPTION_NO FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO)) AS REVIEW_COUNT
                   , PI.PATH, PI.FILESYSTEM_NAME
@@ -42,7 +52,10 @@
                 AND PI.POSITION = 'thumbnail'
               <where>
                 <if test="categoryNo != 0">
-                  AND CATEGORY_NO = #{categoryNo}
+                  CATEGORY_NO = #{categoryNo}
+                </if>
+                <if test="searchText != null">
+                  AND PRODUCT_NAME LIKE '%' || #{searchText} || '%'
                 </if>
               </where>
              ) A
