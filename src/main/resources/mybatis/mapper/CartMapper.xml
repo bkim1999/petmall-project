@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.CartMapper">
+  
+  <resultMap type="CartDto"     id="CartMap">
+    <id      column="CART_NO"     property="cartNo" />
+    <result  column="PR_NAME"     property="prName" />
+    <result  column="PR_PRICE"    property="prPrice" />
+    <result  column="DELIVERY"    property="delivery" />
+    <result  column="COUNT"       property="count" />
+    <association  javaType="ProductDto" property="productDto">
+      <id     column="PRODUCT_NO"           property="productNo" />
+      <result column="PRODUCT_NAME"         property="productName" />
+      <result column="PRODUCT_TITLE"        property="productTitle" />
+      <result column="PRODUCT_PRICE"        property="productPrice" />
+      <result column="PRODUCT_DESCRIPTION"  property="productDescription" />
+      <result column="PRODUCT_SIZE "        property="productSize" />
+      <result column="PRODUCT_WARNING"      property="productWarning" />
+      <result column="PRODUCT_HIT"          property="productHit" />
+      <result column="PRODUCT_RATING"       property="productRating" />
+    </association>
+    <association javaType="UserDto"       property="userDto">
+      <id     column="USER_NO"            property="userNo" />
+      <result column="EMAIL"              property="email" />
+      <result column="PW"                 property="pw" />
+      <result column="NAME"               property="name" />
+      <result column="GENDER"             property="gender" />
+      <result column="MOBILE"             property="mobile" />
+      <result column="POSTCODE"           property="postcode" />
+      <result column="ROAD_ADDRESS"       property="roadAddress" />
+      <result column="JIBUN_ADDRESS"      property="jibunAddress" />
+      <result column="DETAIL_ADDRESS"     property="detailAddress" />
+      <result column="AGREE"              property="agree" />
+      <result column="JOIN_STATE"         property="joinState" />
+      <result column="PWMODIFIED_AT"      property="pwModifiedAt" />
+      <result column="ADMIN_AUTHOR_STATE" property="adminAuthorState" />
+      <result column="POINT"              property="point" />
+    </association>  
+    <association javaType="ProductOptionDto"  property="productOptionDto">
+      <id     column="OPTION_NO"              property="optionNo" />
+      <result column="PRODUCT_NO"             property="productNo" />
+      <result column="OPTION_NAME"            property="optionName" />
+      <result column="ADD_PRICE"              property="addPrice" />
+    </association>  
+  </resultMap>
+  
+   <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
+      SELECT C.USER_NO, C.COUNT
+           , A.PRODUCT_NAME, A.PRODUCT_PRICE, A.PRODUCT_NO
+           , B.OPTION_NO,B.ADD_PRICE
+        FROM PRODUCT_T A, 
+             PRODUCT_OPTION_T B,
+             CART_T C
+       WHERE A.PRODUCT_NO = B.PRODUCT_NO 
+         AND B.OPTION_NO = C.OPTION_NO
+         AND C.USER_NO = ${userNo}
+    </select>
+    
+    
+   <insert id="insertCart" parameterType="CartDto">
+      INSERT INTO CART_T(
+          OPTION_NO
+        , USER_NO
+        , COUNT
+      ) VALUES (
+          #{productOptionDto.optionNo}
+        , #{userDto.userNo}
+        , #{count}
+      )
+   </insert>
+   
+   <update id="updateCart" parameterType="CartDto">
+      UPDATE CART_T
+        SET COUNT = #{count}
+        WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
+   </update>
+   
+   <delete id="deleteCart" parameterType="int">
+      DELETE
+        FROM CART_T
+       WHERE OPTION_NO = #{optionNo}
+       AND USER_NO = #{userNo}
+   </delete>           
+   
+</mapper>
