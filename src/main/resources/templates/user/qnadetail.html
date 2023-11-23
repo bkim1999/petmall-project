@@ -10,29 +10,60 @@
   <div class="main_wrap">
 
     <h1>문의글 상세보기</h1>
+    
+    <hr>
 
-    <!-- Qna글 상세보기 -->
-		<div th:if="${session.user.userNo == qna.userDto.userNo}" class="text-center">
-		    <form id="frn_btn" method="post" th:action="@{/some/action}">
-		        <input type="hidden" name="qnaNo" th:value="${qna.qnaNo}">
-		        <input type="hidden" name="productNo" th:value="${qna.productNo}">
-		        <input type="hidden" name="title" th:value="${qna.title}">
-		        <input type="hidden" name="contents" th:value="${qna.contents}">
-		    </form>
-		</div>
+		    <!-- Qna글 상세보기 -->
+				<div th:if="${session.user.userNo == qna.userDto.userNo}" class="text-center">
+				    <form id="frn_btn" method="post" th:action="@{/some/action}">
+				        <input type="hidden" name="qnaNo" th:value="${qna.qnaNo}">
+				        <input type="hidden" name="productNo" th:value="${qna.productNo}">
+				        <input type="hidden" name="title" th:value="${qna.title}">
+				        <input type="hidden" name="contents" th:value="${qna.contents}">
+				    </form>
+				</div>
+		
+		      <div>
+		        <h1 class="title mt-4" th:text="${qna.title}"></h1>
+		        <c:set var="groupNo" value="${param.groupNo}" />
+		        <div>작성일: <span th:text="${qna.createdAt}"></span></div>
+		        <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
+		        <div>문의 내용: <span th:text="${qna.contents}"></span></div>
+		        <div>그룹번호: <span th:text="${groupNo}"></span></div>
+		      </div>
+		    </div>
+		
+		    <hr>
+    
 
-      <div>
-        <h1 class="title mt-4" th:text="${qna.title}"></h1>
-        <c:set var="groupNo" value="${param.groupNo}" />
-        <div>작성일: <span th:text="${qna.createdAt}"></span></div>
-        <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
-        <div>문의 내용: <span th:text="${qna.contents}"></span></div>
-        <div>그룹번호: <span th:text="${groupNo}"></span></div>
-      </div>
-    </div>
+
+  
+
+	<!-- 스크립트 구문을 통해 해당 숫자에 따른 문자열 반환시킴 -->
+	<script th:inline="javascript">
+	  function updateDisplayedTitle() {
+	    const titleInput = document.querySelector('input[name="title"]');
+	    const displayedTitle = document.querySelector('.title');
+	    
+	    const titles = {
+	      '1': '[상품] 상품관련 문의',
+	      '2': '[배송] 배송관련 문의',
+	      '3': '[주문취소] 주문취소 문의',
+	      '4': '[주소변경] 주소변경 문의',
+	      '5': '[반품/환불] 반품/환불 문의',
+	      '6': '[기타] 기타문의'
+	    };
+	    
+	    const selectedValue = titleInput.value;
+	    displayedTitle.innerText = titles[selectedValue] || '';
+	  }
+	  document.querySelector('input[name="title"]').addEventListener('change', updateDisplayedTitle);
+	  updateDisplayedTitle(); // Update the displayed title initially
+	</script>
 
     <hr>
 
+	<!-- 첨부파일 다운로드 관련 코드 -->
     <hr class="my-3">
     <h5>첨부 다운로드</h5>
     <div>
@@ -49,15 +80,16 @@
     </div>
 
     <hr>
-
+	
+	<!-- 상세보기 게시글 삭제하기-->
     <div>
       <h3>게시글 삭제하기</h3>
       <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
     </div>
 
     <hr>
-
-		<h5>문의 내용 추가 작성하기</h5>
+		<!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
+		<h5>답변 작성하기</h5>
 		
 		<div class="blind write_tr">
 		  <div>
@@ -102,7 +134,8 @@
 
 
     <hr>
-
+	
+	<!-- 스크립트 기능으로 댓글 추가알림-->
     <script th:inline="javascript">
       const fnAddReplyResult = () => {
         let addReplyResult = /*[[${addReplyResult}]]*/ '';
@@ -114,7 +147,8 @@
           }
         }
       };
-
+	
+	  <!-- 게시글 삭제 -->
       const fnRemoveQna = () => {
         $('#btn_remove').click(() => {
           if (confirm('문의글을 삭제시 함께 문의한 추가 내용도 전부 삭제됩니다. 삭제할까요?')) {
@@ -123,7 +157,7 @@
           }
         });
       };
-
+	
       const fnAddReply = () => {
         $('#reply_form').submit(() => {
           $('#groupNo').val(/*[[${groupNo}]]*/ '');
@@ -137,6 +171,8 @@
           }
         });
       };
+       
+      
 
       $(document).ready(function () {
         fnRemoveQna();
