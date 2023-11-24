@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header::head('아이디 찾기')}"></head>
+
+<style>
+  
+  
+</style>
+
+
+<div>
+<h1>아이디 찾기</h1>
+
+
+<form  id="frm_find_id">
+  <div>
+    <label for="name" >이름</label>
+    <input type="text"  id="name" name="name">
+  </div>
+  
+  <div>
+       <label for="mobile" >휴대폰 번호</label>
+    <input type="text"  id="mobile" name="mobile">
+  </div>
+  
+  <div>
+    <button type="button" id="btn_find_id">아이디 찾기</button>
+   
+  </div>
+  
+  
+</form>
+
+</div>
+
+<!-- 스크립트 영역 -->
+
+<script>
+
+
+/****************************아이디찾기**********************************/
+const fnFindId=()=>{
+	
+	$('#btn_find_id').click(()=>{
+		
+		$.ajax({
+			type:'post',
+			url:'/user/find_id.do',
+			data:$('#frm_find_id').serialize(),
+			
+			dataType:'json',
+			success:(resData)=>{
+				
+				if(resData.email==0)
+				{
+					alert('일치하는 회원정보가 없습니다.');
+					return;
+				}
+				
+				alert('아이디는'+resData.email+'입니다.');
+				location.href='/user/login.form';
+			}
+		})
+	})
+}
+
+
+fnFindId();
+
+</script>
+
+
+
+
+
+
+ <div th:replace="~{layout/footer :: footer}"></div>
+
+
+</body>  
+</html>

@@ -10,8 +10,6 @@
     <result column="TITLE" property="title" />
     <result column="CONTENTS" property="contents" />
     <result column="CREATED_AT" property="createdAt" />
-    <result column="MODIFIED_AT" property="modifiedAt" />
-    <result column="TEXT_PW" property="textPw" />
     <result column="CHECK_FLAG" property="checkFlag"/>
     <result column="PRODUCT_NO" property="productNo"/>
     <result column="GROUP_NO" property="groupNo"/>
@@ -35,7 +33,6 @@
 	        CONTENTS,
 	        USER_NO,
 	        CREATED_AT,
-	        TEXT_PW,
 	        PRODUCT_NO,
 	        STATUS,
 	        DEPTH,
@@ -47,7 +44,6 @@
 	        #{contents},
 	        #{userDto.userNo},
 	        TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),
-	        #{textPw},
 	        #{productNo},
 	        1,
 	        0,
@@ -84,7 +80,7 @@
    <select id="getMyPostList" parameterType="java.util.Map" resultType="QnaDto">
        SELECT *
        FROM QNA_T
-       WHERE USER_NO = #{userNo}
+	  WHERE USER_NO = #{userNo}
    </select>
  
 	<!-- 전체 통합 기능   -->   

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header::head('휴면해제')}"></head>
+
+
+<body>
+  <div th:replace="~{layout/header::header}"></div>
+
+<div>
+
+  <h1 >휴면계정안내</h1>
+  
+  <div th:text="|${session.inactiveUser.email}님은 1년 이상 로그인하지 않아 관계 법령에 의해서 휴면회원으로 전환되었습니다.|">
+    
+  </div>
+  
+  <div th:text="|휴면전환일 : ${session.inactiveUser.inactivedAt}|">
+    
+  </div>
+  
+  <div>휴면해제를 위해서 휴면해제 버튼을 클릭하세요.</div>
+  <div><button type="button" id="btn_active" >휴면해제</button></div>
+  
+  <script>
+    const fnActive = () => {
+      $('#btn_active').click(() => {
+        location.href = '/user/active.do';
+      })
+    }
+    
+    fnActive();
+  </script>
+
+</div>
+
+ <div th:replace="~{layout/footer :: footer}"></div>
+
+
+</body>  
+</html>

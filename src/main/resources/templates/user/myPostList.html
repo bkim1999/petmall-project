@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::head('Q&A 문의글 상세보기')}"></head>
+
+<body>
+  <div th:replace="~{/layout/header::header}"></div>
+  <div class="main_wrap">
+   
+    <div>전체 문의 답변을 기다리는 남은 갯수: [[${qnaTotalCount}]]</div>
+     
+   <!-- 전체 리스트 목록별 정보를 불러온다. -->
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <td>순번</td>
+                    <td>작성글번호</td>
+                    <td>문의한 제품 번호</td>
+                    <td>제목</td>
+                    <td>작성일자</td>
+                    <td>그룹번호</td>
+                </tr>
+            </thead>
+			<tbody>
+			    <tr th:each="post, vs : ${myPostList}" th:if="${post.depth == 0}">
+			        <td th:text="${vs.index + 1}"></td>
+			        <td>
+			            <a th:href="@{/user/qnadetail.do(qnaNo=${post.qnaNo},groupNo=${post.groupNo})}" th:text="${post.qnaNo}"></a>
+			        </td>
+			        <td th:text="${post.productNo}"></td>
+			        <td>
+					<select class="form-select" th:id="'title_' + ${post.qnaNo}" onchange="updateDisplayedTitle('${post.qnaNo}')" disabled>
+					  <option value="1" th:selected="${post.title == 1}">[상품] 상품관련 문의</option>
+					  <option value="2" th:selected="${post.title == 2}">[배송] 배송관련 문의</option>
+					  <option value="3" th:selected="${post.title == 3}">[주문취소] 주문취소 문의</option>
+					  <option value="4" th:selected="${post.title == 4}">[주소변경] 주소변경 문의</option>
+					  <option value="5" th:selected="${post.title == 5}">[반품/환불] 반품/환불 문의</option>
+					  <option value="6" th:selected="${post.title == 6}">[기타] 기타문의</option> 
+					</select>
+		        </td>
+		        <td th:text="${post.createdAt}"></td>
+		        <td th:text="${post.groupNo}"></td>
+		    </tr>
+		</tbody>
+    
+    <!-- 해당 스크립트 구문을 통해서 title을 숫자로 받은 값을 다시 문자로 변환 시킨다.  -->
+	<script th:inline="javascript">
+	  function updateDisplayedTitle() {
+	    const titleSelect = document.getElementById('title');
+	    const displayedTitle = document.getElementById('displayedTitle');
+	    const selectedValue = titleSelect.value;
+	
+	    switch (selectedValue) {
+	      case '1':
+	        displayedTitle.innerText = '[상품] 상품관련 문의';
+	        break;
+	      case '2':
+	        displayedTitle.innerText = '[배송] 배송관련 문의';
+	        break;
+	      case '3':
+	        displayedTitle.innerText = '[주문취소] 주문취소 문의';
+	        break;
+	      case '4':
+	        displayedTitle.innerText = '[주소변경] 주소변경 문의';
+	        break;
+	      case '5':
+	        displayedTitle.innerText = '[반품/환불] 반품/환불 문의';
+	        break;
+	      case '6':
+	        displayedTitle.innerText = '[기타] 기타문의';
+	        break;
+	      default:
+	        displayedTitle.innerText = '';
+	        break;
+	    }
+	    titleSelect.disabled = true;
+	  }
+	
+	  document.addEventListener('DOMContentLoaded', function () {
+	    updateDisplayedTitle(); // Set the displayed title on page load
+	  });
+	</script>
+
+
+    
+    
+    <div th:replace="~{/layout/footer::footer}"></div>
+  </div>
+</body>
+</html>

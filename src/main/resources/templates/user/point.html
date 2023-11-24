@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header::head('Point')}"></head>
+
+<style>
+.point_wrap{width:98%; margin:0 auto;}
+</style>
+
+<body>
+<div th:replace="~{layout/header::header}"></div>
+
+
+
+<h1>POINT</h1>
+<!--마이페이지 네비게이션-->
+<div th:replace="~{user/mypage_nav::mypage_nav}"></div>
+
+<!-- 본문  -->
+<div class="point_wrap">
+
+<table  class="table point_table" border="1" >
+  <thead>
+    <tr  class="table-primary">
+      <td>사용가능한 적립금</td>
+    </tr>
+  </thead>
+  <tbody>
+      <tr class="table-light">
+      <td th:text="${point}"></td>
+    </tr>
+  </tbody>
+</table>
+<div>
+     <input type="hidden" id="userNo" name="userNo" th:value="${session.user.userNo}">
+</div>
+
+
+</div>
+
+
+
+
+ <div th:replace="~{layout/footer :: footer}"></div>
+
+</body>  
+</html>
+
+    
+
