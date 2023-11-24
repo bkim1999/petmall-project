@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  
+<head th:replace="~{/layout/header::head('관리자전용 Q&A게시판')}"></head>
+
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+
+  <div>Q&A 페이지에 오신것을 환영합니다.</div>
+
+   <div>
+    <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>
+  </div>
+  
+  <div th:text="|전체 문의글수 : ${qnaTotalCount}|"></div>
+  <div th:text="|답변 완료된 문의글 수 : ${qnaAnswerCount}|"></div>
+  <div th:text="|미답변된 문의글 수 : ${qnaNonAnswerCount}|"></div>
+  
+  <table border=1>
+    <thead>
+      <tr>
+       <td>문의글 번호</td>
+       <td>제목</td>
+       <td>내용</td>
+       <td>문의일</td>
+       <td>문의자</td>
+       <td>답변여부</td>
+       <td>답변하로가기</td>
+      </tr>
+    </thead>
+    <tbody>
+     <th:block th:each="qna,vs:${qnaList}">
+      <tr>
+       <td th:text="${qna.qnaNo}"></td>
+       <td th:text="${qna.title}"></td>
+       <td th:text="${qna.contents}"></td>
+       <td th:text="${qna.createdAt}"></td>
+       <td th:text="${qna.userDto.name}"></td>
+       <th:block th:if="${qna.checkFlag == 1}">
+        <td>답변완료</td>
+       </th:block>
+       <th:block th:if="${qna.checkFlag == 0}">
+         <td>미답변</td>
+       </th:block>
+       <td>
+        <input type="hidden" th:value="${qna.groupNo}">
+        <th:block th:if="${qna.checkFlag == 1}">
+        <input type="button" id="btn_answer" value="추가답변하기">
+        </th:block>
+        <th:block th:if="${qna.checkFlag == 0}">
+        <input type="button" id="btn_answer" value="답변하기">
+        </th:block>
+        <input type="hidden" th:value="${qna.qnaNo}">
+       </td>
+      </tr>
+     </th:block>
+    </tbody>
+  </table>
+  
+
+  
+ <script th:inline="javascript">
+  function fnAnswer() {
+  	$(document).on('click', '#btn_answer', function(ev){
+	    location.href = '/user/qnadetail.do?qnaNo='+$(this).next().val()+'&groupNo='+$(this).prev().val();
+  	})
+  }
+  
+  fnAnswer();
+ </script>
+   
+   <div th:replace="~{/layout/footer::footer}"></div>
+   
+</body>
+</html>

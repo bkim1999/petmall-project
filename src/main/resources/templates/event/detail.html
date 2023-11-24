@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  
+<head th:replace="~{/layout/header::head('이벤트상세게시판')}"></head>
+
+ 
+ <style>
+  div {
+    text-align: center;
+  }
+ </style>
+  
+<body>  
+  
+  <div th:replace="~{/layout/header::header}"></div>
+
+  <h1>EVENT</h1>
+  <hr>
+  <div th:text="${event.title}"></div>
+  <div th:text="|${event.startAt} ~ ${event.endAt}|"></div>
+  <hr>
+    <div th:text="|조회수 ${event.hit}|"></div>
+  <hr>
+  <div th:text="${event.contents}"></div>
+    <div th:text="${event.eventImageDto.path}"></div>
+    <th:block th:if="${event.eventImageDto.path != null}">
+      <img th:src="${event.eventImageDto.path}" width = "500px" height = "300px">   
+    </th:block>
+    <th:block th:if="${event.eventImageDto.path == null}">
+     <div>싫어</div>
+    </th:block>
+       
+   <div>
+    <input type="button" value="다른이벤트 보로가기" id="other_event">
+   </div>
+   
+   
+   <script th:inline="javascript">
+   function fnOtherEvent(){
+   	 $(document).on('click', '#other_event', function(ev){
+	   location.href = '/event/list.do';
+	   })
+   }
+   fnOtherEvent();
+   </script>
+   
+   <div th:replace="~{/layout/footer::footer}"></div>
+   
+</body>
+</html>

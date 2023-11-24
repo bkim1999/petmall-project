@@ -81,6 +81,7 @@
        SELECT *
        FROM QNA_T
 	  WHERE USER_NO = #{userNo}
+	  ORDER BY QNA_NO DESC
    </select>
  
 	<!-- 전체 통합 기능   -->   
