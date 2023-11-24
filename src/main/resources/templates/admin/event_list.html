@@ -17,6 +17,9 @@
     border-right: 1px solid gray;
     padding-top: 20px;
   }
+  .table {
+    width :1000px;
+  }
 </style>
 
 <body>
@@ -24,12 +27,14 @@
   <div th:replace="~{/layout/header::header}"></div>
   
   <div>
-    <button type="button" class="btn_write">이벤트 추가하기</button>
-    <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>  
+    <button type="button" class="btn btn-light btn_write">이벤트 추가하기</button>
+    <a th:href="@{/admin/admin.go}"><input type="button" class="btn btn-dark" value="관리자페이지돌아가기"></a> 
+    <button type="button" class="btn btn-danger">danger</button>
+    <button type="button" class="btn btn-warning">warning</button>
   </div>
     
   <table border="1" class="table table-hover table_font">  
-    <thead>
+    <thead class="table-primary">
       <tr>
         <td>이벤트 번호</td>
         <td>이벤트 이름</td>
@@ -67,7 +72,7 @@
     		return;
     	 }
     	 $.each(resData.eventList, (i, event) => {
-    	   let str ='<tr class="table-light tr_font">'
+    	   let str ='<tr class="tr_font">'
     	   str +='<td class="td_font">'+event.eventNo+'</td>';
     	   str +='<td class="td_font">'+event.title+'</td>';
     	   str +='<td class="td_font"><img src="'+'${contextPath}'+event.eventThumnailUrl+'"width="100px" height="100px"></td>'
@@ -78,7 +83,7 @@
     	   str +='<div>';
     	   str +='<form class="frm_changePercent">';
     	   str +='<input type="text" name="discountPercent" placeholder="변경될할인율입력">';
-    	   str +='<input class="change_Percent" type="submit" value="할인율 변경하기">';
+    	   str +='<input class="change_Percent btn btn-danger" type="submit" value="할인율 변경하기">';
     	   str +='<input type="hidden" name="eventNo" value="'+event.eventNo+'">';
     	   str +='</form>';
     	   str +='</div>';
@@ -88,7 +93,7 @@
     	   str +='<div>';
     	   str +='<form class="frm_changePrice">';
     	   str +='<input type="text" name="discountPrice" placeholder="변경될할인가입력">';
-    	   str +='<input class="change_Price" type="submit" value="할인가 변경하기">';
+    	   str +='<input class="change_Price btn btn-light" type="submit" value="할인가 변경하기">';
     	   str +='<input type="hidden" name="eventNo" value="'+event.eventNo+'">';
     	   str +='</form>';
     	   str +='</div>';

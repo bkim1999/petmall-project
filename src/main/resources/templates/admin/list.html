@@ -12,6 +12,9 @@
       border-right: 1px solid gray;
     }
   </style>
+<body>
+  
+    <div th:replace="~{/layout/header::header}"></div>
 
   <div class="btn_admin">관리자 페이지에 오신것을 환영합니다.</div>
   
@@ -26,22 +29,22 @@
     <div class="collapse navbar-collapse" id="navbarColor03">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" th:href="/admin/event_list.go">이벤트 현황
+          <a class="nav-link active" th:href="@{/admin/event_list.go}">이벤트 현황
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="/admin/qna_list.go">모든 문의글 관리
+          <a class="nav-link active" th:href="@{/admin/qna_list.go}">모든 문의글 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="/admin/product_list.go">제품 재고 관리
+          <a class="nav-link active" th:href="@{/admin/product_list.go}">제품 재고 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="/admin/partner_list.go">파트너십 제안 관리
+          <a class="nav-link active" th:href="@{/admin/partner_list.go}">파트너십 제안 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>

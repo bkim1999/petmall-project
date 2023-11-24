@@ -58,8 +58,9 @@ public class EventController {
   
   @PostMapping("/addevent.do")
   public String addEvent(MultipartHttpServletRequest multiparRequest
-                      ,  RedirectAttributes redirectAttributes) throws  Exception{
-    eventService.addEvent(multiparRequest, redirectAttributes);
+                      ,  RedirectAttributes redirectAttributes
+                      ,  HttpServletRequest request) throws  Exception{
+    eventService.addEvent(multiparRequest, redirectAttributes, request);
     return "redirect:/event/list.do";
   }
   
