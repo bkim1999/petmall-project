@@ -38,9 +38,32 @@
         }
     </script>
     <meta charset="UTF-8">
-    <title>결제 테스트용</title>
 </head>
+
 <body>
-<button onclick="requestPay()">결제하기</button>
+	<h1> 결제 화면</h1>
+		
+<h4>결제 유저 정보</h4>
+
+<div th:if="${session.user != null}" class="text-center">    
+    <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
+    <div>구매자 이름: <span th:text="${session.user.name}"></span></div>
+    <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
+    <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
+</div>
+
+
+<hr>
+
+<h4>받는 사람 정보</h4>
+<div th:if="${session.order==1}" class="text-center">
+	<div>받는분 이름:<span th:text="${session.order.reName}"></span></div>
+	<div>받는분 휴대전화:<span th:text="${session.order.mobile}"></span></div>
+	<div>받는분 주소:<span th:text="${session.order.address}"></span></div>
+	<div>받는분 상세주소:<span th:text="${session.order.addressDetail}"></span></div>
+	<div>받는분 요청사항:<span th:text="${session.order.reText}"></span></div>
+<hr>
+
+<button onclick="requestPay()">토스 페이 결제하기</button>
 </body>
 </html>
