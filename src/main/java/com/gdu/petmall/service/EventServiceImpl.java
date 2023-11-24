@@ -106,7 +106,7 @@ public class EventServiceImpl implements EventService {
     
     // url: "http://localhost:8080/petmall/event/1/main/filesystemName.jpg"
     // sevlet-context.xml에
-    // <resources /event/** -> /product/
+    // <resources /event/** -> /event/
   }
   
   
@@ -133,7 +133,7 @@ public class EventServiceImpl implements EventService {
   
   
   @Override
-  public void addEvent(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes) throws Exception {
+  public void addEvent(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception {
     
     String title = multipartRequest.getParameter("title");
     String contents = multipartRequest.getParameter("contents");
@@ -141,6 +141,7 @@ public class EventServiceImpl implements EventService {
     String endAt = multipartRequest.getParameter("endAt");    
     int discountPercent = Integer.parseInt(multipartRequest.getParameter("discountPercent"));
     int discountPrice = Integer.parseInt(multipartRequest.getParameter("discountPrice"));
+    String contextPath = request.getContextPath();
     
     List<MultipartFile> files = multipartRequest.getFiles("files");
     
@@ -184,7 +185,7 @@ public class EventServiceImpl implements EventService {
         
         
         
-        String evntTHumnailUrl = imagePath+ "/s_" + filesystemName;
+        String evntTHumnailUrl = contextPath+imagePath+"/s_"+filesystemName;
         
         EventDto eventDto = EventDto.builder()
                                     .title(title)
