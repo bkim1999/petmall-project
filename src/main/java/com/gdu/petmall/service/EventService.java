@@ -15,7 +15,7 @@ public interface EventService {
   public void loadEventList(HttpServletRequest request, Model model);
   public EventDto loaddetailEventList(int eventNo);
   public int increaseHit(int eventNo);
-  public void addEvent(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes) throws  Exception;
+  public void addEvent(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes, HttpServletRequest request) throws  Exception;
   public Map<String, Object> eventImageUpload(MultipartHttpServletRequest multipartRequest);
   public Map<String, Object> endEvent(HttpServletRequest request);
   public Map<String, Object> startEvent(HttpServletRequest request);

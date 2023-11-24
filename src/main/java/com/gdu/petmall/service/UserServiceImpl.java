@@ -174,6 +174,10 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
   String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
   
   
+
+  
+  
+  
   
  // 이벤트 수신 동의 체크 안돼있으면 null 전달됨. null 처리 해야함
   String event = request.getParameter("event");
