@@ -172,17 +172,17 @@ $('#mobile2').val(mobile2);
 <div class="address">
 
   <div class="postcode_control">
-    <input type="text" id="postcode" name="postcode" placeholder="우편번호" th:value="${session.user.postcode}"  class="form-control postcode"  disabled>
+    <input type="text" id="postcode" name="postcode" placeholder="우편번호" th:value="${session.user.postcode}"  class="form-control postcode"  readonly>
      <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"  class="btn_postcode">
   </div>
   
-<input type="text" id="roadAddress"  name="roadAddress" placeholder="도로명주소" th:value="${session.user.roadAddress}" disabled  class="form-control" >
-<input type="text" id="jibunAddress"  name="jibunAddress" placeholder="지번주소" th:value="${session.user.jibunAddress}" disabled  class="form-control" > 
+<input type="text" id="roadAddress"  name="roadAddress" placeholder="도로명주소" th:value="${session.user.roadAddress}" readonly  class="form-control" >
+<input type="text" id="jibunAddress"  name="jibunAddress" placeholder="지번주소" th:value="${session.user.jibunAddress}" readonly  class="form-control" > 
 <span id="guide" style="color:#999;display:none"></span>
 <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" th:value="${session.user.detailAddress}"   class="form-control" >
 
 
-<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" disabled  class="form-control" >
+<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" readonly  class="form-control" >
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
