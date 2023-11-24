@@ -5,13 +5,10 @@
   
   <div th:replace="~{layout/header :: header}"></div>
   
+  <div class="main_wrap">
   <div>
     <img th:src="@{/image/PetMall_Logo.png}" width="200px">
   </div>
-  
-  
-  <div th:text="${#temporals.second(localDateTime)}"></div>
-
   
   
   <h1>메인내용</h1>
@@ -53,7 +50,7 @@
   <div> ㅎ2</div>
   <div> ㅎ2</div>
   <div> ㅎ2</div>
-  
+  </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>
