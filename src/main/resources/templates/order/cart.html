@@ -40,10 +40,11 @@
                 <span>
                   <input type="" class="totalCount" th:value="${cartProduct.count}">
                     <button type="button" class="plus_btn">+</button>
-                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.productOptionDto.optionNo}"></input>
+                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.cartDto.count}"></input>
                     <button type="button" class="minus_btn">-</button>
-                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.productOptionDto.optionNo}"></input>
+                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.cartDto.count}"></input>
                 </span>
+                <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit"  class="btn_remove">삭제</button>
               </td>
@@ -105,7 +106,7 @@
    
       $('.cart_info_td').each(function(index, e){
          if($(e).find('.cart_checkbox').is(':checked') === true){
-            totalPrice += parseInt($(e).find('.totalPrice').val());
+           totalPrice += parseInt($(e).find('.totalPrice').val());
            totalCount += parseInt($(e).find('.totalCount').val());
            totalKind += 1;
          }
@@ -140,24 +141,7 @@
 <script th:inline="javascript">
   
   const fnModifyCart = () => {
-    $(document).ready(function() {
-      $('.plus_btn, .minus_btn').click(function() {
-           var count =
-           $.ajax({
-              type: 'post',
-              url: '/order/update.do/' + '',
-              data: {'count' : count},
-              success: function (response) {
-                  if (response.message === 'success') {
-                  alert('장바구니 수량이 업데이트되었습니다.');
-                  }
-              },
-              error: function () {
-                  alert('장바구니 수량 업데이트에 실패했습니다.');
-              }
-          });
-      });
-    })
+    
   }
   
   

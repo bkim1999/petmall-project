@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.petmall.dao.CartMapper;
+import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.UserDto;
@@ -26,6 +27,9 @@ public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
   private final HttpSession session;
+  private final UserMapper userMapper;
+  
+  
   
   public void addCart(HttpServletRequest request,Model model) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
@@ -43,19 +47,32 @@ public class CartServiceImpl implements CartService {
   
   @Override
   public void getList(HttpServletRequest request, Model model) {
-   
     
-    int userNo = 2;
-    //Integer.parseInt(request.getSession().getAttribute("user").getUserNo(userNo));
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    int userNo = user.getUserNo();
+   
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
-  }
+    
+    }
   
   @Override
   public Map<String, Object> deleteCart(HttpServletRequest request){
+   
+    //    HttpSession session = request.getSession();
+    //    UserDto user = (UserDto)session.getAttribute("user");
+    //    int userNo = user.getUserNo();
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
     Optional<String> opt = Optional.ofNullable(request.getParameter("optionNo"));
     int optionNo = Integer.parseInt(opt.orElse("0"));
-    int removeResult = cartMapper.deleteCart(optionNo);
+    
+    Map<String, Object> map = Map.of("userNo", userNo ,
+                                     "optionNo", optionNo);
+        
+    int removeResult = cartMapper.deleteCart(map);
+    
     return Map.of("removeResult", removeResult);
   }
   

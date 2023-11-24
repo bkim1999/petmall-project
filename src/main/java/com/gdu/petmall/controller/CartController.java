@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.service.CartService;
 
 import lombok.RequiredArgsConstructor;
+import reactor.netty.http.server.HttpServerResponse;
 
 @RequiredArgsConstructor
 @Controller
@@ -31,7 +33,7 @@ public class CartController {
   }
   
   @GetMapping(value="/order/cart.go")
-  public String cartList(HttpServletRequest request, Model model) {
+  public String cartList(HttpServletRequest request, Model model){
     cartService.getList(request, model);
     return "/order/cart";
   }

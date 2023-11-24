@@ -78,10 +78,11 @@
         WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
    </update>
    
-   <delete id="deleteCart" parameterType="int">
+   <delete id="deleteCart" parameterType="map">
       DELETE
         FROM CART_T
        WHERE OPTION_NO = #{optionNo}
+         AND USER_NO = #{userNo}
    </delete>           
    
 </mapper>
