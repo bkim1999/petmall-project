@@ -44,24 +44,26 @@
   </select>
   
   <select id="getProductList" parameterType="Map" resultMap="ProductMap">
-     SELECT A.PRODUCT_NO, A.PRODUCT_NAME, A.PRODUCT_TITLE, A.PRODUCT_PRICE, A.PRODUCT_CREATED_AT, A.PRODUCT_SALES, A.PRODUCT_HIT, A.PRODUCT_RATING, A.PRODUCT_COUNT, A.REVIEW_COUNT, A.PATH, A.FILESYSTEM_NAME
-       FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_SALES, P.PRODUCT_HIT, P.PRODUCT_RATING
-                  , (SELECT SUM(OPTION_COUNT) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
-                  , (SELECT COUNT(*) FROM REVIEW_T R WHERE R.OPTION_NO IN (SELECT OPT.OPTION_NO FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO)) AS REVIEW_COUNT
-                  , PI.PATH, PI.FILESYSTEM_NAME
-               FROM PRODUCT_T P LEFT OUTER JOIN PRODUCT_IMAGE_T PI
-                 ON PI.IMAGE_CODE = 'product_' || P.PRODUCT_NO
-                AND PI.POSITION = 'thumbnail'
-              <where>
-                <if test="categoryNo != 0">
-                  CATEGORY_NO = #{categoryNo}
-                </if>
-                <if test="searchText != null">
-                  AND PRODUCT_NAME LIKE '%' || #{searchText} || '%'
-                </if>
-              </where>
-             ) A
-      WHERE A.RN BETWEEN #{begin} AND #{end}
+    SELECT RN, PRODUCT_NO, PRODUCT_NAME, PRODUCT_TITLE, PRODUCT_PRICE, PRODUCT_CREATED_AT, PRODUCT_SALES, PRODUCT_HIT, PRODUCT_RATING, PRODUCT_COUNT, REVIEW_COUNT, PATH, FILESYSTEM_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, A.PRODUCT_NO, A.PRODUCT_NAME, A.PRODUCT_TITLE, A.PRODUCT_PRICE, A.PRODUCT_CREATED_AT, A.PRODUCT_SALES, A.PRODUCT_HIT, A.PRODUCT_RATING, A.PRODUCT_COUNT, A.REVIEW_COUNT, A.PATH, A.FILESYSTEM_NAME
+              FROM (SELECT P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_SALES, P.PRODUCT_HIT, P.PRODUCT_RATING
+                         , (SELECT SUM(OPTION_COUNT) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
+                         , (SELECT COUNT(*) FROM REVIEW_T R WHERE R.OPTION_NO IN (SELECT OPT.OPTION_NO FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO)) AS REVIEW_COUNT
+                         , PI.PATH, PI.FILESYSTEM_NAME
+                      FROM PRODUCT_T P LEFT OUTER JOIN PRODUCT_IMAGE_T PI
+                        ON PI.IMAGE_CODE = 'product_' || P.PRODUCT_NO
+                       AND PI.POSITION = 'thumbnail'
+                     <where>
+                       <if test="categoryNo != 0">
+                         CATEGORY_NO = #{categoryNo}
+                       </if>
+                       <if test="searchText != null">
+                         AND PRODUCT_NAME LIKE '%' || #{searchText} || '%'
+                       </if>
+                     </where>
+                   ) A
+            )
+     WHERE RN BETWEEN #{begin} AND #{end}
   </select>
   
   <select id="getProduct" parameterType="int" resultType="ProductDto">

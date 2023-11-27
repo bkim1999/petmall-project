@@ -2,18 +2,60 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<style>
-.footer_wrap {
-  width: 100%;
-  height: 100%;
-  border-top: 1px solid gray;
-  text-align: center;
-  line-height: 100px;
-}
-</style>
   <div th:fragment="footer" class="footer_wrap">
-    <div> ㅎ2ㅎ2ㅎ22ㅎ2ㅎ2</div>
-    Copyright GD69 1조
+    
+    <div class="tail">
+      
+      <div class="logo_pet">
+        <img th:src="@{/image/PetMall_Logo.png}" width="200px">
+      </div>
+      
+      <div class="footer_left">
+        상호명 : "이생망"
+        <br>
+        "주소 : 서울특별시 금천구 가산디지털2로 95
+        <br>
+        (가산동, km타워) 306호 1조"
+        <br>
+        "고객센터 번호 : 8282-8282"
+        <br>
+      </div>
+      
+      <div class="footer_right">
+        <ul class="footer_right_ul">
+          <li class="right_top">POLICY</li>
+          <li>
+            <a th:href="@{/policy/agreement.do}">이용약관</a>
+          </li>
+          <li>
+            <a th:href="@{/policy/privacy.do}">개인정보처리방침</a>
+          </li>
+          <li>
+            <a href="/policy/shopinfo.do">이용안내</a>
+          </li>
+          <li>
+            <a href="/policy/return.do">반품, 환불규정</a>
+          </li>
+          <li>
+            <a th:href="@{/inquiry/list.do}">제휴 입점문의</a>
+          </li>
+        </ul>
+        
+        <ul class="footer_right_ul">
+          <li class="right_top">C/S CENTER</li>
+          <li class="right_top_li">
+            <br>
+            "MON-FRI Ⅰ 09:30 ~ 17:00"
+            <br>
+            "LUNCH Ⅰ 12:30 ~ 13:30"
+            <br>
+            "SAT,SUN,HOLIDAY OFF"
+          </li>
+        </ul>
+      </div>    
+    </div>
+    
+    <div class="copy">Copyright GD69 1조</div>
   </div>
 </body>
 </html>

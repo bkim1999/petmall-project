@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  
+<head th:replace="~{/layout/header::head('관리자전용 Q&A게시판')}"></head>
+
+<style>
+  .change_wrap {
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 60px;    
+  } 
+  .change_wrap {
+    margin-top: 70px;
+    text-align: center;
+  }
+  .change_info_wrap li {
+    display: flex;
+    justify-content: center; 
+    text-align: left;   
+  }
+  .change_info_wrap ul {} 
+  
+</style>
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+  
+  <div class="change_wrap">
+    
+  <ul><h2><strong>교환/반품안내</strong></h2></ul>
+  <br>
+  <div><strong>반품/환불규정 안내</strong></div>
+  <br>
+  <hr>
+  <br>  
+    <div class="change_info_wrap">
+      <ul><h4>단순 변심일 경우</h4>
+       <li>상품 수령일로부터 7일 이내 교환/반품이 가능하며 왕복 택배비는 고객 부담입니다.
+       <br>
+       반품 시 제품 및 사은품은 모두 반품해주셔야 하며 상품에 
+       <br>
+       손상이 있는 경우 교환/반품이 어려울 수 있습니다.
+       </li>
+       <br>
+      </ul>
+    
+      <ul><h4>상품 불량/오배송의 경우</h4>
+       <li>상품 수령일로부터 7일 이내 교환/반품이 가능하며, 택배비는 "이생망"이 부담합니다.
+       <br>
+       *단, 상품 불량을 입증할 수 있는 사진/동영상 첨부 필수
+       </li>
+       <br>
+      </ul>
+    
+      <ul><h4>반품/환불이 되지 않는 경우</h4>
+       <li>포장을 개봉하여 사용하거나 상품의 가치가 훼손된 경우(포장용기 포함)제품 출고 후 
+       <br>
+       일정 기간이 만료된 상품에 대한 반품/환불은 불가능
+       </li>
+       <br>
+      </ul>
+    
+      <ul><h4>교환/환불은 동일 제품 1회에 제한함</h4>
+       <li>인터넷 사이버몰 이용 표준 약관 제 15조 환급, 반품 및 교환 규정에 의거하여 구매 후  
+       <br>
+       20일 이내여야만 위 규정을 적용받으실 수 있습니다.
+       <br>
+       </li>
+       <br>
+      </ul>
+    
+      <ul><h4>주문 취소</h4>
+       <li>
+       주문 취소는 상품 준비중과 입금전에만 가능하며 1:1 문의를 통하여  글을 작성해주시면
+       <br>
+       상세한 안내를 도와드리겠습니다.
+       <br>
+       </li>
+       <br>
+      </ul>
+    </div>
+      
+   </div>
+   <div th:replace="~{/layout/footer::footer}"></div>
+   
+</body>
+</html>
