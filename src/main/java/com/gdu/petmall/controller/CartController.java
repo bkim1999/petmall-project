@@ -1,23 +1,18 @@
 package com.gdu.petmall.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.service.CartService;
 
 import lombok.RequiredArgsConstructor;
-import reactor.netty.http.server.HttpServerResponse;
 
 @RequiredArgsConstructor
 @Controller
@@ -51,14 +46,18 @@ public class CartController {
   }
   
   @ResponseBody
-  @PostMapping(value="/order/update.do", produces="application/json")
-  public String updateCart(HttpServletRequest request) {
-    cartService.modifyCart(request);
-    return "/order/cart";
+  @PostMapping(value="/order/minusupdate.do", produces="application/json")
+  public Map<String, Object> minusUpdateCart(HttpServletRequest request) {
+    return cartService.minusCart(request);
     
   }
 
-
+  @ResponseBody
+  @PostMapping(value="/order/plusupdate.do", produces="application/json")
+  public Map<String, Object> plusUupdateCart(HttpServletRequest request) {
+    return cartService.plusCart(request);
+    
+  }
 
 
 }

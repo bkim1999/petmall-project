@@ -72,9 +72,9 @@
       )
    </insert>
    
-   <update id="updateCart" parameterType="int">
+   <update id="updateCart" parameterType="map">
       UPDATE CART_T
-        SET COUNT = #{count}
+        SET COUNT = #{count}  
         WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
    </update>
    

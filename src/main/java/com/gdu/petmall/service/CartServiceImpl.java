@@ -1,6 +1,5 @@
 package com.gdu.petmall.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.petmall.dao.CartMapper;
-import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.UserDto;
@@ -26,10 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
-  private final HttpSession session;
-  private final UserMapper userMapper;
-  
-  
   
   public void addCart(HttpServletRequest request,Model model) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
@@ -77,24 +71,42 @@ public class CartServiceImpl implements CartService {
   }
   
   @Override
-  public Map<String, Object> modifyCart(HttpServletRequest request) {
+  public Map<String, Object> minusCart(HttpServletRequest request) {
     
-    int count = Integer.parseInt(request.getParameter("count"));
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));
+    int count = Integer.parseInt(request.getParameter("count"));
     
-    Map<String, Object> map = new HashMap<>();
-    map.put("count", count);
-    System.out.println(count);
-    map.put("optionNo", optionNo);
-    map.put("userNo", userNo);
-    return map;
+    count = count - 1;
+    
+    Map<String, Object> map = Map.of("userNo", userNo ,
+                                    "optionNo", optionNo,
+                                       "count", count);
+    
+    int minusResult = cartMapper.updateCart(map);
+    
+    return Map.of("minusResult", minusResult);
   }
+  
+  @Override
+  public Map<String, Object> plusCart(HttpServletRequest request) {
     
+    int optionNo = Integer.parseInt(request.getParameter("optionNo"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    int count = Integer.parseInt(request.getParameter("count"));
+    
+    count = count + 1;
+    
+    Map<String, Object> map = Map.of("userNo", userNo ,
+                                    "optionNo", optionNo,
+                                       "count", count);
+    
+    int plusResult = cartMapper.updateCart(map);
+    
+    return Map.of("plusResult", plusResult);
+  }
+
+
+
+
 }
-
-  
-  
-  
-
- 

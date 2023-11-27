@@ -3,6 +3,15 @@
 
 <head th:replace="~{/layout/header::head('cart')}"></head>
 
+<style>
+  .img_line1 {
+    
+  }
+  .img_line2 {
+    
+  }
+  
+</style>
 
 <body>
 
@@ -22,28 +31,34 @@
       <table border="1" class="b">
         <thead>
           <tr>
-            <th>이미지 / 상품명 / 판매가 /수량 /적립금 /배송 /상품합계 </th>
+            <th class="img_line1">이미지</th>
+            <th class="img_line2">상품명</th>
+            <th class="img_line">판매가</th>
+            <th class="img_line">수량</th>
+            <th class="img_line">적립금</th>
+            <th class="img_line">배송</th>
+            <th class="img_line">상품합계</th>
           </tr>
         </thead>
         <tbody>
         <caption>장바구니</caption>
-          <th:block th:each="cartProduct:${cartList}">
+          <th:block th:each="cartProduct:${cartList}"> 
             <tr class="a">
               <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <input type="" class="image" th:value="이미지">
-                <input type="" class="pr_Name" th:value="${cartProduct.productDto.productName}">
-                <input type="" class="totalPrice" th:value="${cartProduct.productDto.productPrice}">
-                <input type="" class="deliveryPrice" th:value="3000원">
-                <input type="" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}">
-                <input type="" class="" th:value="적립금">
-                <span>
-                  <input type="" class="totalCount" th:value="${cartProduct.count}">
-                    <button type="button" class="plus_btn">+</button>
-                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.cartDto.count}"></input>
-                    <button type="button" class="minus_btn">-</button>
-                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.cartDto.count}"></input>
-                </span>
+                <input type="image" class="image" th:value="이미지">
+                <input type="text" class="pr_Name" th:value="${cartProduct.productDto.productName}" readonly>
+                <input type="text" class="pr_Price" th:value="${cartProduct.productDto.productPrice}"readonly>
+                <input type="text" class="deliveryPrice" th:value="3000원"readonly>
+                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}" readonly>
+                <input type="text" class="" th:value="적립금">
+                  <span id="count_span">
+                    <input type="" class="totalCount" th:value="${cartProduct.count}" readonly>
+                    <button type="button" class="plus_btn" th:value="${cartProduct.count}">+</button>
+                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                    <button type="button" class="minus_btn" th:value="${cartProduct.count}">-</button>
+                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                  </span>
                 <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit"  class="btn_remove">삭제</button>
@@ -56,27 +71,30 @@
       
   <hr>
     
+    
     <div>
-      <table border="1">
-        <thead>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="totalPrice_span"></span></td>
-            <td><span class="totalCount_span"></span></td>
-            <td><span class="delivery_price" ></span></td>
-            <td><span class="finalTotalPrice_span"></span></td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
-        <a th:href="@{/order/detail.do}">
-          <button type="button">구매</button>
-        </a>
-        <a th:href="@{/product/list.do}">
-          <button type="button">리스트로 돌아가기</button>
-        </a>
-    </div>
+      <form id="frm_order">
+        <table border="1">
+          <thead>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="totalPrice_span"></span></td> 
+              <td><span class="totalCount_span"></span></td>
+              <td><span class="delivery_price"></span></td>
+              <td><span class="finalTotalPrice_span"></span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <a th:href="@{/order/order.do}">
+            <button type="button">구매</button>
+          </a>
+          <a th:href="@{/product/list.do}">
+            <button type="button">리스트로 돌아가기</button>
+          </a>
+      </div>
+    </form>
    </div>
     
     
@@ -97,17 +115,20 @@
    
    function setTotalInfo(){
       
-      var totalPrice = 0;            // 총 가격
-      var totalCount = 0;            // 총 갯수
-      var totalKind = 0;             // 총 종류
-      var totalPoint = 0;            // 총 마일리지
-      var deliveryPrice = 0;         // 배송비
+      var totalPrice = 0;                                        // 상품 가격
+      var totalCount = 0;                                        // 총 갯수
+      var totalKind = 0;                                         // 총 종류
+      var totalPoint = 0;                                        // 총 마일리지
+      var deliveryPrice = 0;                                     // 배송비
       var finalTotalPrice = 0;  
-   
-      $('.cart_info_td').each(function(index, e){
+      
+    
+    $('.cart_info_td').each(function(index, e){
          if($(e).find('.cart_checkbox').is(':checked') === true){
-           totalPrice += parseInt($(e).find('.totalPrice').val());
+           totalPrice += parseInt($(e).find('.finaltotalprice').val());
+           console.log(JSON.stringify(totalPrice));
            totalCount += parseInt($(e).find('.totalCount').val());
+           console.log(JSON.stringify(totalCount));
            totalKind += 1;
          }
            
@@ -120,7 +141,6 @@
       } else {
          deliveryPrice = 3000;   
       }
-   
       
       finalTotalPrice = totalPrice + deliveryPrice;
       // 총가격
@@ -133,16 +153,56 @@
       $(".delivery_price").text(deliveryPrice);   
       // 최종 가격(총 가격 + 배송비)
       $(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());
+   
+      
    }
    });
 
 </script>
 
 <script th:inline="javascript">
+          
+  const fnMinusCount = () => {
+    $(document).on('click', '.minus_btn', function(ev){
+      var count = $(this).next().val();
+      console.log(count);
+      if(count == '1'){
+        alert('상품을 더이상 줄일수 없습니다.');
+        return;
+      }
+        $.ajax({
+           type: 'post',
+           url: '/order/minusupdate.do',
+           data:$('#frm_btn').serialize(),
+           dataType: 'json',
+           success: (resData) => {
+             location.reload();
+             setTotalInfo();
+           }
+        });
+     });
+   }
   
-  const fnModifyCart = () => {
-    
+  const fnPlusCount = () => {
+    $(document).on('click', '.plus_btn', function(ev){
+        var count = $(this).next().val();
+        if(count == '100'){
+          alert('상품을 더 담을수 없습니다.')
+          return;
+        }
+          $.ajax({
+          type: 'post',
+          url: '/order/plusupdate.do',
+          data:$('#frm_btn').serialize(),
+          dataType: 'json',
+          success: (resData) => {
+            location.reload();
+            setTotalInfo();
+           }
+        });
+    });
   }
+  
   
   
   const fnDeleteCart = () => {
@@ -169,9 +229,9 @@
      }
      
        
-  fnModifyCart();  
+  fnPlusCount();
   fnDeleteCart();
- 
+  fnMinusCount();
 </script>
 
 
