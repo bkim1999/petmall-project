@@ -18,4 +18,7 @@ public class PayController {
     public String list() {
         return "pay/payment"; 
     }
+ 
+    
+    
 }

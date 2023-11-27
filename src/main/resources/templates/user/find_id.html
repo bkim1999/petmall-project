@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/header::head('아이디 찾기')}"></head>
+<<<<<<< HEAD
 
 <style>
   
   
 </style>
 
+=======
 
-<div>
-<h1>아이디 찾기</h1>
+<style>
+#id_wrap{margin:0 auto; width:290px;}
+.btn{margin-top:10px; width: 290px;}
+ .h1_center{text-align: center;}
+</style>
+>>>>>>> master
+
+<body>
+  <div th:replace="~{layout/header::header}"></div>
+  
+<div id="id_wrap">
+<h1 class="h1_center">아이디 찾기</h1>
 
 
 <form  id="frm_find_id">
   <div>
-    <label for="name" >이름</label>
-    <input type="text"  id="name" name="name">
+  <div><label for="name" >이름</label></div>
+    <input type="text"  id="name" name="name" class="form-control">
   </div>
   
   <div>
-       <label for="mobile" >휴대폰 번호</label>
-    <input type="text"  id="mobile" name="mobile">
+    <div><label for="mobile" >휴대폰 번호</label></div>
+    <input type="text"  id="mobile" name="mobile" class="form-control" placeholder="(-)하이픈,공백 없이입력">
   </div>
   
   <div>
-    <button type="button" id="btn_find_id">아이디 찾기</button>
+    <button type="button" id="btn_find_id" class="btn btn-lg btn-primary">아이디 찾기</button>
    
   </div>
   

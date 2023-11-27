@@ -1,7 +1,11 @@
 
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<<<<<<< HEAD
 <head th:replace="~{layout/header::head('아이디 찾기')}"></head>
+=======
+<head th:replace="~{layout/header::head('비밀번호 변경')}"></head>
+>>>>>>> master
 <style>
 
 
@@ -9,9 +13,20 @@
 .pw_change_wrap{margin-top: 20px;}
 #search_area{ width: 500px;margin:0 auto; text-align: center;}
 
+<<<<<<< HEAD
 /*입력 폼 조정*/
 .form-control{width: 50%;display: inline; margin-top: 10px;}
 
+=======
+#frm_pw{width: 850px; margin:0 auto; text-align: center;}
+
+/*입력 폼 조정*/
+.form-control{width: 50%;display: inline; margin-top: 10px;}
+
+/*msg조정*/
+.msg{font-size: small;}
+
+>>>>>>> master
 /*버튼 조정*/
 #btn_change_pw{width: 450px; margin-top: 10px;}/*비번변경버튼*/
 .btn_reg{width:40%; margin-left: 5px; height: 50px;}/*인증 관련 버튼 */
@@ -26,12 +41,16 @@
 
 
 <div id="search_area">
-<h1>비밀번호 분실</h1>
+<h1>비밀번호 변경</h1>
 <form  id="frm_change_pw" >
   <div>
     <input type="text"  id="email" name="email" placeholder="이메일 입력" class="form-control">
     <button type="button" id="btn_get_code"  class="btn btn-lg btn-primary btn_reg">인증코드받기</button>
+<<<<<<< HEAD
      <div id="msg_email"></div>
+=======
+     <div id="msg_email" class="msg"></div>
+>>>>>>> master
   </div>
   
   <!-- 이메일인증  -->
@@ -168,18 +187,22 @@ const fnChangePw=()=>{
 					
 					
 					//새 비번 설정 폼 보여주기
+<<<<<<< HEAD
 					str+='<h1>비밀번호 변경</h1>'
 					str+=' <form th:action="@{/user/modify_pw.do}" method="post" id="frm_pw">';	
+=======
+					
+					str+=' <form action="/user/modify_pw.do" method="post" id="frm_pw">';	
+          str+='<h1>비밀번호 변경</h1>'
+>>>>>>> master
 					str+='   <div>';	
-					str+='     <input type="password" id="pw" name="pw" placeholder="새 비밀번호">  ';
-					str+='     <div id="msg_pw"></div>'; 
-					str+='   </div>';	
+					str+='     <input type="password" id="pw" name="pw"   placeholder="새 비밀번호"  class="form-control">  ';
+					str+='     <div id="msg_pw"  class="msg"></div>'; 
 					str+='   <div>';	
-					str+='     <input type="password" id="pw2" placeholder="새 비밀번호 확인">';	
-					str+='     <div id="msg_pw2"></div>'; 
-					str+='   </div>';	
+					str+='     <input type="password" id="pw2" placeholder="새 비밀번호 확인" class="form-control">';	
+					str+='     <div id="msg_pw2"  class="msg"></div>'; 
 					str+=' <input type="hidden" id="valid_email" name="valid_email" value="'+$('#email').val()+'">'
-					str+='  <button  id="btn_submit_pw">변경적용</button>';	
+					str+=' <button  id="btn_submit_pw"  class="btn btn-lg btn-primary">변경적용 </button>';	
 					str+=' </form>';	
 					
 					pw_area.append(str);
@@ -237,8 +260,8 @@ const fnChangePw=()=>{
 
 /*************************비번변경폼 제츨****************************/	
 const fnSubmitPw=()=>{
-	$(document).on('click','#btn_submit_pw',(ev)=>{
-		
+	$(document).on('submit','#frm_pw',(ev)=>{
+		alert($(ev.target).prop('action'));
 		if(!pwPassed || !pw2Passed){
       		alert('비밀번호를 확인하세요.');
       				ev.preventDefault();
