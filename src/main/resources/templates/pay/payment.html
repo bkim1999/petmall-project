@@ -7,63 +7,78 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
   <!-- iamport.payment.js -->
   <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-	<script>
-	    var IMP = window.IMP;
-		IMP.init('imp75336553');
-	
-	    function requestPay() {
-	        IMP.request_pay(
-	            {
-	                pg: "tosspay",
-	                pay_method: "card",
-	                merchant_uid: "57008833-33004",
-	                name: "테스트 상점",
-	                amount: 1004,
-	                buyer_email: 'test@naver.com',
-	                buyer_name: '코드쿡',
-	                buyer_tel: '010-8551-8106',
-	                buyer_addr: '서울특별시',
-	                buyer_postcode: '123-456',
-	            },
-	            function (rsp) {
-	            $.ajax({
-	                type: 'POST',
-	                url: '/verifyIamport/' + rsp.imp_uid
-	            }).done(function(data) {
-	                if(rsp.paid_amount === data.response.amount){
-	                    alert("결제 성공");
-	                } else {
-	                    alert("결제 실패");
-	                }
-	            });
-	        });
-	    }
-	</script>
-	<div th:replace="~{/layout/header::header}"></div>
-	<h1> 결제 화면</h1>
-		
+   <script>
+       var IMP = window.IMP;
+      IMP.init('imp75336553');
+   
+       function requestPay() {
+           IMP.request_pay(
+               {
+                   pg: "tosspay",
+                   pay_method: "card",
+                   merchant_uid: "57008833-33004",
+                   name: "테스트 상점",
+                   amount: 1004,
+                   buyer_email: 'test@naver.com',
+                   buyer_name: '코드쿡',
+                   buyer_tel: '010-8551-8106',
+                   buyer_addr: '서울특별시',
+                   buyer_postcode: '123-456',
+               },
+               function (rsp) {
+               $.ajax({
+                   type: 'POST',
+                   url: '/verifyIamport/' + rsp.imp_uid
+               }).done(function(data) {
+                   if(rsp.paid_amount === data.response.amount){
+                       alert("결제 성공");
+                   } else {
+                       alert("결제 실패");
+                   }
+               });
+           });
+       }
+   </script>
+   <div th:replace="~{/layout/header::header}"></div>
+   <h1> 결제 화면</h1>
+      
 <h4>결제하는 유저 정보</h4>
 
-<div th:if="${session.user != null}" class="text-center">    
-    <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
-    <div>구매자 이름: <span th:text="${session.user.name}"></span></div>
-    <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
-    <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
-</div>
+   <div th:if="${session.user != null}" class="text-center">    
+       <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
+       <div>구매자 이름: <span th:text="${session.user.name}"></span></div>
+       <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
+       <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
+   </div>
 
 
 <hr>
 
 <h4>받는 사람 정보</h4>
+<p>작성 정보와 일치한지 확인해주세요</p>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>받는분 이름:</th>
+                <th>받는분 휴대전화:</th>
+                <th>받는분 주소:</th>
+                <th>받는분 상세주소:</th>
+                <th>받는분 요청사항:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="pay: ${orderPay}">
+                <td th:text="${pay.reName}"></td>
+                <td th:text="${pay.reTel}"></td>
+                <td th:text="${pay.address}"></td>
+                <td th:text="${pay.addressDetail}"></td>
+                <td th:text="${pay.reText}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<div th:if="${session.order != null and session.order.orderNo == 1}" class="text-center">
-        <div>받는분 이름: <span th:text="${session.order.reName}"></span></div>
-        <div>받는분 휴대전화: <span th:text="${session.order.mobile}"></span></div>
-        <div>받는분 주소: <span th:text="${session.order.address}"></span></div>
-        <div>받는분 상세주소: <span th:text="${session.order.addressDetail}"></span></div>
-        <div>받는분 요청사항: <span th:text="${session.order.reText}"></span></div>
-    </div>
-    <hr>
 
 <button onclick="requestPay()">토스 페이 결제하기</button>
 
