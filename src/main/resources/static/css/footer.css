@@ -3,12 +3,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
 
+
+ .footer_wrap a {
+   color: #fff;
+   border-bottom: #E0C891;
+ }
+
  .footer_wrap {
   width: 100%;
-  height: 100%;
+  height: 210px;
   text-align: center;
-  line-height: 50px;
-  margin-top: 50px;
+  line-height: 215px;
   background-color: #E0C891;
   color: #fff;
+  position: relative;
+  box-sizing: border-box;
 }
+ .tail {
+   position: relative;
+   max-width: 1800px;
+   margin: 0 auto;
+   text-align: left;
+ }
+ .logo_pet {
+   padding-bottom: 15px;
+   position: relative;
+   float: left;
+   width: 20%;
+   padding-left: 30PX;
+ }
+ .footer_left{
+   margin :  0 0 20 0;
+   font-size: 15px;
+   font-weight: 600;
+   padding-top: 18px;
+   line-height: 3;
+   letter-spacing: 1.5px;
+   position: relative;
+   float: left;
+   width: 30%;
+ }
+ 
+ .footer_right{
+   position: relative;
+   float: left;
+   top: 5px;
+   right: 0;
+   letter-spacing: 1.5px;
+ }
+ .footer_right_ul{
+   display: inline-block;
+   vertical-align: top;
+   font-weight: 200;
+   padding: 0 20px;
+ }
+ 
+ .right_top {
+   display: flex;
+   font-weight: 600;
+   font-size: 15px;
+   margin-bottom: 10px;
+   margin-top: 10px;
+ }
+ .footer_right_ul li{
+   display: flex;
+   line-height: 1.8em;
+   margin-right: 50px;
+ }
+ .copy{
+  display: flex;
+  position: relative;
+  margin-left: 50px;
+  padding-left: 10px;
+  font-weight: 600;
+ }
+ a {
+  text-decoration: none;   
+ }

@@ -178,7 +178,7 @@ public class EventServiceImpl implements EventService {
           File thumbnail = new File(dir, "s_" + filesystemName); // small 이미지를 의미하는 s_을 덧붙임.
           //섬네일레이터(디펜던시)의 활용!
           Thumbnails.of(file)
-                    .size(880, 235)      // 가로 880px, 세로 235px
+                    .size(800, 235)      // 가로 1621px, 세로 235px
                     .toFile(thumbnail);  
           
         }
