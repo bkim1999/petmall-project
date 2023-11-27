@@ -172,6 +172,7 @@
       , PW_MODIFIED_AT
       , JOINED_AT
       ,ADMIN_AUTHOR_STATE
+      ,POINT
     ) VALUES (
         USER_SEQ.NEXTVAL
       , #{email}
@@ -180,8 +181,9 @@
       , #{mobile}
       , #{agree}
       , 1
-      , SYSDATE
-      , SYSDATE
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      , 0
       , 0
     )
   </insert>

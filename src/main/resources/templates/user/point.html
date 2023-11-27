@@ -14,7 +14,9 @@
 <h1>POINT</h1>
 <!--마이페이지 네비게이션-->
 <div th:replace="~{user/mypage_nav::mypage_nav}"></div>
-
+<div>
+   <div>  <span th:text="| ${session.user.name} 님|"></span></div>
+</div>
 <!-- 본문  -->
 <div class="point_wrap">
 

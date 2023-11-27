@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header :: head('상품 추가')}"></head>
+<style>
+  .ck.ck-editor {
+    max-width: 1000px;
+  }
+  .ck-editor__editable {
+    min-height: 400px;
+  }
+  .ck-content {
+    color: gray;
+  }
+  h1 {
+    margin: 100px 0 50px 0;
+    text-align:center;
+  }
+  #wrapper {
+    width: 1000px;
+    margin: 0px auto;
+  }
+  .ck-editor.is-valid {
+    border: solid 2px green;
+  }
+  .ck-editor.is-invalid {
+    border: solid 2px red;
+  }
+</style>
+
+<body>
+  <div th:replace="~{layout/header :: header}"></div>
+  <div id="wrapper">
+    <form id="frm_add_product" method="post" th:action="@{/product/addProduct.do}" enctype="multipart/form-data">
+      <h1>상품 정보</h1>
+      <div class="form-group">
+        <label for="category_select" class="form-label mt-4">카테고리 선택</label>
+        <select class="form-select not-empty" id="categoryNo" name="categoryNo">
+          <option value="">--선택 안함--</option>
+          <th:block th:each="category : ${categoryList}">
+            <option th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
+          </th:block>
+        </select>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="productName" class="form-label mt-4">상품이름</label>
+        <input type="text" class="form-control not-empty" name="productName" id="productName" aria-describedby="productNameHelp" placeholder="상품이름 입력">
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="productTitle" class="form-label mt-4">상품제목</label>
+        <input type="text" class="form-control not-empty" name="productTitle" id="productTitle">
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="productDescription" class="form-label mt-4">상품설명</label>
+        <textarea class="form-control not-empty" name="productDescription" id="productDescription" style="height: 150px;"></textarea>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="productSize" class="form-label mt-4">상품규격</label>
+        <textarea type="text" class="form-control not-empty" name="productSize" id="productSize" style="height: 150px;"></textarea>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="productWarning" class="form-label mt-4">상품경고</label>
+        <textarea type="text" class="form-control not-empty" name="productWarning" id="productWarning" style="height: 150px;"></textarea>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group mt-3">
+        <label for="files" class="form-label mt-4">썸네일</label>
+        <input type="file" class="form-control not-empty" name="thumbnail" id="thumbnail">
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group mt-3">
+        <label for="files" class="form-label mt-4">상품사진</label>
+        <input type="file" class="form-control not-empty" name="product_images" id="product_images" multiple>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div>
+        <label for="productContents" class="form-label mt-4">상품내용</label>
+        <textarea id="productContents" name="productContents"></textarea>
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="mb-5">
+        <label for="productWarning" class="form-label mt-4">상품가격</label>
+        <div class="input-group mb-3">
+          <span class="input-group-text">\</span>
+          <input type="text" name="productPrice" id="productPrice" class="not-empty only-number form-control">
+          <span class="input-group-text">원</span>
+          <div class="invalid-feedback"></div>
+        </div>
+      </div>
+      
+      <div id="option_wrapper">
+        <hr>
+        <h1>옵션 정보</h1>
+        <div id="option_list">
+          
+         <div class="option">
+           <div class="form-group">
+             <label class="form-label mt-4" for="productOptionList[0].optionName">옵션명</label>
+             <input type="text" name="productOptionList[0].optionName" id="productOptionList[0].optionName" class="not-empty form-control">
+             <div class="invalid-feedback"></div>
+           </div>
+           <div class="form-group">
+             <label class="form-label mt-4" for="productOptionList[0].addPrice">추가금액</label>
+             <div class="input-group mb-3">
+               <span class="input-group-text">\</span>
+               <input type="text" name="productOptionList[0].addPrice" id="productOptionList[0].addPrice" class="not-empty only-number form-control">
+               <span class="input-group-text">원</span>
+               <div class="invalid-feedback"></div>
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="form-label mt-4" for="productOptionList[0].optionCount">재고</label>
+             <div class="input-group mb-3">
+               <input type="text" name="productOptionList[0].optionCount" id="productOptionList[0].optionCount" class="not-empty only-number form-control">
+               <span class="input-group-text">개</span>
+               <div class="invalid-feedback"></div>
+             </div>
+           </div>
+         </div>
+        <button type="submit" class="btn btn-secondary mt-4" id="btn_add_option">옵션 추가</button>
+      </div>
+      <div class="d-grid gap-2 mt-5">
+        <button type="button" id="btn_add_product" class="btn btn-lg btn-primary">상품 등록</button>
+      </div>
+    </form>
+  </div>
+  
+  <div th:replace="~{layout/footer :: footer}"></div>
+
+</body>
+
+
+<script>
+  var editor;
+  const fnCkeditor = () => {
+    ClassicEditor
+      .create(document.getElementById('productContents'), {
+        toolbar: {
+          items: [
+            'undo', 'redo',
+            '|', 'uploadImage'
+          ],
+          shouldNotGroupWhenFull: false
+       },
+       ckfinder: {
+         // 이미지 업로드 경로
+         uploadUrl: '/product/imageUpload.do',
+       }
+     })
+     .then(newEditor => {
+       editor = newEditor;
+     })
+     .catch(err => {
+       console.log(err)
+     });
+  }
+  
+  const fnCheckInput = () => {
+    $(document).on('keyup', '.ck-editor__editable', function(){
+      var ckeditor = $('.ck-editor');
+      if($.trim($(this).text()) === ''){
+        if(!ckeditor.hasClass('is-invalid')){
+          ckeditor.removeClass('is-valid');
+          ckeditor.addClass('is-invalid');
+          ckeditor.siblings('.invalid-feedback').text('필수 입력 항목입니다.');
+        }
+      } else {
+        if(!ckeditor.hasClass('is-valid')){
+          ckeditor.removeClass('is-invalid');
+          ckeditor.addClass('is-valid');
+        }
+      }
+    });
+    $(document).on('keyup', '.not-empty', function(){
+      if($.trim($(this).val()) === ''){
+        if(!$(this).hasClass('is-invalid')){
+          $(this).removeClass('is-valid');
+          $(this).addClass('is-invalid');
+          $(this).siblings('.invalid-feedback').text('필수 입력 항목입니다.');
+        }
+      } else {
+        if(!$(this).hasClass('is-valid')){
+          $(this).removeClass('is-invalid');
+          $(this).addClass('is-valid');
+        }
+      }
+    });
+    $(document).on('keyup', '.only-number', function(){
+      if(!/^[0-9]+$/.test($(this).val())){
+        console.log('ddd')
+        if(!$(this).hasClass('is-invalid')){
+          containsNonNumber = true;
+          $(this).removeClass('is-valid');
+          $(this).addClass('is-invalid');
+          $(this).siblings('.invalid-feedback').text('숫자만 입력할 수 있습니다.'); 
+          $(this).val('');
+        }
+      } else {
+        if(!$(this).hasClass('is-valid')){
+          $(this).removeClass('is-invalid');
+          $(this).addClass('is-valid');
+        }
+      }
+    });
+  }
+  
+  const fnCheckRequired = () => {
+	  $(document).on('click', '#btn_add_product', function(){
+      let isEmptyInput = false;
+      var ckeditor = $('.ck-editor');
+      if($.trim($('.ck-editor__editable').text()) === ''){
+        if(!ckeditor.hasClass('is-invalid')){
+          isEmptyInput = true;
+          ckeditor.removeClass('is-valid');
+          ckeditor.addClass('is-invalid');
+          ckeditor.siblings('.invalid-feedback').text('필수 입력 항목입니다.');
+        }
+      } else {
+        if(!ckeditor.hasClass('is-valid')){
+          ckeditor.removeClass('is-invalid');
+          ckeditor.addClass('is-valid');
+        }
+      }
+	    $.each($('.not-empty'), (i, input) => {
+        if($.trim($(input).val()) === ''){ // 입력칸이 공백일 경우
+          if(!$(input).hasClass('is-invalid')){
+            isEmptyInput = true;
+            $(input).removeClass('is-valid');
+            $(input).addClass('is-invalid');
+            $(input).siblings('.invalid-feedback').text('필수 입력 항목입니다.'); 
+          }
+        } else {
+          if(!$(input).hasClass('is-valid')){
+            $(input).removeClass('is-invalid');
+            $(input).addClass('is-valid');
+          }
+        }
+	    });
+	    if(isEmptyInput === true){ // 공백인 입력칸이 있을 경우 submit 안함
+        return;
+      }
+      let containsNonNumber = false;
+	    $.each($('.number_input'), (i, input) => {
+        if(!/^[0-9]+$/.test($('.only-number').val())){
+          if(!$(input).hasClass('is-invalid')){
+            containsNonNumber = true;
+            $(input).removeClass('is-valid');
+            $(input).addClass('is-invalid');
+            $(input).siblings('.invalid-feedback').text('숫자만 입력할 수 있습니다.'); 
+            $(input).val('');
+          }
+        } else {
+          if(!$(input).hasClass('is-valid')){
+            $(input).removeClass('is-invalid');
+            $(input).addClass('is-valid');
+          }
+        }
+      });
+      
+      // 첨부파일 목록
+      let isNonImage = false;
+	    var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
+	    for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
+  	    let filetype = files[i].type;
+        let input = (i === 0) ? $('#thumbnail') : $('#product_images');
+  	    if(filetype.substring(0, filetype.indexOf('/')) !== 'image'){
+  	    	if(!input.hasClass('is-invalid')){
+            isNonImage = true;
+            input.removeClass('is-valid');
+            input.addClass('is-invalid');
+            input.siblings('.invalid-feedback').text('이미지 파일만 첨부할 수 있습니다.'); 
+          }
+        } else {
+          if(!input.hasClass('is-valid')){
+            input.removeClass('is-invalid');
+            input.addClass('is-valid');
+          }
+	      }
+	    }
+      if(containsNonNumber === true){ // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우 submit 안함
+        return;
+      }
+	    if(isNonImage === true){ // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우 submit 안함
+        return;
+      }
+      console.log('서브밋 끝: ' + $(this).parents('form').html());
+	    $(this).parents('form').submit();
+	  });
+  }
+  
+  const fnFileCheck = () => {
+    $('#thumbnail, #product_images').change((ev) => {
+      let maxSize = 1024 * 1024 * 100;
+      let maxSizePerFile = 1024 * 1024 * 10;
+      let totalSize = 0;
+      let files = ev.target.files;
+      for(let i = 0; i < files.length; i++){
+        totalSize += files[i].size;
+        if(files[i].size > maxSizePerFile){
+          alert('각 첨부파일의 최대 크기는 10MB입니다.');
+          $(ev.target).val('');
+          return;
+        }
+      }
+      if(totalSize > maxSize){
+        alert('전체 첨부파일의 최대 크기는 100MB입니다.');
+        $(ev.target).val('');
+        return;
+      }
+    });
+  }
+  
+  let optionCount = 1;
+  
+  const fnAddOption = () => {
+	  $('#btn_add_option').click((ev) => {
+      let str = '';
+      if(optionCount === 5){
+        str += '<div class="alert alert-dismissible alert-danger mt-5">';
+        str += '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+        str += '옵션은 최대 5개입니다.</div>';
+        $('#option_list').append(str);
+        return;
+      }
+		  str += '<div class="option">';
+		  str += '  <div class="form-group">';
+		  str += '    <label class="form-label mt-4" for="productOptionList[' + optionCount + '].optionName">옵션명</label>';
+			str += '    <input type="text" name="productOptionList[' + optionCount + '].optionName" id="productOptionList[' + optionCount + '].optionName" class="not-empty form-control">';
+			str += '    <div class="invalid-feedback"></div>';
+			str += '  </div>';
+      str += '  <div class="form-group">';
+      str += '    <label class="form-label mt-4" for="productOptionList[' + optionCount + '].addPrice">추가금액</label>';
+      str += '    <div class="input-group mb-3">';
+      str += '      <span class="input-group-text">\\</span>';
+      str += '      <input type="text" name="productOptionList[' + optionCount + '].addPrice" id="productOptionList[' + optionCount + '].addPrice" class="not-empty only-number form-control">';
+      str += '      <span class="input-group-text">원</span>';
+      str += '      <div class="invalid-feedback"></div>';
+      str += '    </div>';
+      str += '  </div>';
+      str += '  <div class="form-group">';
+      str += '    <label class="form-label mt-4" for="productOptionList[' + optionCount + '].optionCount">재고</label>';
+      str += '    <div class="input-group mb-3">';
+      str += '      <input type="text" name="productOptionList[' + optionCount + '].optionCount" id="productOptionList[' + optionCount + '].optionCount" class="not-empty only-number form-control">';
+      str += '      <span class="input-group-text">개</span>';
+			str += '      <div class="invalid-feedback"></div>';
+      str += '    </div>';
+      str += '  </div>';
+      str += '  <div>';
+      str += '    <button type="button" class="btn btn-danger btn_remove_option mt-3">옵션 삭제</button>';
+      str += '  </div>'
+      str += '</div>';
+		  $('#btn_add_option').before(str);
+		  optionCount = optionCount + 1;
+	  });
+  }
+  
+  const fnRemoveOption = () => {
+    $(document).on('click', '.btn_remove_option', function(){
+      $(this).parents('.option').remove();
+    });
+  }
+  
+  fnCheckInput();
+  fnCkeditor();
+  fnCheckRequired();
+  fnFileCheck();
+  fnAddOption();
+  fnRemoveOption();
+  
+</script>

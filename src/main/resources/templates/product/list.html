@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header :: head('홈')}"></head>
+<head th:replace="~{/layout/header :: head('상품 목록')}"></head>
 <style>
   div {
     box-sizing: border-box;
@@ -14,15 +14,19 @@
     flex-wrap: wrap;
    }
   .product {
+    border: none;
     width: 450px;
     height: 600px;
     text-align: left;
     margin: 20px 40px;
   }
   .product_thumbnail {
-    margin: 0;
     height: 450px;
     text-align: center;
+  }
+  .product-img {
+    max-width: 450px;
+    max-height: 450px;
   }
   .card-img-overlay {
     background-color: rgba(0, 0, 0, 0.5);
@@ -58,7 +62,16 @@
         <input id="searchText" class="form-control me-sm-2" type="search" placeholder="검색">
         <button id="btn_search" class="btn btn-secondary my-2 my-sm-0" type="submit">검색</button>
     </div>
-    <div></div>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <input type="radio" class="btn-check" name="order" id="btnradio1" autocomplete="off" checked="checked" value="PRODUCT_SALES">
+      <label class="btn btn-outline-primary" for="btnradio1">판매량많은순</label>
+      <input type="radio" class="btn-check" name="order" id="btnradio2" autocomplete="off" value="PRODUCT_HIT">
+      <label class="btn btn-outline-primary" for="btnradio2">조회수많은순</label>
+      <input type="radio" class="btn-check" name="order" id="btnradio3" autocomplete="off" value="PRODUCT_RATING">
+      <label class="btn btn-outline-primary" for="btnradio3">평점순</label>
+      <input type="radio" class="btn-check" name="order" id="btnradio4" autocomplete="off" value="REVIEW_COUNT">
+      <label class="btn btn-outline-primary" for="btnradio4">리뷰많은순</label>
+    </div>
     <div id="product_list" class="d-flex justify-content-center product_list"></div>
   </div>
   <div th:replace="~{layout/footer :: footer}"></div>
@@ -130,18 +143,19 @@
         $('#product_list').empty();
         $.each(resData.productList, (i, product) => {
         	let str = '<div class="card product" data-product-no="' + product.productNo + '">';        	
-        	str += '  <div class="product_thumbnail d-flex align-items-center">';
+        	str += '  <div class="product_thumbnail d-flex justify-content-center align-items-center">';
           if(product.productImageDto === null){
               str += '썸네일 없음';
           } else {
-            str += '    <img class= "card-img-top" src="' + product.productImageDto.path + '/' + product.productImageDto.filesystemName + '">';
+            str += '    <img class= "product-img" src="' + product.productImageDto.path + '/' + product.productImageDto.filesystemName + '">';
+          }
+          if(product.productCount === 0) {
+            str += '    <div class="card-img-overlay">품절</div>';
+          } else if(product.productCount < 10) {
+            str += '    <div class="card-img-overlay">' + product.productCount + '개 남음</div>';
           }
           str += '  </div>';
-          if(product.productCount === 0) {
-            str += '  <div class="card-img-overlay">품절</div>';
-          } else if(product.productCount < 10) {
-            str += '  <div class="card-img-overlay">' + product.productCount + '개 남음</div>';
-          }
+          i
           console.log(product.productName + ': ' + product.productCount);
           str += '  <div class="card-body">';
           str += '  <h4 class="card-title">' + product.productName + '</h4>';
@@ -156,15 +170,21 @@
       }
     })
   }
-
   
   // 검색 버튼 클릭 시 상품 목록 다시 가져오기
   const fnSearchProduct = () => {
-    $(document).on('click', '#btn_search',function(){
+    $(document).on('click', '#btn_search', function(){
       fnGetProductList();
     });
   }
   
+  // 정렬 버튼 클릭 시 상품 목록 정렬 후 다시 가져오기
+  const fnOrderProduct = () => {
+    $(document).on('click', '.btn-check', function(){
+      order = $(this).val();
+      fnGetProductList();
+    });
+  }
   
   const fnScroll = () => {
     var timerId;
@@ -210,6 +230,7 @@
   fnGetProductList();
   fnGetCategoryProductList();
   fnSearchProduct();
+  fnOrderProduct();
   fnScroll();
   fnAddProductResult();
   fnDetail();

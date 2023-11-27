@@ -9,6 +9,11 @@
   <!-- 마이페이지 네비게이션  -->
   <h1>MyPage</h1>
   <div th:replace="~{user/mypage_nav::mypage_nav}"></div>
+<div>
+   <div> 반가워요, <span th:text="|${session.user.name} 님|"></span></div>
+   <div> 적립금    <span th:text="|${session.user.point}원|"></span></div>
+</div>
+
 
 
  <div th:replace="~{layout/footer :: footer}"></div>
