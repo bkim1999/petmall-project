@@ -34,11 +34,17 @@ public interface UserService {
   public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response);
   
   /*네이버 api관련*/
-  public void naverJoin(HttpServletRequest request, HttpServletResponse response);//네이버 간편가입
   public String getNaverLoginURL(HttpServletRequest request) throws Exception;// 네이버로그인 url 가져와
   public String getNaverLoginAccessToken(HttpServletRequest request) throws Exception; //인증토큰 가져와
+  public void naverJoin(HttpServletRequest request, HttpServletResponse response);//네이버 간편가입
   public UserDto getNaverProfile(String accessToken) throws Exception; // 네이버 로그인 후속작업
   public void naverLogin(HttpServletRequest request, HttpServletResponse response, UserDto naverProfile) throws Exception;//네이버로그인
 
+  
+  /*카카오 api 관련*/
+  public String getKakaoLoginURL(HttpServletRequest request) throws Exception;//  카카오 로그인 url 가져와
+  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response);//네이버 간편가입
+  public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception; //인증토큰 가져와
+  public UserDto getKakaoProfile(String accessToken) throws Exception; // 네이버 로그인 후속작업
   
 }
