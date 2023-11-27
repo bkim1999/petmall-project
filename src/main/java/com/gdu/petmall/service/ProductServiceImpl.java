@@ -1,8 +1,6 @@
 package com.gdu.petmall.service;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -112,8 +110,7 @@ public class ProductServiceImpl implements ProductService {
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest) {
     
     // 이미지가 저장될 경로
-    LocalDate today = LocalDate.now();
-    String imagePath = "/product/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
+    String imagePath = myFileUtils.getProductImagePath();
     File dir = new File(imagePath);
     if(!dir.exists()) {
       dir.mkdirs();
@@ -140,16 +137,13 @@ public class ProductServiceImpl implements ProductService {
     return Map.of("uploaded", true
                 , "url", multipartRequest.getContextPath() + imagePath + "/" + filesystemName);
     
-    // url: "http://localhost:8080/petmall/product/1/main/filesystemName.jpg"
-    // sevlet-context.xml에
-    // <resources /product/** -> /product/
+    // url: "http://localhost:8080/product/2023/11/24/filesystemName.jpg"
     
   }
   
   public List<String> getEditorImageList(String contents) {
     
-    //** 신규 메소드 **//
-    // Editor에 추가한 이미지 목록 반환하기 (Jsoup 라이브러리 사용)
+    // Editor에 추가한 이미지 목록 반환
     
     List<String> editorImageList = new ArrayList<>();
     
@@ -170,87 +164,164 @@ public class ProductServiceImpl implements ProductService {
   
   @Transactional
   @Override
-  public boolean addProduct(ProductDto product, List<ProductOptionDto> productOptionList, MultipartHttpServletRequest multipartRequest) throws Exception {
+  public boolean addProduct(ProductDto product, MultipartHttpServletRequest multipartRequest) throws Exception {
     
-    // Add ProductDto
-    LocalDate today = LocalDate.now();
-    String imagePath = "/product/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
-    int addProductResult = productMapper.insertProduct(product);
+    // 모든 제품, 옵션, 사진 정보가 DB에 저장됬었는지 boolean으로 확인
+    boolean addProductResult;
+    boolean addOptionResult;
+    boolean addThumbnailResult;
+    boolean addContentsImageResult;
+    boolean addDisplayImageResult;
+
+    // 상품 관련 사진 저장할 경로 생성
+    String imagePath = myFileUtils.getProductImagePath();
     
-    // Add ProductOptionDtos
-    for(ProductOptionDto option : productOptionList) {
-      option.setProductNo(product.getProductNo());
-      productMapper.insertProductOption(option);
+    /////////////////////////////////
+    /////////상품 정보 DB에 저장/////////
+    ////////////////////////////////
+    addProductResult = productMapper.insertProduct(product) == 1;
+    
+    /////////////////////////////////
+    ///////상품 옵션 정보 DB에 저장///////
+    ////////////////////////////////
+    
+    int optionInsertCount = 0; // 모든 옵션이 DB에 추가되었는지 확인하는 카운터
+    int productNo = product.getProductNo(); // 등록한 상품번호
+    List<ProductOptionDto> productOptionList = product.getProductOptionList(); // 등록할 옵션 목록
+    int optionListSize = 0;
+
+    // 옵션이 없을 경우
+    if(productOptionList == null) {
+      ProductOptionDto option = ProductOptionDto.builder()
+                                                .productNo(productNo)
+                                                .optionName("기본")
+                                                .build();
+      optionInsertCount += productMapper.insertProductOption(option);
+      optionListSize = 1;
+    } else {  // 옵션이 있을 경우
+      for(ProductOptionDto option : product.getProductOptionList()) {
+        optionListSize = productOptionList.size();
+        option.setProductNo(productNo);
+        optionInsertCount += productMapper.insertProductOption(option);
+      }
     }
     
+    // 추가된 옵션의 수가 모든 옵션의 수와 같을 시 true
+    addOptionResult = optionListSize == optionInsertCount;
     
-    // Add ProductImageDtos
-    for(String editorImage : getEditorImageList(product.getProductContents())) {
-      ProductImageDto productImage = ProductImageDto.builder()
-                                      .imageCode("product_" + product.getProductNo())
-                                      .position("contents")
-                                      .path(imagePath)
-                                      .filesystemName(editorImage)
-                                      .build();
-      productMapper.insertProductImage(productImage);
-    }
     
-    // Add ProductImageDto(Product thumnail)
-    MultipartFile thumbnail = multipartRequest.getFile("thumbnail");
-    String filesystemName = myFileUtils.getFilesystemName(thumbnail.getOriginalFilename());
-    File file = new File(imagePath, filesystemName);
-    File thumbnailFile = new File(imagePath, filesystemName);
-    thumbnail.transferTo(file);
+    /////////////////////////////////
+    ////상품 썸네일 사진 정보 DB에 저장/////
+    ////////////////////////////////
     
-    Thumbnails.of(file)
+    int insertThumbnailCount = 0;
+    
+    // multipartRequest에서 파일 get
+    MultipartFile thumbnailMulti = multipartRequest.getFile("thumbnail");
+    
+    // multipartFile -> File 로 변환 후 imagePath 경로에 저장
+    String thumbnailName = myFileUtils.getFilesystemName(thumbnailMulti.getOriginalFilename());
+    File thumbnailOriginalFile = new File(imagePath, thumbnailName);
+    thumbnailMulti.transferTo(thumbnailOriginalFile);
+    
+    // 크기조절한 썸네일 사진이 저장될 File 생성
+    File previewFile = new File(imagePath, "p_" + thumbnailName);
+    File thumbnailFile = new File(imagePath, "t_" + thumbnailName);
+    
+    // Thumbnailator로 크기조절 후 저장
+    Thumbnails.of(thumbnailOriginalFile)
+              .size(100, 100)      // 가로 100px, 세로 100px
+              .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
+              .toFile(previewFile);
+    Thumbnails.of(thumbnailOriginalFile)
               .size(400, 400)      // 가로 400px, 세로 400px
               .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
               .toFile(thumbnailFile);
+    ProductImageDto previewImage = ProductImageDto.builder()
+                                                    .imageCode("product_" + productNo)
+                                                    .position("preview")
+                                                    .path(imagePath)
+                                                    .filesystemName("p_" + thumbnailName)
+                                                    .build();
     ProductImageDto thumbnailImage = ProductImageDto.builder()
-        .imageCode("product_" + product.getProductNo())
-        .position("thumbnail")
-        .path(imagePath)
-        .filesystemName(filesystemName)
-        .build();
-    productMapper.insertProductImage(thumbnailImage);
+                                                  .imageCode("product_" + productNo)
+                                                  .position("thumbnail")
+                                                  .path(imagePath)
+                                                  .filesystemName("t_" + thumbnailName)
+                                                  .build();
+    // DB로 저장
+    insertThumbnailCount += productMapper.insertProductImage(previewImage);
+    insertThumbnailCount += productMapper.insertProductImage(thumbnailImage);
     
-    // Add ProductImageDto(Product images)
+    addThumbnailResult = insertThumbnailCount == 2;
+    
+    /////////////////////////////////
+    ///////상품 사진 정보 DB에 저장///////
+    ////////////////////////////////
+    
+    int insertDisplayImageCount;
+    
+    // multipartRequest에서 파일 get
     List<MultipartFile> productImages = multipartRequest.getFiles("product_images");
-    int attachCount;
-    if(productImages.get(0).getSize() == 0) {
-      attachCount = 1;
+    if(productImages.get(0).getSize() == 0) { // 상품 사진이 없을 때
+      insertDisplayImageCount = 1;
     } else {
-      attachCount = 0;
+      insertDisplayImageCount = 0;
     }
     
+    // 각 파일 File로 변환 -> 크기 조절 -> 정보 DB로 저장
     for(MultipartFile productImage : productImages) {
-      
-      if(productImage != null && !productImage.isEmpty()) {
+      if(productImage != null && !productImage.isEmpty()) { // 사진이 null이 아니거나 비어있지 않을 때
         
-        File dir = new File(imagePath);
+        // 변환: MultipartFile -> File
         String productImageFilename = myFileUtils.getFilesystemName(productImage.getOriginalFilename());
-        File tempFile = new File(dir, productImageFilename);
-        productImage.transferTo(tempFile);
-
-        File productImageFile = new File(dir, "d_" + productImageFilename);
-        Thumbnails.of(tempFile)
+        File originalProductImageFile = new File(imagePath, productImageFilename);
+        productImage.transferTo(originalProductImageFile);
+        
+        // 크기 조절
+        File productImageFile = new File(imagePath, "d_" + productImageFilename);
+        Thumbnails.of(originalProductImageFile)
                   .size(754, 754)      // 가로 754px, 세로 754px
                   .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
                   .toFile(productImageFile);
-
+        
+        // DB로 저장
         ProductImageDto productImageDto = ProductImageDto.builder()
-            .imageCode("product_" + product.getProductNo())
-            .position("display")
-            .path(imagePath)
-            .filesystemName(productImageFilename)
-            .build();
-        attachCount += productMapper.insertProductImage(productImageDto);
+                                                         .imageCode("product_" + productNo)
+                                                         .position("display")
+                                                         .path(imagePath)
+                                                         .filesystemName("d_" + productImageFilename)
+                                                         .build();
+        // 카운터 증가
+        insertDisplayImageCount += productMapper.insertProductImage(productImageDto);
         
       }
       
     }
     
-    return (addProductResult == 1) && (productImages.size() == attachCount);
+    addDisplayImageResult = productImages.size() == insertDisplayImageCount;
+    
+    /////////////////////////////////
+    ////상품 설명 사진 정보 DB에 저장///////
+    ////////////////////////////////
+    
+    int insertContentsImageCount = 0;
+    
+    // DB에 저장
+    for(String editorImage : getEditorImageList(product.getProductContents())) {
+    ProductImageDto productImageDto = ProductImageDto.builder()
+              .imageCode("product_" + productNo)
+              .position("contents")
+              .path(imagePath)
+              .filesystemName(editorImage)
+              .build();
+      insertContentsImageCount += productMapper.insertProductImage(productImageDto);
+    }
+    
+    addContentsImageResult = getEditorImageList(product.getProductContents()).size() == insertContentsImageCount;
+    
+    // 상품, 옵션, 사진 정보 삽입 결과 반환
+    return addProductResult && addOptionResult && addThumbnailResult && addDisplayImageResult && addContentsImageResult;
       
   }
   

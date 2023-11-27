@@ -7,6 +7,53 @@
   
   <style>
 
+<<<<<<< HEAD
+/*profile_wrap*/
+#profile_wrap{
+   width:850px;
+   margin:0 auto;
+}
+
+/* msg 정리 */
+.msg{width:70%; margin: 0 auto;}
+
+/*그외 div 정렬*/
+.cetner{width:70%; margin: 0 auto;}
+
+/*폰번호 중앙 정렬*/
+.mobile{width:28% ; height:40px;}
+
+/*폼요소 중앙정렬(인라인/블럭 모두)*/
+.form-control {width:70%; margin: 0 auto;}
+.text_center{text-align: center;}
+
+/*성별 중앙정렬*/
+.btn-group{width:70%; margin:0 auto;}
+.form-select{width: 12%; display: inline;}
+.gender_center{margin:0 auto;}
+
+
+/*주소폼 너비조정, 글씨 중앙 정렬*/
+.address{width:100%; margin:0 auto;}
+.postcode_control{width:70%; margin:0 auto; }
+.postcode{width:70%; display:inline;}
+
+/*우편번호 찾기 버튼*/
+.btn_postcode{width:170px; height:40px; padding:0;}
+
+
+/*라벨정리*/
+.label{width:15%; text-align:right;}
+
+
+/*체크박스*/
+.chk_each{margin-right:20px; }
+
+/*버튼 영역*/
+.btn_area{display:flex;  }
+
+
+=======
 /*중앙 정렬*/
 #profile_wrap{width:850px; margin:0 auto; margin-top:10px;}
 
@@ -41,6 +88,7 @@
 
 /*이벤트수신*/
 #event_label{margin-top: 10px;margin-bottom:10px;}
+>>>>>>> master
 </style>
   
   <!-- 마이페이지 네비게이션  -->
@@ -118,9 +166,18 @@ $(':radio[value=${session.user.gender}]').prop('checked',true);
 
 </div>
 
+<<<<<<< HEAD
+<!-- 휴대폰 번호  -->
+
+ <div class="label"><span>전화번호</span></div>
+<div class="text_center">
+<div>
+  <select id="mobile0" name="mobile"  class="form-select">
+=======
 <!--/* 휴대폰 번호 */-->
 <div>
   <select id="mobile0" name="mobile" class="form-select">
+>>>>>>> master
     <option>010</option>
     <option>011</option>
     <option>016</option>
@@ -128,6 +185,16 @@ $(':radio[value=${session.user.gender}]').prop('checked',true);
     <option>018</option>
     <option>019</option>
   </select>
+<<<<<<< HEAD
+  
+  <span>-</span>
+  <input type="text" id="mobile1" name="mobile" size="4" maxlength="4"  class="mobile"> 
+  <span>-</span>
+  <input type="text" id="mobile2" name="mobile" size="4" maxlength="4"  class="mobile"> 
+  <div id="msg_mobile"></div>
+</div>
+</div>
+=======
   <span class="hyp">-</span>
   <input type="text" id="mobile1" name="mobile" size="4" maxlength="4" class="form-control mobile"> 
   <span class="hyp">-</span>
@@ -135,6 +202,7 @@ $(':radio[value=${session.user.gender}]').prop('checked',true);
   <div id="msg_mobile" class="msg"></div>
 </div>
 
+>>>>>>> master
  <!-- String 으로 받은 휴대폰 번호 처리 스크립트 --> 
 <script>
 
@@ -157,17 +225,30 @@ $('#mobile2').val(mobile2);
 <div class="address">
 
   <div class="postcode_control">
+<<<<<<< HEAD
+    <input type="text" id="postcode" name="postcode" placeholder="우편번호" th:value="${session.user.postcode}"  class="form-control postcode"  disabled>
+     <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"  class="btn_postcode">
+  </div>
+  
+<input type="text" id="roadAddress"  name="roadAddress" placeholder="도로명주소" th:value="${session.user.roadAddress}" disabled  class="form-control" >
+<input type="text" id="jibunAddress"  name="jibunAddress" placeholder="지번주소" th:value="${session.user.jibunAddress}" disabled  class="form-control" > 
+=======
     <input type="text" id="postcode" name="postcode" placeholder="우편번호" th:value="${session.user.postcode}"  class="form-control postcode"  readonly>
      <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="btn btn-lg btn-primary btn_postcode ">
   </div>
   
 <input type="text" id="roadAddress"  name="roadAddress" placeholder="도로명주소" th:value="${session.user.roadAddress}" readonly  class="form-control" >
 <input type="text" id="jibunAddress"  name="jibunAddress" placeholder="지번주소" th:value="${session.user.jibunAddress}" readonly  class="form-control" > 
+>>>>>>> master
 <span id="guide" style="color:#999;display:none"></span>
 <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" th:value="${session.user.detailAddress}"   class="form-control" >
 
 
+<<<<<<< HEAD
+<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" disabled  class="form-control" >
+=======
 <input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" readonly  class="form-control" >
+>>>>>>> master
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -238,7 +319,11 @@ $('#mobile2').val(mobile2);
 <!-- 이벤트 수신여부 -->
 <div class="cetner">
 
+<<<<<<< HEAD
+<div><label class="check_label  form-check-label" for="event"><input type="checkbox" id="event" name="event" class="chk_each  form-check-input" >[선택]광고성 정보 이메일 수신 동의</label></div>
+=======
 <div id="event_label"><label class="check_label  form-check-label" for="event"><input type="checkbox" id="event" name="event" class="chk_each  form-check-input" >[선택]광고성 정보 이메일 수신 동의</label></div>
+>>>>>>> master
 
 <script th:inline="javascript">
     /* Thymeleaf에서 서버에서 전달한 값으로 조건부로 체크박스 체크 여부를 설정 */
@@ -260,11 +345,20 @@ $('#mobile2').val(mobile2);
  <div>
 <input type="hidden" name="userNo" th:value="${session.user.userNo}">
 <button type="button" id="btn_modify" class="btn btn-primary">회원정보수정</button>
+<<<<<<< HEAD
+<button type="button" id="btn_cancel" class="btn btn-primary">취소</button>
+</div>
+
+<div>
+<button type="button" id="btn_leave" class="btn btn-primary">회원탈퇴</button>
+</div>
+=======
 <button type="button" id="btn_cancel" class="btn btn-primary ">취소</button>
 <button type="button" id="btn_leave" class="btn btn-primary">회원탈퇴</button>
 </div>
 
 
+>>>>>>> master
  
  </div>
 
@@ -276,7 +370,11 @@ $('#mobile2').val(mobile2);
 </div>
 
 
+<<<<<<< HEAD
+
+=======
 </div>
+>>>>>>> master
 
 <!-- 스크립트 영역  -->
 <script>
