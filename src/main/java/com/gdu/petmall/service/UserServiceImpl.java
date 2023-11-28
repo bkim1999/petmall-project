@@ -206,6 +206,27 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
       .adminAuthorState(adminAuthorState)
       .build();
   
+  // 이메일이 db에 존재하는지 확인하기.
+  if(userMapper.getEmailResult(email)!=0||userMapper.getEmailResultInactive(email)!=0)
+  {
+    
+    try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      out.println("alert('이미 가입된 이메일입니다.')");
+      out.println("history.go(-1)");
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  else {
+  
   
   int joinResult = userMapper.insertUser(user);
   
@@ -233,6 +254,7 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
     e.printStackTrace();
   }
   
+  }
 }
 
 
@@ -475,6 +497,31 @@ public void naverJoin(HttpServletRequest request, HttpServletResponse response) 
                   .agree(event != null ? 1 : 0)
                   .build();
   
+  
+  
+  
+  // 이메일이 db에 존재하는지 확인하기.
+  if(userMapper.getEmailResult(email)==1||userMapper.getEmailResultInactive(email)==1)
+  {
+    
+    try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      out.println("alert('이미 가입된 이메일입니다.')");
+      out.println("history.go(-1)");
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+ else {
+  
+
   int naverJoinResult = userMapper.insertNaverUser(user);
   
   try {
@@ -497,7 +544,7 @@ public void naverJoin(HttpServletRequest request, HttpServletResponse response) 
   } catch (Exception e) {
     e.printStackTrace();
   }
-  
+ } 
 }
 
 
@@ -637,8 +684,8 @@ public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) 
   String mobile = request.getParameter("mobile");
   String event = request.getParameter("event");
   
- 
-  
+
+
   UserDto user = UserDto.builder()
                   .email(email)
                   .name(name)
@@ -646,9 +693,33 @@ public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) 
                   .mobile(mobile.replace("-", ""))
                   .agree(event != null ? 1 : 0)
                   .build();
+
+  // 이메일이 db에 존재하는지 확인하기.
+  if(userMapper.getEmailResult(email)!=0||userMapper.getEmailResultInactive(email)!=0)
+  {
+    
+    try {
+      
+      response.setContentType("text/html; charset=UTF-8");
+      PrintWriter out = response.getWriter();
+      out.println("<script>");
+      out.println("alert('이미 가입된 이메일입니다.')");
+      out.println("history.go(-1)");
+      out.println("</script>");
+      out.flush();
+      out.close();
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  
+  else {
+    
   
   int kakaoJoinResult = userMapper.insertKakaoUser(user);
-
+  
   try {
     
     response.setContentType("text/html; charset=UTF-8");
@@ -669,7 +740,7 @@ public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) 
   } catch (Exception e) {
     e.printStackTrace();
   }
-  
+  }
 }
 
 
@@ -786,7 +857,7 @@ public UserDto getKakaoProfile(String accessToken) throws Exception {
 
 
 
-/*카카오 간편 로그인*/
+
 
 /* ******************************************************************* ** */ 
 
