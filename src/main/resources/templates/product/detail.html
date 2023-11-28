@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header :: head('상품 상세')}"></head>
+<style>
+  #slideshow{
+    width: 754px;
+    height: 754px;
+  }
+  #product_header{
+    width: 100%;
+    min-height: 754px;
+  }     
+  #product_detail{
+    width: 450px;
+    height: 100%;
+  }
+  #product_info h2 {
+    font-weight: bold;
+    margin: 30px 0;
+  }
+  #product_info .tab-content {
+    padding: 20px 10px;
+  }
+  #product_sale_price {
+    font-size: 28px;
+    color: black;
+  }
+  #product_price {
+    font-size: 23px;
+    text-decoration: line-through;
+  }
+  #discount_percent {
+    font-size: 28px;
+    color: red;
+  }
+  #product_images img {
+    height: 100%;
+  }
+  #contents {
+    width: 800px;
+    margin: 10px auto;
+    text-align: center;
+  }
+  #contents >.image > img {
+    width: 800px;
+    height: 100%;
+  }
+  #total_price_area {
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+  #btn_area {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .selected_option {
+    border-top: 1px solid gray;
+  }
+  .option_name {
+    padding: 10px;
+    width: 200px;
+    font-weight: bold;
+  }
+  .option_count {
+    padding: 10px;
+    width: 150px;
+  }
+  #total_price {
+    height: 100px;
+    font-size: 50px;
+    color: black;
+    font-weight: bold;
+  }
+</style>
+<body>
+  <div th:replace="~{layout/header :: header}"></div>
+  <div id="product_header" class="d-flex justify-content-center mt-5">
+    <div id="slideshow" class="carousel slide me-5 d-flex align-items-center" data-bs-ride="carousel">
+      <div id="product_images" class="carousel-inner">
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#slideshow" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#slideshow" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <div id="product_detail">
+      <div id="product_info">
+        <div><h2 th:text="${product.productName}"></h2></div>
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" data-bs-toggle="tab" href="#description" aria-selected="true" role="tab">설명</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#size" aria-selected="false" role="tab" tabindex="-1">규격</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#warning" aria-selected="false" role="tab" tabindex="-1">경고</a>
+          </li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+          <div class="tab-pane fade show active" id="description" role="tabpanel">
+            <p th:text="${product.productDescription}"></p>
+          </div>
+          <div class="tab-pane fade" id="size" role="tabpanel">
+            <p th:text="${product.productSize}"></p>
+          </div>
+          <div class="tab-pane fade" id="warning" role="tabpanel">
+            <p th:text="${product.productWarning}"></p>
+          </div>
+        </div>
+      </div>
+      <div id="price_info" class="d-flex p-2">
+        <span id="product_sale_price"><strong th:text="${product.productPrice}"></strong>원</span>
+        <span id="product_price" class="p-1"><strong th:text="${product.productPrice}"></strong>원</span>
+        <span id="discount_percent" class="ms-auto"><strong th:text="${product.productPrice}"></strong>%</span>
+      </div>
+      <div class="p-2 d-flex justify-content-between align-items-center">
+        <span style="width: 20%;">옵션</span>
+        <div style="width: 80%;">
+          <select id="option_list" class="form-select">
+            <option value="0">(필수)옵션을 선택해주세요</option>
+            <th:block th:each="option : ${optionList}">
+              <option value="${option.optionNo}" th:data-add-price="${option.addPrice}">
+                <th:block th:if="${option.addPrice > 0}" th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
+              </option>
+            </th:block>
+          </select>
+        </div>
+      </div>
+      <div>
+        <form method="post" th:action="@{/order/addCart.do}" id="frm_cart_order">
+          <th:block th:if="${session.user != null}">
+            <input type="hidden" name="cartList[].userNo" th:value="${session.user.userNo}">
+          </th:block>
+          <div id="selected_option_list"></div>
+        </form>
+      </div>
+      <div id="total_price_area">총 상품금액: <span id="total_price">0</span> 원</div>
+      <div id="btn_area" class="btn-group">
+        <button type="button" id="btn_add_cart" class="btn btn-light btn-lg">장바구니 담기</button>
+        <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
+      </div>
+    </div>
+  </div>  
+  <div th:replace="~{layout/footer :: footer}"></div>
+</body>
+<script th:inline="javascript">
+  const fnAddOption = () => {
+    $('#option_list').change(function() {
+      var optionNo = $(this).val();
+      if(optionNo === '0'){
+        return;
+      }
+      var selected_optionNo_list = [];
+      $.each($('#selected_option_list').children(), function(i, option) {
+        selected_optionNo_list[i] = $(option).data('option-no');
+      });
+      if ($.inArray(parseInt(optionNo), selected_optionNo_list) !== -1){
+        alert('이미 추가된 옵션입니다.');
+        $(this).val("0");
+        return;
+      }
+      let productPrice = /*[[${product.productPrice}]]*/ 0;
+      let optionName = $("#option_list option:selected").text();
+      let addPrice = $("#option_list option:selected").data('add-price');
+      let str = '<div class="selected_option d-flex justify-content-between align-items-center" data-option-no="' + optionNo + '">';
+      str += '  <div class="option_name">' + optionName + '</div>';
+      str += '  <div class="d-flex pt-2 option_count">';
+      str += '    <button type="button" class="btn btn-light minus_count">-</button>';
+      str += '    <input type="hidden" class="option_no" name="cartList[].optionNo" value="' + optionNo + '">';
+      str += '    <input type="text" class="count form-control-plaintext text-center" value="1" name="cartList[].count" readonly>';
+      str += '    <button type="button" class="btn btn-light plus_count">+</button>';
+      str += '    <button type="button" class="btn btn-light btn_delete_option">X</button>';
+      str += '  </div>'
+      str += '  <input type="hidden" class="option_price" value="' + (productPrice + addPrice) + '">';
+      str += '  <div class="calculated_price_wrapper"><span class="calculated_price">' + (productPrice + addPrice) + '</span>원</td>';
+      str += '</div>';
+      $('#selected_option_list').append(str);
+    });
+  }
+  
+  const fnDeleteOption = () => {
+    $(document).on('click', '.btn_delete_option', function(){
+      console.log('dd')
+      $(this).parents('.selected_option').remove();
+      fnGetTotalPrice();
+    });
+  }
+  
+  const fnDecreaseCount = () => {
+    $(document).on('click', '.minus_count', function(){
+      var count = $(this).siblings('.count');
+      if(count.val() === '1'){
+        alert('선택한 옵션의 개수는 1개 이상이어야 합니다.');
+        return;
+      }
+        count.val(parseInt(count.val()) - 1); // 화면에 보이는 개수 감소
+        var calculated_price = $(this).parent().siblings('.calculated_price_wrapper').find('.calculated_price'); // 계산된 가격
+        var option_price = $(this).parent().siblings('.option_price'); // 옵션 가격
+        var count = $(this).siblings('.count'); // 개수
+        // 계산된 가격 = option_price(옵션가격) * count(개수)
+        calculated_price.text(option_price.val() * count.val()).trigger('change');
+    });
+  }
+  
+  const fnIncreaseCount = () => {
+    $(document).on('click', '.plus_count', function(){
+        var count = $(this).siblings('.count');
+        if(count.val() === '999'){
+          alert('too much')
+          return;
+        }
+        count.val(parseInt(count.val()) + 1); // 화면에 보이는 개수 증가
+        var calculated_price = $(this).parent().siblings('.calculated_price_wrapper').find('.calculated_price'); // 계산된 가격
+        var option_price = $(this).parent().siblings('.option_price'); // 옵션 가격
+        var count = $(this).siblings('.count'); // 개수
+        // 계산된 가격 = option_price(옵션가격) * count(개수)
+        calculated_price.text(option_price.val() * count.val()).trigger('change');
+    });
+  }
+  
+  var productNo = /*[[${product.productNo}]]*/ 0;
+  
+  const fnGetProductImageList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '/product/getProductImageList.do',
+      data: {'productNo' : productNo},
+      // 응답
+      dataType: 'json',
+      success: (resData) => {  // resData = {"productImageList": []}
+        if(resData.productImageList === null){
+          alert('이미지 목록 불러오기 실패');
+          return;
+        }
+        if(resData.productImageList.length === 0){
+          let str = '<div class="carousel-item active">';
+          str += '  <img class="d-block w-100" alt="아직 사진이 없습니다.">';
+          str += '</div>';
+          $('#product_images').append(str);
+          return;
+        }
+        
+        $.each(resData.productImageList, (i, image) => {
+          console.log(image);
+          let str = '';
+          if(i === 0){
+            str += '<div class="carousel-item active">';
+          }
+          else{
+            str += '<div class="carousel-item">';
+          }
+          str += '  <img class="d-block w-100" src="' + image.path + '/' + image.filesystemName +  '">';
+          str += '</div>';
+          $('#product_images').append(str);
+        });
+      }
+    })
+  }
+  
+  const fnGetTotalPrice = () => {
+    var total = 0;
+    $.each($('.calculated_price'), (i, price) => {
+      total += parseInt($(price).text());
+    });
+    $('#total_price').text(total);
+  }
+  
+  const fnUpdateTotalPrice = () => {
+    $(document).on('change', '#option_list, .calculated_price', function(){
+      fnGetTotalPrice();
+    });
+  }
+  
+  const fnAddCartOrder = () => {
+    $(document).on('click', '#btn_addCart', function(){
+      $('frm_cart_order').attr('th:action', '@{/cart/addCart.do}');
+      
+    })
+  }
+  
+  fnAddOption();
+  fnDeleteOption();
+  fnDecreaseCount();
+  fnIncreaseCount();
+  fnGetProductImageList();
+  fnUpdateTotalPrice();
+  fnAddCartOrder();
+  
+</script>

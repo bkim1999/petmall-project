@@ -17,6 +17,8 @@ public interface UserMapper {
   public int getPoint (Map<String, Object>map);
 	public String getEmail(Map<String, Object>map);
 	public int getEmailforPw(Map<String, Object>map);
+	public int getEmailResult(String email);
+	public int getEmailResultInactive(String email);
   
   /*회원삽입수정삭제*/
 	public int insertUser(UserDto user);
