@@ -26,6 +26,8 @@ public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
   
+  
+  
   public void addCart(HttpServletRequest request, Model model) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
@@ -48,9 +50,11 @@ public class CartServiceImpl implements CartService {
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
     int userNo = user.getUserNo();
-    
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
+    
+    
+  
   }
   
   @Override
