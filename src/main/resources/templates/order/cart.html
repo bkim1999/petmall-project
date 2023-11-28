@@ -59,6 +59,7 @@
 
   <div th:replace="~{/layout/header::header}"></div>
   
+ 
   <h1 id="cart_title">Cart</h1>
   <hr>
   
@@ -69,30 +70,31 @@
     <form id="frm_btn"> 
       <table class="b">
         <thead border="1">
-          <tr><th class="img_line">이미지  상품명  가격  배송비  적립금  수량 합계</th></tr>
+          <tr><th class="img_line">이미지  상품명 가격 배송비 적립금  할인율 수량 합계</th></tr>
         </thead>
         <tbody>
         <caption>장바구니</caption>
           <th:block th:each="cartProduct:${cartList}"> 
             <tr class="a">
-              <td class="cart_info_td">
+              <td class="cart_info_td">         
                 <input type="checkbox" class="cart_checkbox" checked="checked">
                 <input type="image" class="image" th:value="이미지">
                 <input type="text" class="pr_Name" th:value="${cartProduct.productDto.productName}" size="9" readonly>
                 <input type="text" class="pr_Price" th:value="${cartProduct.productDto.productPrice}" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
                 <input type="text" class="" th:value="적립금" size="4">
-                  <span id="count_span">
-                    <input type="" class="totalCount" th:value="${cartProduct.count}" size="2" readonly>
-                    <button type="button" class="plus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">+</button>
-                    <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
-                    <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">-</button>
-                    <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
-                  </span>
-                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count}" size="7"  readonly>
+                <input type="text" class="discount" th:value="${cartProduct.eventDto.discountPercent}" size="3" readonly>
+                <span id="count_span">
+                  <input type="text" class="totalCount" th:value="${cartProduct.count}" size="2" readonly>
+                  <button type="button" class="plus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">+</button>
+                  <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                  <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">-</button>
+                  <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
+                </span>                                   
+                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count * (1 - cartProduct.eventDto.discountPercent / 100.0)}" size="7"  readonly>
                 <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
-                <button type="submit"  class="btn_remove btn btn-danger">삭제</button>
+                <button type="submit" class="btn_remove btn btn-danger">삭제</button>
               </td>
             </tr>  
           </th:block>
@@ -101,6 +103,8 @@
       </form>
      </div> 
   <hr>
+    
+    
     
     
    <div class="wrap_div1">
@@ -120,9 +124,9 @@
    <div> 
     <form id="frm_order" th:action="@{/order/detail.do}" method="get">
       <th:block th:each="order:${cartList}"> 
-      <input type="hidden" name:"optionNo" th:value="${order.productOptionDto.optionNo}">
-      <input type="hidden" name:"userNo"   th:value="${order.userDto.userNo}">
-      <input type="hidden" name:"count"    th:value="${order.count}">
+      <input type="hidden" name="optionNo" th:value="${order.productOptionDto.optionNo}">
+      <input type="hidden" name="userNo"   th:value="${order.userDto.userNo}">
+      <input type="hidden" name="count"    th:value="${order.count}">
       </th:block>
         <button type="submit" id="order_btn" class="btn btn-warning btn btn-primary btn-lg">구매</button>
         <a th:href="@{/product/list.do}">

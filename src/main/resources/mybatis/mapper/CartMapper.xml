@@ -59,18 +59,26 @@
     </association>  
   </resultMap>
   
-   <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
-      SELECT C.USER_NO, C.COUNT
-           , A.PRODUCT_NAME, A.PRODUCT_PRICE, A.PRODUCT_NO
-           , B.OPTION_NO, B.ADD_PRICE 
-        FROM PRODUCT_T A, 
-             PRODUCT_OPTION_T B,
-             CART_T C
-       WHERE A.PRODUCT_NO = B.PRODUCT_NO 
+    <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
+      SELECT C.USER_NO 
+           , C.COUNT
+           , A.PRODUCT_NAME
+           , A.PRODUCT_PRICE
+           , A.PRODUCT_NO
+           , B.OPTION_NO
+           , B.ADD_PRICE
+           , E.DISCOUNT_PERCENT
+           , E.EVENT_NO 
+        FROM PRODUCT_T A 
+           , PRODUCT_OPTION_T B
+           , EVENT_T E
+           , CART_T C
+       WHERE A.PRODUCT_NO = B.PRODUCT_NO
+         AND E.DISCOUNT_PERCENT = E.DISCOUNT_PERCENT
+         AND E.EVENT_NO = E.EVENT_NO
          AND B.OPTION_NO = C.OPTION_NO
          AND C.USER_NO = ${userNo}
     </select>
-    
     
    <insert id="insertCart" parameterType="CartDto">
       INSERT INTO CART_T(
@@ -97,10 +105,5 @@
          AND USER_NO = #{userNo}
    </delete>           
    
-   <select id="discountCart" parameterType="map" resultMap="CartMap">
-     SELECT DISCOUNT_PERCENT
-       FROM EVENT_T 
-      WHERE DISCOUNT_PERCENT = ${discountPercent}
-   </select>
    
 </mapper>
