@@ -61,10 +61,14 @@ public class UserController {
     // ret 값이 들어있지 않으면 referer, ret에 값이 있으면 ret 저장
     model.addAttribute("referer", ret.isEmpty() ? referer : ret);
     
-    //model.addAttribute("referer", referer == null ? request.getContextPath() + "/main.do" : referer);
+ //model.addAttribute("referer", referer == null ? request.getContextPath() + "/main.do" : referer);
     
     //네이버 간편 로그인 방식 선택시
     model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
+    
+    
+    //카카오 간편 로그인 방식 선택시
+    model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL  (request));
     
 		return"user/login";
 	}
@@ -76,9 +80,12 @@ public class UserController {
 	public String joinOption(HttpServletRequest request, Model model)throws Exception {
 		
 		
-	// 네이버 간편 로그인 (가입)	
+	// 네이버 간편 가입 (가입되어있다면 로그인)	 
 	 model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
-		
+	 
+	 // 카카오 간편 가입 (가입되어있다면 로그인)  
+	 model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL(request));
+	
 		return"user/join_option";
 	}
 	
@@ -187,7 +194,37 @@ public class UserController {
     }
   }
   /* * *************************************************** ** */ 
+
   
+ /* * ****************카카오 간편 가입******************* ** */
+  
+  
+  // 카카오 간편가입 1 ---- (카카오 로그인 연동 url 생성)
+  @PostMapping("/kakao/join.do")
+  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) {
+    userService.kakaoJoin(request, response);
+  }
+  // 카카오 간편가입2 ----(토큰 발급 요청)
+  @GetMapping("/kakao/getAccessToken.do")
+  public String getKakaoAccessToken(HttpServletRequest request) throws Exception {
+  String accessToken = userService.getKakaoLoginAccessToken(request);
+  return "redirect:/user/kakao/getProfile.do?accessToken=" + accessToken;
+  }
+  // 카카오 간편가입3 ---(카카오 로그인 / 카카오 로그인 후속작업)
+  @GetMapping("/kakao/getProfile.do")
+  public String getKakaoProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+    UserDto kakaoProfile = userService.getKakaoProfile(request.getParameter("accessToken"));
+    UserDto user = userService.getUser(kakaoProfile.getEmail());
+    if(user == null) {
+      model.addAttribute("kakaoProfile", kakaoProfile);
+      return "user/kakao_join";
+    } else {
+      userService.naverLogin(request, response, kakaoProfile);
+      return "redirect:/main.do";
+    }
+  }
+
+  /* * *************************************************** ** */ 
   
   //회원탈퇴
   @PostMapping("/mypage/leave.do")

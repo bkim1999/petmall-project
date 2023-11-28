@@ -36,6 +36,8 @@ public interface UserMapper {
   /*네이버 api 관련*/
   public int insertNaverUser(UserDto user);
   
+  /*카카오 api 관련*/
+  public int insertKakaoUser(UserDto user);
   
  // public int updatePoint(UserDto user); // 포인트 삽입 테스트(추후에 삭제해야할것)
   
