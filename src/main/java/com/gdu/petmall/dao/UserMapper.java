@@ -17,6 +17,8 @@ public interface UserMapper {
   public int getPoint (Map<String, Object>map);
 	public String getEmail(Map<String, Object>map);
 	public int getEmailforPw(Map<String, Object>map);
+	public int getEmailResult(String email);
+	public int getEmailResultInactive(String email);
   
   /*회원삽입수정삭제*/
 	public int insertUser(UserDto user);
@@ -36,6 +38,8 @@ public interface UserMapper {
   /*네이버 api 관련*/
   public int insertNaverUser(UserDto user);
   
+  /*카카오 api 관련*/
+  public int insertKakaoUser(UserDto user);
   
  // public int updatePoint(UserDto user); // 포인트 삽입 테스트(추후에 삭제해야할것)
   

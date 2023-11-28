@@ -15,4 +15,5 @@ public class CartDto {
   private ProductOptionDto productOptionDto;
   private ProductDto productDto;
   private UserDto userDto;
+  private EventDto eventDto;
 }

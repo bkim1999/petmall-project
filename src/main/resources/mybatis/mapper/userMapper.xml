@@ -5,6 +5,20 @@
   
 <mapper namespace="com.gdu.petmall.dao.UserMapper">
 	
+   
+ <!--가입하려는 사용자의 email이 db에 존재하는가 -->
+  <select id="getEmailResult" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM USER_T
+    WHERE lOWER(EMAIL)= LOWER(#{email})
+  </select>
+  
+  <select id="getEmailResultInactive" parameterType="String" resultType="int">
+    SELECT COUNT(*)
+    FROM INACTIVE_USER_T
+    WHERE lOWER(EMAIL)= LOWER(#{email})
+    
+  </select>
   
 <!-- 회원 조회  -->
   
@@ -63,7 +77,7 @@
    WHERE NAME=#{name} AND MOBILE=#{mobile} 
    </select>
   
- <!--휴면 회원 중 아이디 찾기  --> 
+
  
     
  <!--  일치하는 이메일 조회 -->   
@@ -189,6 +203,36 @@
   </insert>
   
   
+    <!-- 카카오로 가입한 회원 등록 -->
+    <insert id="insertKakaoUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+        USER_NO
+      , EMAIL
+      , NAME
+      , GENDER
+      , MOBILE
+      , AGREE
+      , JOIN_STATE
+      , PW_MODIFIED_AT
+      , JOINED_AT
+      ,ADMIN_AUTHOR_STATE
+      ,POINT
+    ) VALUES (
+        USER_SEQ.NEXTVAL
+      , #{email}
+      , #{name}
+      , #{gender}
+      , #{mobile}
+      , #{agree}
+      , 1
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      , TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS')
+      , 0
+      , 0
+    )
+  </insert>
+  
+  
   
   
   
@@ -233,6 +277,7 @@ INSERT INTO INACTIVE_USER_T(
  WHERE EMAIL =  #{email}
  </delete>
  
+
  
  
  

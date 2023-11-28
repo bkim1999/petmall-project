@@ -44,12 +44,13 @@
 <hr>
 <div class="login_wrap">
 
-<!-- 카카오 로그인 페이지 이동  
-<div><button>카카오로 시작하기</button></div>
--->
+
 
 <!-- 네이버 로그인 페이지 이동  -->
 <div class="btn_naver btn_margin"><a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_완성형.png}" width="200px"></a></div>
+
+<!-- 카카오 로그인 페이지 이동  -->
+<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_login_large_narrow.png}" width="290px"></a></div>
 
 
 <!-- 로그인 폼  (post)-->
@@ -64,7 +65,7 @@
   <div>
 
       <input type="hidden" name="referer" th:value="${referer}">
-      <div><button id="btn_login" type="submit"  class="btn btn-lg btn-primary ">로그인</button></div>
+      <div><button id="btn_login" type="submit"  class="btn btn-lg btn-primary  ">로그인</button></div>
       
   </div>
 
