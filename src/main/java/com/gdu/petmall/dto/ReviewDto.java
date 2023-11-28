@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewDto { 
   private int reviewNo;
-  private int userNo;
   private int optionNo;
   private String reviewTitle;
   private String reviewContents;
-  private double reviewRating; 
-  private ProductImageDto reviewImageDto;
+  private double reviewRating;
+  private String reviewCreatedAt;
+  private String reviewModifiedAt;
+  private UserDto userDto;                // 리뷰목록보기용 DB엔 userNo만 있음
+  private ProductImageDto reviewImageDto; // 리뷰목록보기용 DB엔 없음
 }

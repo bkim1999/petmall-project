@@ -211,7 +211,8 @@
 
   const fnAddProductResult = () => {
     let addProductResult = /*[[${addProductResult}]]*/ '';  // '', 'true', 'false'
-    if(addProductResult !== ''){
+    console.log(addProductResult)
+    if(addProductResult !== null){
       if(addProductResult === true){
         alert('성공적으로 업로드 되었습니다.');
       } else {
