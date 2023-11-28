@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
     int total = eventMapper.getEventCount();
-    int display = 12;
+    int display = 6;
     
     myPageUtils.setPaging(page, total, display);
     

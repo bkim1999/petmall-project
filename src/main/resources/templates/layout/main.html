@@ -1,57 +1,132 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header :: head('홈')}"></head>
+
+<style>
+  li {
+    list-style: none;
+  }
+  .contents {
+    width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 120px 0 0 0;
+    position: relative;
+    z-index: 1;
+  }
+  .main_floor {
+    background-image: url(image/wall.png);
+  }
+  .quick_nav {
+    position: fixed;
+    width: 72px;
+    position: fixed;
+    left: 45%;
+    margin-left: 760px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    max-width: 200px;
+  }
+  
+  ul#landNav a.btn_el span.f {
+    display: block;
+    height: 46px;
+    width: 70px;
+    line-height: 45px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    background: url(/image/ev_button.png) no-repeat 0 0;
+    background-size: cover;
+    margin: -1px 0 0 0;
+  }
+  
+  ul#landNav li.active a.btn_el span.f {
+    background-image: url(/image/ev_hover_button.png) no-repeat 0 0;
+    background-size: cover;
+    color: #f10000;
+  }
+  
+  .quick_nav div, .quick_nav a.btn_el, .quick_nav a.qbtn {
+    display: block;
+    font-size: 0;
+    position: relative;
+    padding: 0;
+    margin: 0;
+  }
+  .quick_nav img {
+    width: 100%;
+    display: block;
+    vertical-align: top;
+    margin: -1px 0 0 0;
+  }
+  #landNav {
+    margin-bottom : 0;
+    padding-left: 0;
+  }
+</style>  
+
 <body>
   
   <div th:replace="~{layout/header :: header}"></div>
   
-  <div class="main_wrap">
-    
-  <div>
-    <img th:src="@{/image/PetMall_Logo.png}" width="200px">
+  
+  <div class="contents" style="min-height: 840px;">
+    <div class="main_floor">
+      <div class="quick_nav">
+        <div><img th:src="@{/image/ev_top.png}" alt></div>
+        <ul id="landNav">
+          <li>
+            <a class="btn_el" href="#nav_floor1">
+              <span class="f">3F</span>
+            </a>
+          </li>
+          <li><a class="btn_el" href="#nav_floor2"><span class="f">2F</span></a></li>
+          <li><a class="btn_el" href="#nav_floor3"><span class="f">1F</span></a></li>
+        </ul>
+        <a class="qbtn" id="navf_up" href="#nav_floor">
+          <img th:src="@{/image/ev_up_button.png}">
+          <p class="over" style="display: none;">
+            <img th:src="@{/image/ev_hover_button.png}">
+          </p>
+        </a>
+        <a class="qbtn" id="navf_down" href="#nav_floor">
+          <img th:src="@{/image/ev_down_button.png}">
+          <p class="over" style="display: none;">
+            <img th:src="@{/image/ev_hover_button.png}">
+          </p>
+        </a>
+        <div><img th:src="@{/image/ev_bottom.png}"></div>
+      </div>
+    </div>
+    <div class="main_body">
+      <a class="nav_floor" id="nav_floor1"></a>
+      <div class="full_img">
+        <p>
+          <img th:src="@{image/top_wood.png}" alt>
+        </p>  
+      </div>
+      
+      
+      
+      
+      
+      
+    </div>
+      
+      
+      
+      
+      
+      
+      
+      
   </div>
   
   
-  <h1>메인내용</h1>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  <div> ㅎ2</div>
-  </div>
+  
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

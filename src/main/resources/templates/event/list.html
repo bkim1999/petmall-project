@@ -7,12 +7,14 @@
 
   .Middle {
    border-radius: 10px;
+   box-sizing: border-box;
    background-color: white;
-   margin :20px;
+   margin-top :20px;
+   max-height: 700px;
   }
   
   .top{
-    padding-top: 300px;
+    padding-top: 5px;
     padding-left: 300px;
     padding-right: 300px;
     padding-bottom: 100px;
@@ -28,38 +30,39 @@
   
   .img1 {
     border-radius: 10px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    width: 1220px;
-    height: 500px;
-    background-position: center;
     box-sizing: border-box;
-    background-size: auto;
     border: #E0C891 solid 2px;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    max-width: 1200px;
+    max-height: 300px;
     
   }
   .img2 {
     border-radius: 10px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    width: 1220px;
-    height: 500px;
-    background-position: center;
     box-sizing: border-box;
-    background-size: auto;
     border: #E0C891 solid 2px;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    max-width: 1200px;
+    max-height: 500px;
   }
   .second_top {
     background-color: white;
     border-radius: 10px;
-    padding : 20px;
+    padding : 20px 10px;
+    max-width: 950px;
+    max-height: 1960px;
   }
   .btn_by {
-    display:flex;
-    justify-content: space-between;
-    margin : 0px 130px;
+    margin-left: 260px;
+    text-align: center;
+    position: relative;
+    width: 1000px;
+    font-size: 25px;
+    color: #fff;
   }
   
   .bottom a{
@@ -68,21 +71,55 @@
   .event_font{
     text-align: center;
   }
+  .header_event_wrap {
+    background-color: rgb(183,175,163);
+    position: relative;
+    text-align: center;
+  }
+  .event_a {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 15px 45px;
+    background-color: #fff;
+    border-radius: 50px;
+    margin: 30px 0 50px;
+    box-shadow: 2px 2px 5px 0px darkgray;
+    display: inline-block;
+    text-decoration: none;
+    color: #E0C891;
+    
+  }
 </style>
 
 <body>
   <div th:replace="~{/layout/header::header}"></div>
   
-  <div>
-   <div class="event_font">페스룸 회원가입하고 첫 구매 100원 회원가입만 하면 프리미엄 휴먼그레이드 간식이 100원!</div>
+  
+  <div class="header_event_wrap">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 20%; left: 0; top:234px; transform: rotate(-15deg);">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 10%; left: 20px; top:0px; transform: rotate(35deg);">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 5%; left: 1300px; top:0px; transform: rotate(-35deg);">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 15%; left: 1200px; top:170px; transform: rotate(60deg);">
+    <img class="money" th:src="@{/image/dance_cat.png}" style="position: absolute; width: 15%; left: 1250px; top:600px; transform: rotate(30deg);">
+    <img class="money" th:src="@{/image/dance_cat.png}" style="position: absolute; width: 15%; left: 20px; top:750px; transform: rotate(-30deg);">
+    <img class="money" th:src="@{/image/dog1.png}" style="position: absolute; width: 15%; left: 1250px; top:1200px; ">
+    <img class="money" th:src="@{/image/cat2.png}" style="position: absolute; width: 15%; left: 50px; top:1150px; ">
+    <img class="money" th:src="@{/image/cat1.png}" style="position: absolute; width: 15%; left: 50px; top:1550px; ">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 15%; left: 1200px; top:1600px; transform: rotate(60deg);">
+    <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 5%; left: 1400px; top:2000px; transform: rotate(-35deg);">
+    <img class="left_dog" th:src="@{/image/left_dog.png}" style="position: absolute; width: 20%; left: 30px; top: 1900px; z-index: 2;">
+    <img class="left_dog" th:src="@{/image/left_dog.png}" style="position: absolute; width: 20%; left: 1200px; top: 1900px; z-index: 2; transform: scaleX(-1);">
    <div class="btn_by">
-    <img class="cat1" src="https://pethroom.com/web/upload/NNEditor/page/event-alex.png">
-      <a th:href="@{/product/list.do}">
-      <input type="button" value="구매하로가기">
-      </a>
-    <img class="dog1" src="https://pethroom.com/web/upload/NNEditor/page/event-boss.png">
+    <img class="cat1" th:src="@{/image/women.png}" style="position: absolute; width: 20%; left: 30px; top: -22px; z-index: 2;">
+    <img class="line" th:src="@{/image/line.png}" style="position: absolute; width: 20%; right: 403px; top: -18px; z-index: 2;">
+         <br>
+         <p>이생망</p>
+         회원가입하고
+         <div>첫 구매 100원 회원가입만 하면</div> 
+         <p>프리미엄 휴먼그레이드 간식이 100원!</p>
+    <a class="event_a"th:href="@{/product/list.do}">구매하로가기</a>
+    <img class="dog1" th:src="@{/image/man.png}" style="position: absolute; width: 18%; right: 54px; top: 0px; z-index: 2;">
    </div>
-  </div>
   
   <div class="top">
    <div class ="second_top">
@@ -98,6 +135,8 @@
     </th:block>
     </div>
     <div class="bottom" th:utext="${paging}"></div>
+  </div>
+  <div>
   </div>
 
   <div th:replace="~{/layout/footer::footer}"></div>
