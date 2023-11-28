@@ -7,11 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
-public class CartListDto {
-
-  private List<CartListDto> cartListDto;
+public class CartOptionListDto {
+ 
+  private List<CartDto> cartOptionListDto;
+  
 }

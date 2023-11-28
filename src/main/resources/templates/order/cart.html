@@ -83,7 +83,7 @@
                 <input type="text" class="pr_Price" th:value="${cartProduct.productDto.productPrice}" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
                 <input type="text" class="" th:value="적립금" size="4">
-                <input type="text" class="discount" th:value="${cartProduct.eventDto.discountPercent}" size="3" readonly>
+                <input type="text" class="discount" th:value="${cartProduct.eventDto.discountPercent} + '%'" size="3" readonly>
                 <span id="count_span">
                   <input type="text" class="totalCount" th:value="${cartProduct.count}" size="2" readonly>
                   <button type="button" class="plus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">+</button>
@@ -91,7 +91,7 @@
                   <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">-</button>
                   <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
                 </span>                                   
-                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count * (1 - cartProduct.eventDto.discountPercent / 100.0)}" size="7"  readonly>
+                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count * (1 - cartProduct.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
                 <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
                 <button type="submit" class="btn_remove btn btn-danger">삭제</button>

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gdu.petmall.dto.CartListDto;
+import com.gdu.petmall.dto.CartOptionListDto;
 import com.gdu.petmall.service.CartService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class CartController {
   }
   
   @PostMapping(value="/order/addCart.do")
-  public String addCart(HttpServletRequest request, @ModelAttribute CartListDto cartList, Model model) {
+  public String addCart(HttpServletRequest request, @ModelAttribute CartOptionListDto cartOptionList, Model model) {
     cartService.addCart(request, model);
     return "redirect:/order/cart.go"; 
   }   
