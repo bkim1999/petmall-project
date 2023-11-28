@@ -22,5 +22,6 @@ public interface CartMapper {
   // 카트 수량 수정
   public int updateCart(Map<String, Object> map);
   
-  
+  // 카트 할인율
+  public int discountCart(Map<String, Object> map);
 }

@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 
 import com.gdu.petmall.dao.CartMapper;
 import com.gdu.petmall.dto.CartDto;
+import com.gdu.petmall.dto.EventDto;
+import com.gdu.petmall.dto.EventDto.EventDtoBuilder;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.UserDto;
 
@@ -106,7 +108,12 @@ public class CartServiceImpl implements CartService {
     return Map.of("plusResult", plusResult);
   }
 
-
+  @Override
+  public Map<String, Object> discountCart(HttpServletRequest request) {
+    
+    int discountPercent = Integer.parseInt(request.getParameter("discountPercent"));
+    return Map.of("discountPercent", discountPercent);
+  }
 
 
 }

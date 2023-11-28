@@ -4,41 +4,72 @@
 <head th:replace="~{/layout/header::head('cart')}"></head>
 
 <style>
-  .img_line1 {
+  .img_line{
+     padding-left: 0px;
+     word-spacing:60px;
+     text-align: left;
+     
+  }
+  .cart_info_td {
+    padding-top: 50px;
     
   }
-  .img_line2 {
+  
+  #cart_title{
+    font-size: 70px;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  
+  #center_title{
+    text-align: center;
+  }
+  
+  .b {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  #wrap_div1{
+    border-radius: 30px;
+    
     
   }
+  
+  #all {
+     margin-left: auto;
+     margin-right: auto;
+     width: 300px;
+     height: 50px;
+     text-align: left;
+     font-size: larger;
+     
+  }
+  
+  #frm_order {
+    padding-top: 50px;
+    text-align: center;
+  }
+  
   
 </style>
 
 <body>
 
   <div th:replace="~{/layout/header::header}"></div>
-  <div>
-    
-  </div>
-
-  <h1>Cart</h1>
+  
+  <h1 id="cart_title">Cart</h1>
   <hr>
   
   <div>
     <div>
-      <h3>일반상품</h3>
+      <h3 id="center_title">상품정보</h3>
     </div>
     <form id="frm_btn"> 
-      <table border="1" class="b">
-        <thead>
-          <tr>
-            <th class="img_line1">이미지</th>
-            <th class="img_line2">상품명</th>
-            <th class="img_line">판매가</th>
-            <th class="img_line">수량</th>
-            <th class="img_line">적립금</th>
-            <th class="img_line">배송</th>
-            <th class="img_line">상품합계</th>
-          </tr>
+      <table class="b">
+        <thead border="1">
+          <tr><th class="img_line">이미지  상품명  가격  배송비  적립금  수량 합계</th></tr>
         </thead>
         <tbody>
         <caption>장바구니</caption>
@@ -47,68 +78,68 @@
               <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
                 <input type="image" class="image" th:value="이미지">
-                <input type="text" class="pr_Name" th:value="${cartProduct.productDto.productName}" readonly>
-                <input type="text" class="pr_Price" th:value="${cartProduct.productDto.productPrice}"readonly>
-                <input type="text" class="deliveryPrice" th:value="3000원"readonly>
-                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count + 3000}" readonly>
-                <input type="text" class="" th:value="적립금">
+                <input type="text" class="pr_Name" th:value="${cartProduct.productDto.productName}" size="9" readonly>
+                <input type="text" class="pr_Price" th:value="${cartProduct.productDto.productPrice}" size="5" readonly>
+                <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
+                <input type="text" class="" th:value="적립금" size="4">
                   <span id="count_span">
-                    <input type="" class="totalCount" th:value="${cartProduct.count}" readonly>
-                    <button type="button" class="plus_btn" th:value="${cartProduct.count}">+</button>
+                    <input type="" class="totalCount" th:value="${cartProduct.count}" size="2" readonly>
+                    <button type="button" class="plus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">+</button>
                     <input type="hidden" class="plus_cartcount" name="count" th:value="${cartProduct.count}"></input>
-                    <button type="button" class="minus_btn" th:value="${cartProduct.count}">-</button>
+                    <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" th:value="${cartProduct.count}">-</button>
                     <input type="hidden" class="minus_cartcount" name="count" th:value="${cartProduct.count}"></input>
                   </span>
+                <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count}" size="7"  readonly>
                 <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
                 <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
-                <button type="submit"  class="btn_remove">삭제</button>
+                <button type="submit"  class="btn_remove btn btn-danger">삭제</button>
               </td>
             </tr>  
           </th:block>
         </tbody>
         </table>
       </form>
-      
+     </div> 
   <hr>
     
     
-    <div>
-      <form id="frm_order">
-        <table border="1">
-          <thead>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="totalPrice_span"></span></td> 
-              <td><span class="totalCount_span"></span></td>
-              <td><span class="delivery_price"></span></td>
-              <td><span class="finalTotalPrice_span"></span></td>
-            </tr>
-          </tbody>
-        </table>
-        <div>
-          <a th:href="@{/order/order.do}">
-            <button type="button">구매</button>
-          </a>
-          <a th:href="@{/product/list.do}">
-            <button type="button">리스트로 돌아가기</button>
-          </a>
-      </div>
+   <div class="wrap_div1">
+    <table border="1" id="all">
+      <tbody>
+        <tr>
+          <td><span class="totalPrice_span"></span></td>
+          <td><span class="plus">+</span></td> 
+          <td><span class="delivery_price"></span></td>
+          <td><span class="inequality">=</span></td>
+          <td><span class="finalTotalPrice_span"></span></td>
+        </tr>
+      </tbody>
+    </table>
+   </div>
+    
+   <div> 
+    <form id="frm_order" th:action="@{/order/detail.do}" method="get">
+      <th:block th:each="order:${cartList}"> 
+      <input type="hidden" name:"optionNo" th:value="${order.productOptionDto.optionNo}">
+      <input type="hidden" name:"userNo"   th:value="${order.userDto.userNo}">
+      <input type="hidden" name:"count"    th:value="${order.count}">
+      </th:block>
+        <button type="submit" id="order_btn" class="btn btn-warning btn btn-primary btn-lg">구매</button>
+        <a th:href="@{/product/list.do}">
+          <button type="button" id="list_btn" class="btn btn-warning btn btn-primary btn-lg">리스트로 돌아가기</button>
+        </a> 
     </form>
    </div>
     
-    
-    
-    
  
- </div>
+ 
 
 <script th:inline="javascript">
+   
    
    $(document).ready(function(){
        setTotalInfo();
       
-   
    $('.cart_checkbox').on('change', function(){
       setTotalInfo($('.cart_info_td'));
    });

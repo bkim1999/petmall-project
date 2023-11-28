@@ -56,9 +56,15 @@ public class CartController {
   @PostMapping(value="/order/plusupdate.do", produces="application/json")
   public Map<String, Object> plusUupdateCart(HttpServletRequest request) {
     return cartService.plusCart(request);
-    
   }
 
+  
+  @GetMapping(value="/order/discountCart.do")
+  public Map<String, Object> discountCart(HttpServletRequest request) {
+    return cartService.discountCart(request);
+     
+  }
+  
 
 }
 
