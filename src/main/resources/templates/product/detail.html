@@ -7,7 +7,8 @@
     height: 754px;
   }
   #product_header{
-    width: 100%;
+    margin: 0 auto;
+    width: 1280px;
     min-height: 754px;
   }     
   #product_detail{
@@ -36,14 +37,19 @@
   #product_images img {
     height: 100%;
   }
-  #contents {
-    width: 800px;
-    margin: 10px auto;
+  #product_contents {
+    width: 1280px;
+    margin: 50px auto;
+    padding-top: 30px;
+    border-top: 1px solid gray;
     text-align: center;
   }
-  #contents >.image > img {
-    width: 800px;
+  #product_contents >.image > img {
+    width: 850px;
     height: 100%;
+  }
+  figure {
+    margin: 0;
   }
   #total_price_area {
     margin-top: 15px;
@@ -70,6 +76,26 @@
     font-size: 50px;
     color: black;
     font-weight: bold;
+  }
+  #product_review{
+    border-top: 1px solid gray;
+    margin: 50px auto;
+    padding: 30px;
+    width: 1280px;
+  }
+  #product_rating {
+    text-align: center;
+    padding: 50px;
+  }
+  #average_rating {
+    font-size: 50px;
+    font-weight: bold;
+    color: black;
+  }
+  .review {
+    border-top: 1px solid gray;
+    padding: 30px;
+    width: 100%;
   }
 </style>
 <body>
@@ -145,7 +171,20 @@
         <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
       </div>
     </div>
-  </div>  
+  </div>
+  <div id="product_contents" th:utext="${product.productContents}"></div>
+  <div id="product_review">
+    <h2>리뷰</h2>
+    <div id="product_rating">
+      <th:block th:if="${product.productRating != 0}">
+        이 상품의 평점: <span id="average_rating" th:text="${product.productRating}"></span>
+      </th:block>
+      <th:block th:if="${product.productRating == 0}">
+        <span>아직 평점이 없습니다.</span>
+      </th:block>
+    </div>
+    <div id="review_list"></div>
+  </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 <script th:inline="javascript">
@@ -224,6 +263,9 @@
   }
   
   var productNo = /*[[${product.productNo}]]*/ 0;
+  var userNo = 0;
+  
+
   
   const fnGetProductImageList = () => {
     $.ajax({
@@ -278,9 +320,59 @@
   }
   
   const fnAddCartOrder = () => {
-    $(document).on('click', '#btn_addCart', function(){
-      $('frm_cart_order').attr('th:action', '@{/cart/addCart.do}');
-      
+    $(document).on('click', '#btn_add_cart', function(){
+      $('#frm_cart_order').attr('th:action', '@{/order/addCart.do}');
+      $('#frm_cart_order').submit();
+    })
+    $(document).on('click', '#btn_add_order', function(){
+      $('#frm_cart_order').attr('th:action', '@{/order/addOrder.do}');
+      $('#frm_cart_order').submit();
+    })
+  }
+  
+  var page = 1;
+  var order = 'REVIEW_CREATED_AT';
+  const fnGetReviewList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '/review/getReviewList.do',
+      data: {'productNo' : productNo
+           , 'page' : page
+           , 'order' : order
+            },
+      // 응답
+      dataType: 'json',
+      success: (resData) => {  // resData = {"reviewList": [], "paging": ""}
+        if(resData.reviewList === null){
+          alert('리뷰 목록 불러오기 실패');
+          return;
+        }
+        if(resData.reviewList.length === 0){
+          $('#review_list').text('아직 리뷰가 없습니다.');
+          return;
+        }
+        $.each(resData.reviewList, (i, review) => {
+          let str = '<div class="review" data-review-no="' + review.reviewNo + '">';
+          str += '<h4>';
+          for(let i = 0; i < review.reviewRating; i++){
+            str += '★';
+          }
+          str += '</h4>';
+          str += '<div class="review_thumbnail">';
+          if(review.reviewImageDto !== null){
+            str += '  <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '  <image src="기본이미지">';
+          }
+          str += '</div>';
+          str += '<h5 class="review_title">' + review.reviewTitle + '</h5>'
+          str += '<div class="review_contents">' + review.reviewContents + '</div>';
+          str += '</div>';
+          $('#review_list').append(str);
+        });
+        $('#review_list').append(resData.paging);
+      }
     })
   }
   
