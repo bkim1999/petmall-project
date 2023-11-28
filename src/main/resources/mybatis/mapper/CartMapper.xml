@@ -22,6 +22,18 @@
       <result column="PRODUCT_HIT"          property="productHit" />
       <result column="PRODUCT_RATING"       property="productRating" />
     </association>
+    <association  javaType="EventDto"       property="eventDto">
+      <id     column="EVENT_NO"             property="eventNo" />
+      <result column="TITLE"                property="title" />
+      <result column="CONTENTS"             property="contents" />
+      <result column="HIT"                  property="hit" />
+      <result column="STATE"                property="state" />
+      <result column="EVENT_THUMNAIL_URL"   property="eventThumnailUrl" />
+      <result column="DISCOUNT_PERCENT"     property="discountPercent" />
+      <result column="DISCOUNT_PRICE"       property="discountPrice" />
+      <result column="START_AT"             property="start_at" />
+      <result column="END_AT"               property="end_at" />
+    </association>
     <association javaType="UserDto"       property="userDto">
       <id     column="USER_NO"            property="userNo" />
       <result column="EMAIL"              property="email" />
@@ -47,18 +59,26 @@
     </association>  
   </resultMap>
   
-   <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
-      SELECT C.USER_NO, C.COUNT
-           , A.PRODUCT_NAME, A.PRODUCT_PRICE, A.PRODUCT_NO
-           , B.OPTION_NO,B.ADD_PRICE
-        FROM PRODUCT_T A, 
-             PRODUCT_OPTION_T B,
-             CART_T C
-       WHERE A.PRODUCT_NO = B.PRODUCT_NO 
+    <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
+      SELECT C.USER_NO 
+           , C.COUNT
+           , A.PRODUCT_NAME
+           , A.PRODUCT_PRICE
+           , A.PRODUCT_NO
+           , B.OPTION_NO
+           , B.ADD_PRICE
+           , E.DISCOUNT_PERCENT
+           , E.EVENT_NO 
+        FROM PRODUCT_T A 
+           , PRODUCT_OPTION_T B
+           , EVENT_T E
+           , CART_T C
+       WHERE A.PRODUCT_NO = B.PRODUCT_NO
+         AND E.DISCOUNT_PERCENT = E.DISCOUNT_PERCENT
+         AND E.EVENT_NO = E.EVENT_NO
          AND B.OPTION_NO = C.OPTION_NO
          AND C.USER_NO = ${userNo}
     </select>
-    
     
    <insert id="insertCart" parameterType="CartDto">
       INSERT INTO CART_T(
@@ -72,17 +92,19 @@
       )
    </insert>
    
-   <update id="updateCart" parameterType="CartDto">
+   <update id="updateCart" parameterType="map">
       UPDATE CART_T
-        SET COUNT = #{count}
+        SET COUNT = #{count}  
         WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
    </update>
    
-   <delete id="deleteCart" parameterType="int">
+   <delete id="deleteCart" parameterType="map">
       DELETE
         FROM CART_T
        WHERE OPTION_NO = #{optionNo}
-       AND USER_NO = #{userNo}
+         AND USER_NO = #{userNo}
    </delete>           
+   
+   
    
 </mapper>

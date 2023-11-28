@@ -20,7 +20,7 @@
 
 /*일반가입 버튼*/
 .btn-primary{width:290px; height:70px;}
-.txt_line{height:30px; line-height:55px; font-size:large;}
+.txt_line{height:30px; line-height:55px; font-size:large; color: white;}
 
 /*버튼간 간격*/
 .btn_margin{margin-bottom:10px;}
@@ -28,15 +28,17 @@
 
 
 <div class="join_opt_wrap">
-<!-- <button>카카오로 시작하기</button> -->
 
 
 
-<<<<<<< HEAD
-<div class="btn_naver btn_margin"><a th:href="@{naverLoginURL}" ><img th:src="@{/image/btnG_완성형.png}" width="200px" ></a></div>
-=======
+
+<!--네이버가입-->
 <div class="btn_naver btn_margin"><a th:href="${naverLoginURL}" ><img th:src="@{/image/btnG_완성형.png}" width="200px" ></a></div>
->>>>>>> master
+
+<!--카카오가입-->
+<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_large_narrow.png}" width="290px" ></a></div>
+
+<!--일반가입-->
 <a  class="btn btn-primary btn_margin"  th:href="@{/user/join.form}"><span class="txt_line">가입하기</span></a>
 
 </div>
@@ -49,4 +51,3 @@
 </body>  
 </html>
     
-

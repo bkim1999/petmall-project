@@ -103,7 +103,6 @@ public class ProductServiceImpl implements ProductService {
     
     model.addAttribute("product", product);
     model.addAttribute("optionList", optionList);
-    
   }
   
   @Override
@@ -234,7 +233,7 @@ public class ProductServiceImpl implements ProductService {
               .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
               .toFile(previewFile);
     Thumbnails.of(thumbnailOriginalFile)
-              .size(400, 400)      // 가로 400px, 세로 400px
+              .size(450, 450)      // 가로 450px, 세로 450px
               .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
               .toFile(thumbnailFile);
     ProductImageDto previewImage = ProductImageDto.builder()
