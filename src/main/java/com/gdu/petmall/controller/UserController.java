@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.service.UserService;
@@ -100,7 +102,7 @@ public class UserController {
 	//마이페이지로 이동
 	@GetMapping(value = "/mypage")
 	public String myPage() {
-		
+	  
 		return"user/mypage";
 	}
 	
@@ -285,6 +287,17 @@ public class UserController {
   @GetMapping("/active.do")
   public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
     userService.active(session, request, response);
+  }
+  
+  
+  
+  /* **********************  프로필 이미지 첨부  ************************** */
+  @PostMapping("/upload_image.do")
+  public String add(MultipartHttpServletRequest request
+                  , RedirectAttributes redirectAttributes) throws Exception {
+    int addResult = userService.addUpload(request);
+    redirectAttributes.addFlashAttribute("addResult", addResult);
+    return "redirect:/user/mypage/profile.form";
   }
 	
 }
