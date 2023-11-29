@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
 import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.InactiveUserDto;
@@ -846,7 +845,6 @@ public UserDto getKakaoProfile(String accessToken) throws Exception {
   JSONObject obj = new JSONObject(responseBody.toString());
 
 
-  System.out.println(obj);
   JSONObject kakao_account = obj.getJSONObject("kakao_account");
   JSONObject profile=kakao_account.getJSONObject("profile");
   
@@ -860,7 +858,27 @@ public UserDto getKakaoProfile(String accessToken) throws Exception {
 
 
 
-
+@Override
+public void kakaoLogin(HttpServletRequest request, HttpServletResponse response, UserDto kakaoProfile)throws Exception {
+  
+  
+  String email = kakaoProfile.getEmail();
+  UserDto user = userMapper.getUser(Map.of("email", email));
+  
+  if(user != null) {
+    request.getSession().setAttribute("user", user);
+    userMapper.insertAccess(email);
+  } else {
+    response.setContentType("text/html; charset=UTF-8");
+    PrintWriter out = response.getWriter();
+    out.println("<script>");
+    out.println("alert('일치하는 회원 정보가 없습니다.')");
+    out.println("location.href='" + request.getContextPath() + "/main.do'");
+    out.println("</script>");
+    out.flush();
+    out.close();
+  }
+}
 
 
 
@@ -907,18 +925,31 @@ public void active(HttpSession session, HttpServletRequest request, HttpServletR
 	
 }
 
-/* ***** 이미지 첨부********  */
+/* ************** 프로필 이미지 첨부****************************/
 @Override
-public int addUpload(MultipartHttpServletRequest request) throws Exception {
+public Map<String, Object> addAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
   
-  int userNo=Integer.parseInt(request.getParameter("userNo"));
+  MultipartFile file=multipartRequest.getFile("file");
   
-  MultipartFile file=request.getFile("file");  
+/////////// 첨부된 파일이 있는지 확인
   int attachCount;
   
-  return 0;
+  if(file.getSize() == 0) {
+    attachCount = 1;  // 첨부된게 있음
+  } else {
+    attachCount = 0;  // 첨부된게 없어서 0
+  }
+  
+  
+if(file!=null&& !file.isEmpty()) {
+  
 }
-
+  
+  
+  
+  
+  return null;
+}
 
 
 

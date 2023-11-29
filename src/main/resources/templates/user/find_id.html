@@ -1,21 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/header::head('아이디 찾기')}"></head>
-<<<<<<< HEAD
-
-<style>
-  
-  
-</style>
-
-=======
 
 <style>
 #id_wrap{margin:0 auto; width:290px;}
 .btn{margin-top:10px; width: 290px;}
  .h1_center{text-align: center;}
 </style>
->>>>>>> master
 
 <body>
   <div th:replace="~{layout/header::header}"></div>
@@ -52,28 +43,28 @@
 
 /****************************아이디찾기**********************************/
 const fnFindId=()=>{
-	
-	$('#btn_find_id').click(()=>{
-		
-		$.ajax({
-			type:'post',
-			url:'/user/find_id.do',
-			data:$('#frm_find_id').serialize(),
-			
-			dataType:'json',
-			success:(resData)=>{
-				
-				if(resData.email==0)
-				{
-					alert('일치하는 회원정보가 없습니다.');
-					return;
-				}
-				
-				alert('아이디는'+resData.email+'입니다.');
-				location.href='/user/login.form';
-			}
-		})
-	})
+  
+  $('#btn_find_id').click(()=>{
+    
+    $.ajax({
+      type:'post',
+      url:'/user/find_id.do',
+      data:$('#frm_find_id').serialize(),
+      
+      dataType:'json',
+      success:(resData)=>{
+        
+        if(resData.email==0)
+        {
+          alert('일치하는 회원정보가 없습니다.');
+          return;
+        }
+        
+        alert('아이디는'+resData.email+'입니다.');
+        location.href='/user/login.form';
+      }
+    })
+  })
 }
 
 
