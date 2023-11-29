@@ -14,7 +14,7 @@ public interface CartMapper {
   public List<CartDto> getCartList(int userNo); 
   
   // 카트 추가
-  public int insertCart(CartDto cartDto);
+  public List<CartDto> insertCart(CartDto cartDto);
   
   // 카트 삭제
   public int deleteCart(Map<String, Object> map);
@@ -23,5 +23,5 @@ public interface CartMapper {
   public int updateCart(Map<String, Object> map);
   
   // 카트 할인율
-  public int discountCart(Map<String, Object> map);
+  
 }

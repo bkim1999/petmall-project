@@ -13,8 +13,7 @@ import org.springframework.ui.Model;
 
 import com.gdu.petmall.dao.CartMapper;
 import com.gdu.petmall.dto.CartDto;
-import com.gdu.petmall.dto.EventDto;
-import com.gdu.petmall.dto.EventDto.EventDtoBuilder;
+import com.gdu.petmall.dto.CartOptionListDto;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.UserDto;
 
@@ -27,18 +26,20 @@ public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
   
-  public void addCart(HttpServletRequest request,Model model) {
+  public void addCart(HttpServletRequest request, Model model) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
     int count = Integer.parseInt(request.getParameter("count"));
-
+    
     CartDto cart = CartDto.builder()
-                            .userDto(UserDto.builder().userNo(userNo).build())
-                            .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
-                            .count(count)
-                            .build();
-       int  addResult = cartMapper.insertCart(cart);
-       model.addAttribute("addResult", addResult);
+                          .userDto(UserDto.builder().userNo(userNo).build())
+                          .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+                          .count(count)
+                          .build();
+  
+    List<CartDto> addCartList = cartMapper.insertCart(cart);
+    
+    model.addAttribute("addCartList", addCartList);
     }
   
   @Override
@@ -47,11 +48,10 @@ public class CartServiceImpl implements CartService {
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
     int userNo = user.getUserNo();
-   
+    
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
-    
-    }
+  }
   
   @Override
   public Map<String, Object> deleteCart(HttpServletRequest request){
@@ -108,12 +108,7 @@ public class CartServiceImpl implements CartService {
     return Map.of("plusResult", plusResult);
   }
 
-  @Override
-  public Map<String, Object> discountCart(HttpServletRequest request) {
-    
-    int discountPercent = Integer.parseInt(request.getParameter("discountPercent"));
-    return Map.of("discountPercent", discountPercent);
-  }
+  
 
 
 }

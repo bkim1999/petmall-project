@@ -37,14 +37,14 @@
         <select class="form-select not-empty" id="categoryNo" name="categoryNo">
           <option value="">--선택 안함--</option>
           <th:block th:each="category : ${categoryList}">
-            <option th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
+            <option th:if="${category.categoryNo != 0}" th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
           </th:block>
         </select>
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label for="productName" class="form-label mt-4">상품이름</label>
-        <input type="text" class="form-control not-empty" name="productName" id="productName" aria-describedby="productNameHelp" placeholder="상품이름 입력">
+        <input type="text" class="form-control not-empty" name="productName" id="productName" aria-describedby="productNameHelp">
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
@@ -96,7 +96,6 @@
         <hr>
         <h1>옵션 정보</h1>
         <div id="option_list">
-          
          <div class="option">
            <div class="form-group">
              <label class="form-label mt-4" for="productOptionList[0].optionName">옵션명</label>
@@ -121,10 +120,11 @@
              </div>
            </div>
          </div>
+        </div>
         <button type="submit" class="btn btn-secondary mt-4" id="btn_add_option">옵션 추가</button>
-      </div>
+        </div>
       <div class="d-grid gap-2 mt-5">
-        <button type="button" id="btn_add_product" class="btn btn-lg btn-primary">상품 등록</button>
+        <button type="button" id="btn_add_product" class="btn btn-lg btn-primary mb-5">상품 등록</button>
       </div>
     </form>
   </div>
@@ -134,7 +134,7 @@
 </body>
 
 
-<script>
+<script th:inline="javascript">
   var editor;
   const fnCkeditor = () => {
     ClassicEditor

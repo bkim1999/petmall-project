@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.ReviewMapper">
+	
+  <resultMap type="ReviewDto" id="ReviewMap">
+    <id     column="REVIEW_NO"          property="reviewNo" />
+    <result column="OPTION_NO"          property="optionNo" />
+    <result column="REVIEW_TITLE"       property="reviewTitle" />
+    <result column="REVIEW_CONTENTS"    property="reviewContents" />
+    <result column="REVIEW_RATING"      property="reviewRating" />
+    <association javaType="UserDto"  property="userDto">
+      <id     column="USER_NO"             property="userNo" />
+      <result column="EMAIL"               property="email" />
+      <result column="NAME"                property="name" /> 
+      <result column="GENDER"              property="gender" />
+    </association>
+    <association javaType="ProductImageDto"  property="reviewImageDto">
+      <id     column="IMAGE_CODE"            property="imageCode" />
+      <result column="POSITION"              property="position" />
+      <result column="PATH"                  property="path" />
+      <result column="FILESYSTEM_NAME"      property="filesystemName" />
+    </association>
+  </resultMap>
+  
+  <select id="getProductReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM REVIEW_T
+     WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>)
+  </select>
+  
+  <select id="getProductReviewList" parameterType="Map" resultMap="ReviewMap">
+    SELECT A.REVIEW_NO, A.OPTION_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.USER_NO, A.EMAIL, A.NAME, A.GENDER, RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, R.REVIEW_NO, R.OPTION_NO, R.REVIEW_TITLE, R.REVIEW_CONTENTS, R.REVIEW_RATING, R.REVIEW_CREATED_AT, R.REVIEW_MODIFIED_AT, U.USER_NO, U.EMAIL, U.NAME, U.GENDER 
+              FROM REVIEW_T R LEFT OUTER JOIN USER_T U
+                ON R.USER_NO = U.USER_NO
+             WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>)
+             ) A LEFT OUTER JOIN PRODUCT_IMAGE_T RI
+        ON RI.IMAGE_CODE = 'review_' || A.REVIEW_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getProductOrderList" parameterType="Map" resultType="ProductOptionDto">
+    SELECT OPT.OPTION_NO, OPT.OPTION_NAME
+      FROM PRODUCT_OPTION_T OPT INNER JOIN ORDER_DETAIL_T OD
+        ON OPT.OPTION_NO = OD.OPTION_NO
+     WHERE OD.ORDER_NO IN (SELECT ORDER_NO
+                          FROM ORDER_T
+                         WHERE USER_NO = #{userNo})
+       AND OD.OPTION_NO IN (<include refid = "getProductOptionNo"/>)
+  </select>
+  
+  <insert id="insertProductReview" parameterType="ReviewDto">
+    <selectKey order="BEFORE" keyProperty="reviewNo" resultType="int">
+      SELECT REVIEW_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO REVIEW_T (
+           REVIEW_NO       
+         , USER_NO
+         , OPTION_NO       
+         , REVIEW_TITLE    
+         , REVIEW_CONTENTS 
+         , REVIEW_RATING   
+         , REVIEW_CREATED_AT
+         , REVIEW_MODIFIED_AT
+         ) VALUES (
+           #{reviewNo}
+         , #{userNo}
+         , #{optionNo}
+         , #{reviewTitle}
+         , #{reviewContents}
+         , #{reviewRating}
+         , TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+         , TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+         )
+  </insert>
+  
+  <update id="updateProductRating" parameterType="int">
+     UPDATE PRODUCT_T
+       SET PRODUCT_RATING = (SELECT AVG(REVIEW_RATING) 
+                               FROM REVIEW_T 
+                              WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>))
+  </update>
+  
+  <sql id = "getProductOptionNo">
+    SELECT OPTION_NO 
+      FROM PRODUCT_OPTION_T
+     WHERE PRODUCT_NO = ${productNo}
+  </sql>
+  
+</mapper>

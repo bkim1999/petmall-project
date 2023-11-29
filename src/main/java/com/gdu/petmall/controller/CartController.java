@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gdu.petmall.dto.CartOptionListDto;
 import com.gdu.petmall.service.CartService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class CartController {
   }
   
   @PostMapping(value="/order/addCart.do")
-  public String addCart(HttpServletRequest request, Model model) {
+  public String addCart(HttpServletRequest request, @ModelAttribute CartOptionListDto cartOptionList, Model model) {
     cartService.addCart(request, model);
     return "redirect:/order/cart.go"; 
   }   
@@ -59,11 +61,7 @@ public class CartController {
   }
 
   
-  @GetMapping(value="/order/discountCart.do")
-  public Map<String, Object> discountCart(HttpServletRequest request) {
-    return cartService.discountCart(request);
-     
-  }
+  
   
 
 }
