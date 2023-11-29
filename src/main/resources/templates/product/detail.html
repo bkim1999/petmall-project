@@ -173,8 +173,13 @@
           <select id="option_list" class="form-select">
             <option value="0">(필수)옵션을 선택해주세요</option>
             <th:block th:each="option : ${optionList}">
-              <option th:value="${option.optionNo}" th:data-add-price="${option.addPrice}">
-                <th:block th:if="${option.addPrice > 0}" th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
+              <option th:if="${option.optionCount > 0}" th:value="${option.optionNo}" th:data-add-price="${option.addPrice}" th:data-option-count="${option.optionCount}">
+                <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
+                <span th:if="${option.optionCount < 10}" th:text="|품절임박: ${option.optionCount}개 남음|"></span>
+              </option>
+              <option th:if="${option.optionCount == 0}" style="color:red;" disabled>
+                <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
+                <span th:text="품절"></span>
               </option>
             </th:block>
           </select>
@@ -239,13 +244,14 @@
       let productPrice = /*[[${product.productPrice}]]*/ 0;
       let optionName = $("#option_list option:selected").text();
       let addPrice = $("#option_list option:selected").data('add-price');
+      let optionCount = $("#option_list option:selected").data('add-price');
       let str = '<div class="selected_option d-flex justify-content-between align-items-center" data-option-no="' + optionNo + '">';
       str += '  <div class="option_name">' + optionName + '</div>';
       str += '  <div class="d-flex pt-2 option_count">';
       str += '    <button type="button" class="btn btn-light minus_count">-</button>';
-      str += '    <input type="hidden" name="cartList[' + cartCount + '].userNo" value="' + userNo + '">';
-      str += '    <input type="hidden" class="option_no" name="cartList[' + cartCount + '].optionNo" value="' + optionNo + '">';
-      str += '    <input type="text" class="count form-control-plaintext text-center" value="1" name="cartList[' + cartCount + '].count" readonly>';
+      str += '    <input type="hidden" name="cartList[' + cartCount + '].userDto.userNo" value="' + userNo + '">';
+      str += '    <input type="hidden" class="option_no" name="cartList[' + cartCount + '].productOptionDto.optionNo" value="' + optionNo + '">';
+      str += '    <input type="text" class="count form-control-plaintext text-center" value="1" name="cartList[' + cartCount + '].count" data-option-count="' + optionCount + '" readonly>';
       str += '    <button type="button" class="btn btn-light plus_count">+</button>';
       str += '    <button type="button" class="btn btn-light btn_delete_option">X</button>';
       str += '  </div>'
@@ -286,7 +292,7 @@
   const fnIncreaseCount = () => {
     $(document).on('click', '.plus_count', function(){
         var count = $(this).siblings('.count');
-        if(count.val() === '999'){
+        if(count.val() >= count.val()){
           alert('too much')
           return;
         }
