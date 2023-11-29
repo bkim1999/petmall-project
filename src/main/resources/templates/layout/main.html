@@ -56,15 +56,57 @@
     padding: 0;
     margin: 0;
   }
+  
   .quick_nav img {
     width: 100%;
     display: block;
     vertical-align: top;
     margin: -1px 0 0 0;
   }
+  
   #landNav {
     margin-bottom : 0;
     padding-left: 0;
+  }
+  
+  .main_body {
+    max-width: 1490px;
+    min-width: 1200px;
+    margin: 0 auto;
+  }
+  .main_floor .full_img .main_body .full_img{
+    font-size: 0;
+    position: relative;
+  }
+  .main_floor .wood_bg.top {
+    background: url(image/wrapping.png) repeat-y 0 0;
+    background-size: 100% auto;
+  }
+  .main_floor .fl_name {
+    position: absolute;
+    left: 68px;
+    top: 32px;
+    z-index: 4;
+    white-space: nowrap;
+  }
+  
+  .main_body .fl_name span {
+    display: inline-block;
+    font-size: 20px;
+    color: #000;
+    background: #fff;
+    border: 1px solid #000;
+    padding: 0 30px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 24px;
+  }
+  
+  .main_body .wood_bg, .main_body .full_img3 {
+    background: url(/image/side_wrap.png) repeat-y 0 50%;
+    background-size: 100% auto;
+    padding: 0px 2.955003%;
+    position: relative;
   }
 </style>  
 
@@ -101,6 +143,7 @@
         <div><img th:src="@{/image/ev_bottom.png}"></div>
       </div>
     </div>
+    
     <div class="main_body">
       <a class="nav_floor" id="nav_floor1"></a>
       <div class="full_img">
@@ -108,22 +151,76 @@
           <img th:src="@{image/top_wood.png}" alt>
         </p>  
       </div>
+      <div class="wood_bg_top">
+        <div class="fl_name">
+          <span>
+            "3F "
+            <strong>몰라임마</strong>
+          </span>
+        </div>
+        <div class="full_img3">
+          <p>
+            <img th:src="@{image/cat2.png}">
+          </p>
+        </div>
+      </div>
+      <div class="full_img" style="display: none;">
+        <p>
+          <img>
+        </p>
+      </div>
+      <div class="wood_bg">
+        <div class="mprd_box">
+          <div class="item_floor">
+            <div class="side1">
+              <div class="fl_name2">Bathroom</div>
+              <div class="fl_desc">
+                " 이생망 aims to create a happy bathroom lifestyle. "
+                <br>
+                " We respect and value healthy companionship between pets and "
+                <br>
+                " people and we continuously strive to sustain"
+                <br>
+                " this value through sincere communication."
+                <br>
+                <br>
+                " 즐거운 욕실 라이프스타일을 지향합니다."
+                <br>
+                " 또한 이 가치가 지속 가능하도록 건강한 반려생활을"
+                <br>
+                " 중시하고 배려하며,"
+                <br>
+                " 반려 동물 및 반려인들과 진정성 있는 소통을 합니다."
+                <br>
+              </div>
+            </div>
+              <div class="side2"></div>
+          </div>
+        </div>
+      </div> 
+      <div class="full_img">
+        <p>
+          <img th:src="@{image/middle_floor.png}">
+        </p>
+      </div>
+      
+      
+      
+    </div>      
+      
+      
+      
+      
+      
+    </div>      
       
       
       
       
       
       
-    </div>
       
       
-      
-      
-      
-      
-      
-      
-  </div>
   
   
   
