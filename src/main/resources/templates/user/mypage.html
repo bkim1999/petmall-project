@@ -2,6 +2,19 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/header::head('마이페이지')}"></head>
 
+<!--/*사용자  프로필 */-->
+<style>
+  /*사용자 프로필*/
+  #user_info_wrap{margin-top:40px; margin-bottom: 40px; background-color: rgb(238, 234, 232);  height: 300px; width: 950px; margin-left: auto; margin-right: auto;}
+  #user_info_contets_wrap{margin:0 auto; width: 90%; padding-top: 50px; display: flex;  }
+  #profile_img_div{width:200px; height: 200px; border-radius: 80%; overflow: hidden; border:5px solid rgb(143, 132, 118)} 
+  #profile_img{width: 100%; height: 100%; object-fit: cover;}
+  #user_info_text{color: rgb(132, 116, 98); font-weight: bolder; font-size: x-large; margin-left: 90px; padding-top: 30px;}
+  .text_em{ line-height: 5px; color: rgb(0, 0, 0); font-size: xx-large;}
+  .modify_link{margin-top:10px;}
+  .modify_link a{color:rgb(192, 192, 192); font-size:small; letter-spacing:-1px; margin-left: 800px;}
+</style>
+
 
 <body>
   <div th:replace="~{layout/header::header}"></div>
@@ -9,9 +22,27 @@
   <!-- 마이페이지 네비게이션  -->
   <h1>MyPage</h1>
   <div th:replace="~{user/mypage_nav::mypage_nav}"></div>
-<div>
-   <div> 반가워요, <span th:text="|${session.user.name} 님|"></span></div>
-   <div> 적립금    <span th:text="|${session.user.point}원|"></span></div>
+
+
+
+<div id="user_info_wrap">
+  
+  <div id="user_info_contets_wrap">
+        <div id="profile_img_div">
+        <img th:src="@{/image/dogddong.jpg}" id="profile_img" > 
+      </div>
+      
+    <div id="user_info_text">
+      <div class="info_text"> 반가워요, <span class="text_em" th:text="${session.user.name}"></span> 님</div>
+      <div class="info_text"> 적립금    <span  class="text_em"th:text="${session.user.point}"></span> 원</div>
+    </div>
+  </div>
+  
+  <div class="modify_link">
+     <a th:href="@{/user//mypage/profile.form}">회원정보 수정하기</a>
+  </div>
+
+  
 </div>
 
 

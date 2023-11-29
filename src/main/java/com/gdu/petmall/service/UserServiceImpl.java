@@ -21,10 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.InactiveUserDto;
 import com.gdu.petmall.dto.UserDto;
+import com.gdu.petmall.util.MyFileUtils;
 import com.gdu.petmall.util.MyJavaMailUtils;
 import com.gdu.petmall.util.MySecurityUtils;
 
@@ -39,6 +43,7 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final MySecurityUtils mySecurityUtils;
 	private final MyJavaMailUtils myJavaMailUtils;
+	private final MyFileUtils myFileUtils;
 
 	
 	/*네이버 api 클라이언트정보*/
@@ -902,30 +907,20 @@ public void active(HttpSession session, HttpServletRequest request, HttpServletR
 	
 }
 
-
-
-
-/*포인트 테스트 (추후에 삭제해야함)
+/* ***** 이미지 첨부********  */
 @Override
-public void pointTest(HttpServletRequest request){
-	int userNo=Integer.parseInt(request.getParameter("userNo"));
-	int addPoint=Integer.parseInt(request.getParameter("addPoint"));
-	int subPoint=Integer.parseInt(request.getParameter("subPoint"));
-
-	myPointUtils.setPoint(addPoint, subPoint);
-	
-	
-	UserDto user=UserDto.builder()
-											.userNo(userNo)
-											.point(myPointUtils.getPoint())
-											.build();
-	
-	 userMapper.updatePoint(user);
-
-
-	
+public int addUpload(MultipartHttpServletRequest request) throws Exception {
+  
+  int userNo=Integer.parseInt(request.getParameter("userNo"));
+  
+  MultipartFile file=request.getFile("file");  
+  int attachCount;
+  
+  return 0;
 }
-*/	
+
+
+
 
 	
 	
