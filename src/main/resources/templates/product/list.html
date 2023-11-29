@@ -8,6 +8,10 @@
   #category_list {
     font-size: 20px;
   }
+  #category_list .nav-item {
+    width: 200px;
+    text-align: center;
+  }
   #search_condition {
     width: 100%;
     height: 100px;
@@ -17,6 +21,7 @@
     margin: 50px auto;
     display: flex;
     flex-wrap: wrap;
+    min-height: 500px;
    }
   .product {
     border: none;
@@ -211,7 +216,8 @@
 
   const fnAddProductResult = () => {
     let addProductResult = /*[[${addProductResult}]]*/ '';  // '', 'true', 'false'
-    if(addProductResult !== ''){
+    console.log(addProductResult)
+    if(addProductResult !== null){
       if(addProductResult === true){
         alert('성공적으로 업로드 되었습니다.');
       } else {
