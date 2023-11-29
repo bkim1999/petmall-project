@@ -60,6 +60,7 @@
     <table class="table">
         <thead>
             <tr>
+				<th>
                 <th>받는분 이름:</th>
                 <th>받는분 휴대전화:</th>
                 <th>받는분 주소:</th>
@@ -71,14 +72,15 @@
             <tr th:each="pay: ${orderPay}">
                 <td th:text="${pay.reName}"></td>
                 <td th:text="${pay.reTel}"></td>
-                <td th:text="${pay.address}"></td>
-                <td th:text="${pay.addressDetail}"></td>
+                <td th:text="${pay.postcode}"></td>
+                <td th:text="${pay.roadAddress}"></td>
+                <td th:text="${pay.jibunAddress}"></td>
+                <td th:text="${pay.detailAddress}"></td>
                 <td th:text="${pay.reText}"></td>
             </tr>
         </tbody>
     </table>
 </div>
-
 
 <button onclick="requestPay()">토스 페이 결제하기</button>
 

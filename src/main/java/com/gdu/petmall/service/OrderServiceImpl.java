@@ -15,8 +15,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderMapper orderMapper) {
         this.orderMapper = orderMapper;
     }
-    
- 
 
     @Override
     public boolean addOrder(MultipartHttpServletRequest multipartRequest) throws Exception {
@@ -27,24 +25,19 @@ public class OrderServiceImpl implements OrderService {
         
         String reName = multipartRequest.getParameter("reName");
         String reTel = multipartRequest.getParameter("reTell"); 
-        String address = "ddd";
-              //multipartRequest.getParameter("address");
-        String addressDetail = "ccc";
-        //multipartRequest.getParameter("addressDetail");
-        String reText = "aaa";
-        //multipartRequest.getParameter("reText");
-        
-        System.out.println("111111111111111111111111111111111111111");
-        System.out.println(address);
-        System.out.println(addressDetail);
-        System.out.println(reText);
-        System.out.println("111111111111111111111111111111111111111");
-        
+        String postcode = multipartRequest.getParameter("postcode");
+        String roadAddress = multipartRequest.getParameter("roadAddress");
+        String jibunAddress = multipartRequest.getParameter("jibunAddress");
+        String detailAddress =multipartRequest.getParameter("detailAddress");
+        String reText =multipartRequest.getParameter("reText");
+
         OrderDto order = OrderDto.builder()
                 .reName(reName)
                 .reTel(reTel)
-                .address(address)
-                .addressDetail(addressDetail)
+                .postcode(postcode)
+                .roadAddress(roadAddress)
+                .jibunAddress(jibunAddress)
+                .detailAddress(detailAddress)
                 .reText(reText)
                 .totalPrice(totalPrice)
                 .userDto(UserDto.builder()

@@ -9,8 +9,10 @@
     <id column="ORDER_NO"             property="orderNo" />
     <result column="RE_NAME"          property="reName" />
     <result column="RE_TEL"          property="reTel" />
-    <result column="ADDRESS"          property="address" /> 
-    <result column="ADDRESS_DETAIL"    property="addressDetail" /> 
+    <result column="JIBUN_ADDRESS"       property="jibunAddress" /> 
+    <result column="DETAIL_ADDRESS" property="detailAddress" /> 
+    <result column="POSTCODE" property="postCode" /> 
+    <result column="ROAD_ADDRESS" property="detailAddress" />
     <result column="RE_TEXT"          property="reText" /> 
     <result column="TOTAL_PRICE"       property="totalPrice" /> 
     <result column="ORDER_STATE"       property="orderState" /> 
@@ -23,9 +25,9 @@
   </resultMap>  
   
 <select id="getPayment" resultType="OrderDto">  
-  SELECT ORDER_NO,RE_NAME, RE_TEL, ADDRESS, ADDRESS_DETAIL, RE_TEXT, TOTAL_PRICE, ORDER_STATE
+  SELECT ORDER_NO,RE_NAME, RE_TEL,RE_TEXT, TOTAL_PRICE, ORDER_STATE,JIBUN_ADDRESS,DETAIL_ADDRESS,POSTCODE,ROAD_ADDRESS
   FROM ORDER_T
- WHERE ORDER_NO =1
+ WHERE ORDER_NO = #{orderNo}
 </select>
   
 </mapper>

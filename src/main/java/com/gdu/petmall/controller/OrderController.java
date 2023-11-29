@@ -26,7 +26,7 @@ public class OrderController {
       boolean addResult = orderService.addOrder(multipartRequest);
       redirectAttributes.addFlashAttribute("addResult", addResult);
       
-      return "redirect:/pay/payment";    
+      return "redirect:/pay/payment.do";    
   }
 
 
