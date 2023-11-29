@@ -29,17 +29,29 @@ public class CartServiceImpl implements CartService {
   private final CartMapper cartMapper;
   
   @Override
-  public void addCart(CartOptionListDto cartList, Model model) {
+  public void addCart(CartOptionListDto cartList, HttpServletRequest request, Model model) {
     
-    List<CartDto> addCartList = new ArrayList();
-    
-    for(CartDto cartDto : cartList.getCartlist()) {
-      int userNo = cartDto.getUserDto().getUserNo();
-      int optionNo = cartDto.getProductOptionDto().getOptionNo();
-      int count = cartDto.getCount();
-      addCartList.addAll(cartMapper.addCart(cartDto));
+    List<CartDto> addCartList = new ArrayList<>(); 
+    HttpSession session = request.getSession();
+    UserDto user = (UserDto)session.getAttribute("user");
+    int userNo = user.getUserNo();
+
+    for(CartDto cartDto : cartList.getCartList()) {
+        int optionNo = cartDto.getProductOptionDto().getOptionNo();
+        int count = cartDto.getCount();
+        
+        CartDto cart = CartDto.builder()
+            .userDto(UserDto.builder().userNo(userNo).build())
+            .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+            .count(count)
+            .build();
+        
+        addCartList.add(cart);
     }
-    model.addAttribute("addCartList", addCartList);
+
+    int addCartListResult = cartMapper.insertCart(addCartList);
+    model.addAttribute("addCartListResult", addCartListResult);
+    
     
   }
   

@@ -74,23 +74,35 @@
            , EVENT_T E
            , CART_T C
        WHERE A.PRODUCT_NO = B.PRODUCT_NO
-         AND E.DISCOUNT_PERCENT = E.DISCOUNT_PERCENT
-         AND E.EVENT_NO = E.EVENT_NO
          AND B.OPTION_NO = C.OPTION_NO
          AND C.USER_NO = ${userNo}
+         AND E.EVENT_NO = (
+                          SELECT MAX(EVENT_NO)
+                          FROM EVENT_T
+                           )
+                         AND E.DISCOUNT_PERCENT = (
+                                                    SELECT MAX(DISCOUNT_PERCENT)
+                                                    FROM EVENT_T
+                                                    WHERE EVENT_NO = (
+                                                                      SELECT MAX(EVENT_NO)
+                                                                      FROM EVENT_T
+                                                                      )
+                                                    )  
     </select>
     
-   <insert id="insertCart" parameterType="CartDto">
-      INSERT INTO CART_T(
-          OPTION_NO
-        , USER_NO
-        , COUNT
-      ) VALUES (
-          #{productOptionDto.optionNo}
-        , #{userDto.userNo}
-        , #{count}
-      )
-   </insert>
+   <insert id="insertCart" parameterType="List">
+    <foreach collection="addCartList" item="cart" separator=";">
+        INSERT INTO CART_T(
+            OPTION_NO,
+            USER_NO,
+            COUNT
+        ) VALUES (
+            #{cart.productOptionDto.optionNo},
+            #{cart.userDto.userNo},
+            #{cart.count}
+        )
+    </foreach>
+</insert>
    
    <update id="updateCart" parameterType="map">
       UPDATE CART_T

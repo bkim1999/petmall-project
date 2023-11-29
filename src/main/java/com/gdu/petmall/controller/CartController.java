@@ -1,9 +1,12 @@
 package com.gdu.petmall.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +14,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.dto.CartOptionListDto;
 import com.gdu.petmall.service.CartService;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RequiredArgsConstructor
 @Controller
@@ -35,11 +40,15 @@ public class CartController {
     return "/order/cart";
   }
   
+  
   @PostMapping(value="/order/addCart.do")
-  public String addCart(HttpServletRequest request, @ModelAttribute CartOptionListDto cartList, Model model) {
-    cartService.addCart(cartList, model);
-    return "redirect:/order/cart.go"; 
-  }   
+  public String addCart(@ModelAttribute CartOptionListDto cartListDto, HttpServletRequest request, Model model) {
+    System.out.println("ddd:" + cartListDto);
+    cartService.addCart(cartListDto, request, model);
+  return "redirect:/order/cart.go"; 
+ }
+    
+    
   
   @ResponseBody
   @PostMapping(value="/order/delete.do", produces="application/json")
