@@ -60,32 +60,39 @@
   </resultMap>
   
     <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
-      SELECT C.USER_NO 
-           , C.COUNT
-           , A.PRODUCT_NAME
-           , A.PRODUCT_PRICE
-           , A.PRODUCT_NO
-           , B.OPTION_NO
-           , B.ADD_PRICE
-           , E.DISCOUNT_PERCENT
-           , E.EVENT_NO 
-      FROM PRODUCT_T A 
-           , PRODUCT_OPTION_T B
-           , EVENT_T E
-           , CART_T C
-      WHERE A.PRODUCT_NO = B.PRODUCT_NO
-           AND B.OPTION_NO = C.OPTION_NO
-           AND C.USER_NO = 3
-           AND E.EVENT_NO = (SELECT MAX(EVENT_NO)
-                              FROM EVENT_T
-                              WHERE SYSDATE BETWEEN START_AT AND END_AT)
-           AND E.DISCOUNT_PERCENT = (SELECT MAX(DISCOUNT_PERCENT)
-                                       FROM EVENT_T
-                                      WHERE EVENT_NO = (SELECT MAX(EVENT_NO)
-                                                        FROM EVENT_T
-                                                        WHERE SYSDATE BETWEEN START_AT AND END_AT 
-                                                        )
-     )
+      SELECT C.USER_NO,
+              C.COUNT,
+              A.PRODUCT_NAME,
+              A.PRODUCT_PRICE,
+              A.PRODUCT_NO,
+              B.OPTION_NO,
+              B.ADD_PRICE,
+              E.DISCOUNT_PERCENT,
+              E.EVENT_NO
+          FROM 
+              CART_T C
+          JOIN 
+              PRODUCT_OPTION_T B ON C.OPTION_NO = B.OPTION_NO
+          JOIN 
+              EVENT_T E ON SYSDATE BETWEEN E.START_AT AND E.END_AT
+          JOIN 
+              PRODUCT_T A ON B.PRODUCT_NO = A.PRODUCT_NO
+          WHERE 
+              C.USER_NO = 3
+              AND E.EVENT_NO = (
+                  SELECT MAX(EVENT_NO)
+                  FROM EVENT_T
+                  WHERE SYSDATE BETWEEN START_AT AND END_AT
+              )
+              AND E.DISCOUNT_PERCENT = (
+                  SELECT MAX(DISCOUNT_PERCENT)
+                  FROM EVENT_T
+                  WHERE EVENT_NO = (
+                      SELECT MAX(EVENT_NO)
+                      FROM EVENT_T
+                      WHERE SYSDATE BETWEEN START_AT AND END_AT
+                  )
+              )
     </select>
     
    <insert id="insertCart" parameterType="List">
