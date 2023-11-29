@@ -53,6 +53,9 @@
 
 
 <hr>
+<input type="hidden" id="orderNo" th:value="${orderNo}" />
+
+<button onclick="requestPay()">토스 페이 결제하기</button>
 
 <h4>받는 사람 정보</h4>
 <p>작성 정보와 일치한지 확인해주세요</p>
@@ -60,11 +63,12 @@
     <table class="table">
         <thead>
             <tr>
-				<th>
                 <th>받는분 이름:</th>
                 <th>받는분 휴대전화:</th>
-                <th>받는분 주소:</th>
-                <th>받는분 상세주소:</th>
+                <th>받는분 우편번호:</th>
+                <th>받는분 도로명주소:</th>
+                <th>받는분 지번주소:</th>
+                <th>받는분 요청사항:</th>
                 <th>받는분 요청사항:</th>
             </tr>
         </thead>
@@ -81,8 +85,6 @@
         </tbody>
     </table>
 </div>
-
-<button onclick="requestPay()">토스 페이 결제하기</button>
 
 <hr>
 

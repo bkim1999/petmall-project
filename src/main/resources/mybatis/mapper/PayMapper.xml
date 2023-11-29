@@ -24,10 +24,9 @@
     </association>
   </resultMap>  
   
-<select id="getPayment" resultType="OrderDto">  
-  SELECT ORDER_NO,RE_NAME, RE_TEL,RE_TEXT, TOTAL_PRICE, ORDER_STATE,JIBUN_ADDRESS,DETAIL_ADDRESS,POSTCODE,ROAD_ADDRESS
-  FROM ORDER_T
- WHERE ORDER_NO = #{orderNo}
+<select id="getPayment" parameterType="int" resultType="com.gdu.petmall.dto.OrderDto">
+    SELECT ORDER_NO, RE_NAME, RE_TEL, RE_TEXT, TOTAL_PRICE, ORDER_STATE, JIBUN_ADDRESS, DETAIL_ADDRESS, POSTCODE, ROAD_ADDRESS
+    FROM ORDER_T
+    WHERE ORDER_NO = #{orderNo}
 </select>
-  
 </mapper>

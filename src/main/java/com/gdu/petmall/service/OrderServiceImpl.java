@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.petmall.dao.OrderMapper;
+import com.gdu.petmall.dao.PayMapper;
 import com.gdu.petmall.dto.OrderDto;
 import com.gdu.petmall.dto.UserDto;
 
@@ -22,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
         
         String totalPriceStr = multipartRequest.getParameter("totalPrice");
         int totalPrice = totalPriceStr != null ? Integer.parseInt(totalPriceStr) : 0; 
-        
+
         String reName = multipartRequest.getParameter("reName");
         String reTel = multipartRequest.getParameter("reTell"); 
         String postcode = multipartRequest.getParameter("postcode");
