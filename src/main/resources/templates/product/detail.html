@@ -2,10 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header :: head('상품 상세')}"></head>
 <style>
-  #slideshow{
-    width: 754px;
-    height: 754px;
-  }
   #product_header{
     margin: 0 auto;
     width: 1280px;
@@ -34,8 +30,19 @@
     font-size: 28px;
     color: red;
   }
-  #product_images img {
+  #slideshow{
+    width: 754px;
+    height: 754px;
+  }
+  #product_images, .carousel-item{
+    width: 100%;
     height: 100%;
+    background-color: lightgray;
+  }
+  #product_images img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   #product_contents {
     width: 1280px;
@@ -106,6 +113,19 @@
   <div id="product_header" class="d-flex justify-content-center mt-5">
     <div id="slideshow" class="carousel slide me-5 d-flex align-items-center" data-bs-ride="carousel">
       <div id="product_images" class="carousel-inner">
+        <div class="carousel-item active" th:if="${#lists.isEmpty(imageList)}">
+          <img class="d-block w-100" alt="아직 사진이 없습니다.">
+        </div>
+        <th:block th:if="${not #lists.isEmpty(imageList)}">
+          <th:block th:each="image, imageStat : ${imageList}">
+            <th:block th:if="${image.position == 'display'}">
+              <div class="carousel-item">
+                <img class="d-block" th:src="|${image.path}/${image.filesystemName}|">
+              </div>
+            </th:block>
+          </th:block>
+          
+        </th:block>
       </div>
       <button class="carousel-control-prev" type="button" data-bs-target="#slideshow" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -191,6 +211,12 @@
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 <script th:inline="javascript">
+  
+  $(document).ready(function(){
+    $('.carousel-item').first().addClass('active');
+  });
+  
+  // 선택한 옵션 출력
   const fnAddOption = () => {
     $('#option_list').change(function() {
       var optionNo = $(this).val();
@@ -227,6 +253,7 @@
     });
   }
   
+  // 선택한 옵션 삭제
   const fnDeleteOption = () => {
     $(document).on('click', '.btn_delete_option', function(){
       console.log('dd')
@@ -235,6 +262,7 @@
     });
   }
   
+  // 옵션 수량 감소
   const fnDecreaseCount = () => {
     $(document).on('click', '.minus_count', function(){
       var count = $(this).siblings('.count');
@@ -251,6 +279,7 @@
     });
   }
   
+  // 옵션 수량 증가
   const fnIncreaseCount = () => {
     $(document).on('click', '.plus_count', function(){
         var count = $(this).siblings('.count');
@@ -267,48 +296,8 @@
     });
   }
   
+  // 상품번호
   var productNo = /*[[${product.productNo}]]*/ 0;
-  var userNo = 0;
-  
-
-  
-  const fnGetProductImageList = () => {
-    $.ajax({
-      // 요청
-      type: 'get',
-      url: '/product/getProductImageList.do',
-      data: {'productNo' : productNo},
-      // 응답
-      dataType: 'json',
-      success: (resData) => {  // resData = {"productImageList": []}
-        if(resData.productImageList === null){
-          alert('이미지 목록 불러오기 실패');
-          return;
-        }
-        if(resData.productImageList.length === 0){
-          let str = '<div class="carousel-item active">';
-          str += '  <img class="d-block w-100" alt="아직 사진이 없습니다.">';
-          str += '</div>';
-          $('#product_images').append(str);
-          return;
-        }
-        
-        $.each(resData.productImageList, (i, image) => {
-          console.log(image);
-          let str = '';
-          if(i === 0){
-            str += '<div class="carousel-item active">';
-          }
-          else{
-            str += '<div class="carousel-item">';
-          }
-          str += '  <img class="d-block w-100" src="' + image.path + '/' + image.filesystemName +  '">';
-          str += '</div>';
-          $('#product_images').append(str);
-        });
-      }
-    })
-  }
   
   const fnGetTotalPrice = () => {
     var total = 0;
@@ -386,7 +375,6 @@
   fnDeleteOption();
   fnDecreaseCount();
   fnIncreaseCount();
-  fnGetProductImageList();
   fnUpdateTotalPrice();
   fnAddCartOrder();
   fnGetReviewList();
