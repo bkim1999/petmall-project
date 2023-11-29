@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.petmall.dto.UserDto;
 
@@ -46,5 +47,9 @@ public interface UserService {
   public void kakaoJoin(HttpServletRequest request, HttpServletResponse response);//네이버 간편가입
   public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception; //인증토큰 가져와
   public UserDto getKakaoProfile(String accessToken) throws Exception; // 네이버 로그인 후속작업
+  
+  
+  /*프로필 이미지 첨부 관련*/
+  public int addUpload(MultipartHttpServletRequest request) throws Exception;
   
 }

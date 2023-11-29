@@ -59,6 +59,9 @@
 }
 
 
+#modify_profile_img{ background-color: transparent; color:silver; border: 0;}
+#modify_profile_img:active{color: darkgray;}
+
 </style>
   
   <!-- 마이페이지 네비게이션  -->
@@ -74,6 +77,10 @@
 <form  method="post"  th:action="@{/user/mypage/modify.do}" id="frm_profile">
 
 
+<div>
+  <div id="profile_thumbnail"></div>
+  <button type="button" id="modify_profile_img">프로필사진 수정하기</button>
+</div>
 
 
 
