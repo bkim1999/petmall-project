@@ -1,7 +1,5 @@
 package com.gdu.petmall.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class CartOptionListDto {
- 
-  private List<CartDto> cartlist;
-  
+public class OrderDetailDto {
+  private String orderNo;
+  private int optionNo;
 }
