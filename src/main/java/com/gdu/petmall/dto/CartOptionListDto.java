@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartOptionListDto {
  
-  private List<CartDto> cartOptionListDto;
+  private List<CartDto> cartlist;
   
 }

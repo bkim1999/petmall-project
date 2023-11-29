@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class OrderDto {
-  private String orderNo;
-  private int userNo;
+  private int orderNo;
+  private UserDto userDto;  
   private int orderState;
   private String deliveryDivision;
   private int deliveryCost;
