@@ -177,9 +177,9 @@
                 <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
                 <span th:if="${option.optionCount < 10}" th:text="|품절임박: ${option.optionCount}개 남음|"></span>
               </option>
-              <option th:if="${option.optionCount == 0}" style="color:red;" disabled>
+              <option th:if="${option.optionCount == 0}" class="text-danger" disabled>
                 <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
-                <span th:text="품절"></span>
+                <span th:text="  품절"></span>
               </option>
             </th:block>
           </select>
