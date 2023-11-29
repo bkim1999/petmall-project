@@ -32,11 +32,12 @@ public class CartServiceImpl implements CartService {
   public void addCart(CartOptionListDto cartList, HttpServletRequest request, Model model) {
     
     List<CartDto> addCartList = new ArrayList<>(); 
-    HttpSession session = request.getSession();
-    UserDto user = (UserDto)session.getAttribute("user");
-    int userNo = user.getUserNo();
-
+    
     for(CartDto cartDto : cartList.getCartList()) {
+        HttpSession session = request.getSession();
+        UserDto user = (UserDto)session.getAttribute("user");
+        int userNo = user.getUserNo();
+      
         int optionNo = cartDto.getProductOptionDto().getOptionNo();
         int count = cartDto.getCount();
         
