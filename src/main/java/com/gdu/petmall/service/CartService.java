@@ -10,7 +10,7 @@ import com.gdu.petmall.dto.CartOptionListDto;
 
 public interface CartService {
   
-  public void addCart(CartOptionListDto cartList, HttpServletRequest request, Model model);
+  public void addCart(CartOptionListDto cartList, Model model);
   public void getList(HttpServletRequest request, Model model);
   public Map<String, Object>deleteCart(HttpServletRequest request);
   public Map<String, Object>minusCart(HttpServletRequest request);

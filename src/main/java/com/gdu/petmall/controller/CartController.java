@@ -42,9 +42,9 @@ public class CartController {
   
   
   @PostMapping(value="/order/addCart.do")
-  public String addCart(@ModelAttribute CartOptionListDto cartListDto, HttpServletRequest request, Model model) {
+  public String addCart(@ModelAttribute CartOptionListDto cartListDto,Model model) {
     System.out.println("ddd:" + cartListDto);
-    cartService.addCart(cartListDto, request, model);
+    cartService.addCart(cartListDto, model);
   return "redirect:/order/cart.go"; 
  }
     

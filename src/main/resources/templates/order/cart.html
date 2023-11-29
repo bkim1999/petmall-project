@@ -93,7 +93,7 @@
                 </span>                                   
                 <input type="text" class="finaltotalprice" th:value="${(cartProduct.productDto.productPrice + cartProduct.productOptionDto.addPrice) * cartProduct.count * (1 - cartProduct.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
                 <input type="hidden" name="userNo" th:value="${cartProduct.userDto.userNo}">
-                <input type="hidden" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}">
+                <input type="text" name="optionNo" class="delete_option" th:value="${cartProduct.productOptionDto.optionNo}" readonly>
                 <button type="submit" class="btn_remove btn btn-danger">삭제</button>
               </td>
             </tr>  

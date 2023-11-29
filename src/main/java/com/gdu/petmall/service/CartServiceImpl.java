@@ -29,15 +29,12 @@ public class CartServiceImpl implements CartService {
   private final CartMapper cartMapper;
   
   @Override
-  public void addCart(CartOptionListDto cartList, HttpServletRequest request, Model model) {
+  public void addCart(CartOptionListDto cartList, Model model) {
     
     List<CartDto> addCartList = new ArrayList<>(); 
     
     for(CartDto cartDto : cartList.getCartList()) {
-        HttpSession session = request.getSession();
-        UserDto user = (UserDto)session.getAttribute("user");
-        int userNo = user.getUserNo();
-      
+        int userNo = cartDto.getUserDto().getUserNo();
         int optionNo = cartDto.getProductOptionDto().getOptionNo();
         int count = cartDto.getCount();
         
