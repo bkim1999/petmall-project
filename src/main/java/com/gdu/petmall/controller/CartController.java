@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gdu.petmall.dto.CartDto;
@@ -40,41 +41,37 @@ public class CartController {
     return "/order/cart";
   }
   
-  
   @PostMapping(value="/order/addCart.do")
   public String addCart(@ModelAttribute CartOptionListDto cartListDto,Model model) {
     System.out.println("ddd:" + cartListDto);
     cartService.addCart(cartListDto, model);
-  return "redirect:/order/cart.go"; 
- }
-    
-    
+    return "redirect:/order/cart.go"; 
+  }
   
   @ResponseBody
   @PostMapping(value="/order/delete.do", produces="application/json")
   public Map<String, Object> deleteCart(HttpServletRequest request) {
+    System.out.println("delete:" + request.getParameter("optionName"));
+    System.out.println("delete:" + request.getParameter("optionNo"));
+    System.out.println("delete:" + request.getParameter("userNo"));
     return cartService.deleteCart(request);
   }
   
   @ResponseBody
   @PostMapping(value="/order/minusupdate.do", produces="application/json")
   public Map<String, Object> minusUpdateCart(HttpServletRequest request) {
+    System.out.println("minusrequest:" + request.getParameter("count"));
     return cartService.minusCart(request);
-    
   }
 
   @ResponseBody
   @PostMapping(value="/order/plusupdate.do", produces="application/json")
   public Map<String, Object> plusUupdateCart(HttpServletRequest request) {
+    System.out.println("plusrequest:" + request.getParameter("count"));
     return cartService.plusCart(request);
   }
-
   
   
   
 
 }
-
-  
-  
-  
