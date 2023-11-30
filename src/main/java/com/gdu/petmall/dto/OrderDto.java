@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class OrderDto {
-  private String orderNo;
-  private int userNo;
+  private int orderNo;
+  private UserDto userDto;  
   private int orderState;
   private String deliveryDivision;
   private int deliveryCost;
@@ -20,9 +20,12 @@ public class OrderDto {
   private int point;
   private int payment;
   private String reName;
-  private String zipcode;
-  private String address;
-  private String addressDetail;
+  
+  private String postcode;
+  private String roadAddress;
+  private String jibunAddress;
+  private String detailAddress;
+  
   private String reTel;
   private String reText;
 }

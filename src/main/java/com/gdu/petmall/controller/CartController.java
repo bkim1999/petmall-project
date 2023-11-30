@@ -36,8 +36,8 @@ public class CartController {
   }
   
   @PostMapping(value="/order/addCart.do")
-  public String addCart(HttpServletRequest request, @ModelAttribute CartOptionListDto cartOptionList, Model model) {
-    cartService.addCart(request, model);
+  public String addCart(HttpServletRequest request, @ModelAttribute CartOptionListDto cartList, Model model) {
+    cartService.addCart(cartList, model);
     return "redirect:/order/cart.go"; 
   }   
   

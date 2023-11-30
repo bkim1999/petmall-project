@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.OrderMapper">
+
+  <resultMap type="com.gdu.petmall.dto.OrderDto" id="OrderMap">
+    <id column="ORDER_NO" property="orderNo" />
+    <result column="RE_NAME" property="reName" />
+    <result column="RE_TEL" property="reTel" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" /> 
+    <result column="DETAIL_ADDRESS" property="detailAddress" /> 
+    <result column="POSTCODE" property="postcode" /> 
+    <result column="ROAD_ADDRESS" property="roadAddress" /> 
+    <result column="RE_TEXT" property="reText" /> 
+    <result column="TOTAL_PRICE" property="totalPrice" /> 
+    <result column="ORDER_STATE" property="orderState" /> 
+    <association javaType="com.gdu.petmall.dto.UserDto" property="userDto">
+      <id column="USER_NO" property="userNo" />
+      <result column="EMAIL" property="email"/>
+      <result column="NAME" property="name"/>
+      <result column="MOBILE" property="mobile"/>   
+    </association>
+  </resultMap>  
+    
+  <insert id="insertOrderPay" parameterType="com.gdu.petmall.dto.OrderDto">
+    <selectKey keyProperty="orderNo" resultType="int" order="BEFORE">
+        SELECT ORDER_SEQ.NEXTVAL AS orderNo FROM DUAL
+    </selectKey>
+    INSERT INTO ORDER_T (
+        ORDER_NO,
+        USER_NO,
+        RE_NAME,
+        RE_TEL,
+        POSTCODE,
+        ROAD_ADDRESS,
+        JIBUN_ADDRESS,
+        DETAIL_ADDRESS,
+        RE_TEXT,
+        TOTAL_PRICE,
+        ORDER_STATE
+    ) VALUES (
+        #{orderNo},
+        #{userDto.userNo},
+        #{reName},
+        #{reTel},
+        #{postcode},
+        #{roadAddress},
+        #{jibunAddress},
+        #{detailAddress},
+        #{reText},
+        #{totalPrice},
+        0
+    )
+  </insert>
+</mapper>

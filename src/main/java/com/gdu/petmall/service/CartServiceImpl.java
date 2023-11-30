@@ -1,5 +1,6 @@
 package com.gdu.petmall.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -26,21 +28,20 @@ public class CartServiceImpl implements CartService {
   
   private final CartMapper cartMapper;
   
-  public void addCart(HttpServletRequest request, Model model) {
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    int optionNo = Integer.parseInt(request.getParameter("optionNo"));
-    int count = Integer.parseInt(request.getParameter("count"));
+  @Override
+  public void addCart(CartOptionListDto cartList, Model model) {
     
-    CartDto cart = CartDto.builder()
-                          .userDto(UserDto.builder().userNo(userNo).build())
-                          .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
-                          .count(count)
-                          .build();
-  
-    List<CartDto> addCartList = cartMapper.insertCart(cart);
+    List<CartDto> addCartList = new ArrayList();
     
-    model.addAttribute("addCartList", addCartList);
+    for(CartDto cartDto : cartList.getCartlist()) {
+      int userNo = cartDto.getUserDto().getUserNo();
+      int optionNo = cartDto.getProductOptionDto().getOptionNo();
+      int count = cartDto.getCount();
+      addCartList.addAll(cartMapper.addCart(cartDto));
     }
+    model.addAttribute("addCartList", addCartList);
+    
+  }
   
   @Override
   public void getList(HttpServletRequest request, Model model) {
@@ -48,9 +49,11 @@ public class CartServiceImpl implements CartService {
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
     int userNo = user.getUserNo();
-    
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
+    
+    
+  
   }
   
   @Override
