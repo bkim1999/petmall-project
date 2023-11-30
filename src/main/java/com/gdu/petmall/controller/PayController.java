@@ -18,10 +18,4 @@ import lombok.RequiredArgsConstructor;
 public class PayController {
     private final PayService payService;
 
-    @GetMapping("/pay/payment.do") 
-    public String list(Model model) {
-        List<OrderDto> orderPay = payService.getPayment(); 
-        model.addAttribute("orderPay", orderPay);
-        return "pay/payment"; 
-    }
 }

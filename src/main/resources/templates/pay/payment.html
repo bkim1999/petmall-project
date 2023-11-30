@@ -3,10 +3,12 @@
 <head th:replace="~{/layout/header::head('결제 화면 정보')}"></head>
 
 <body>
+
   <!-- jQuery -->
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
   <!-- iamport.payment.js -->
   <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+   
    <script>
        var IMP = window.IMP;
       IMP.init('imp75336553');
@@ -53,8 +55,10 @@
 
 
 <hr>
-<input type="hidden" id="orderNo" th:value="${orderNo}" />
 
+
+
+            
 <button onclick="requestPay()">토스 페이 결제하기</button>
 
 <h4>받는 사람 정보</h4>
@@ -63,6 +67,7 @@
     <table class="table">
         <thead>
             <tr>
+            <th>주문번호:</th>
                 <th>받는분 이름:</th>
                 <th>받는분 휴대전화:</th>
                 <th>받는분 우편번호:</th>
@@ -73,7 +78,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="pay: ${orderPay}">
+            <tr th:each="pay: ${order}">
+            <td th:text="${pay.orderNo}"></td>
                 <td th:text="${pay.reName}"></td>
                 <td th:text="${pay.reTel}"></td>
                 <td th:text="${pay.postcode}"></td>
@@ -86,7 +92,7 @@
     </table>
 </div>
 
-<hr>
+
 
 
     <div th:replace="~{/layout/footer::footer}"></div>
