@@ -10,7 +10,6 @@
     width: 1280px;
     width: 100%;
     margin: 0 auto;
-    padding: 120px 0 0 0;
     position: relative;
     z-index: 1;
   }
@@ -21,7 +20,7 @@
     position: fixed;
     width: 72px;
     position: fixed;
-    left: 45%;
+    left: 43.5%;
     margin-left: 760px;
     top: 50%;
     transform: translateY(-50%);
@@ -38,7 +37,21 @@
     font-weight: bold;
     color: #000;
     text-align: center;
-    background: url(/image/ev_button.png) no-repeat 0 0;
+    background: url(/image/ev_button2.png) no-repeat 0 0;
+    background-size: cover;
+    margin: -1px 0 0 0;
+  }
+  
+  ul#landNav a.btn_el span.hf {
+    display: block;
+    height: 46px;
+    width: 70px;
+    line-height: 45px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    background: url(/image/ev_hover_button2.png) no-repeat 0 0;
     background-size: cover;
     margin: -1px 0 0 0;
   }
@@ -70,7 +83,7 @@
   }
   
   .main_body {
-    max-width: 1490px;
+    max-width: 1275px;
     min-width: 1200px;
     margin: 0 auto;
   }
@@ -78,14 +91,13 @@
     font-size: 0;
     position: relative;
   }
-  .main_floor .wood_bg.top {
-    background: url(image/wrapping.png) repeat-y 0 0;
-    background-size: 100% auto;
+  .main_floor .wood_bg_top {
+    position: relative;
   }
   .main_floor .fl_name {
     position: absolute;
-    left: 68px;
-    top: 32px;
+    left: 52px;
+    top: 22px;
     z-index: 4;
     white-space: nowrap;
   }
@@ -108,6 +120,55 @@
     padding: 0px 2.955003%;
     position: relative;
   }
+  
+  .full_img p, .full_img3 p {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    
+  }
+  
+  .main_floor .mprd_box {
+    padding: 30px 30px;
+    background: #fff;
+  }
+  
+  .item_floor {
+    padding-left: 300px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .item_floor .side1 {
+    width: 400px;
+    margin-left: -150px;
+  }
+  
+  
+  .item_floor .fl_name2 {
+    font-size: 30px;
+    color: #242424;
+    font-weight: 900;
+    padding: 0 0 20px;
+  }
+  
+  .item_floor .fl_desc {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.62;
+    color: rgba(36, 36, 36, 0.8);
+    word-break: keep-all;
+  }
+  
+  .img_box {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .side2{
+    padding-top: 20px;
+    
+  }
 </style>  
 
 <body>
@@ -118,56 +179,172 @@
   <div class="contents" style="min-height: 840px;">
     <div class="main_floor">
       <div class="quick_nav">
-        <div><img th:src="@{/image/ev_top.png}" alt></div>
+        <div><img th:src="@{/image/ev_top1.png}" alt></div>
         <ul id="landNav">
-          <li>
-            <a class="btn_el" href="#nav_floor1">
-              <span class="f">3F</span>
-            </a>
-          </li>
-          <li><a class="btn_el" href="#nav_floor2"><span class="f">2F</span></a></li>
-          <li><a class="btn_el" href="#nav_floor3"><span class="f">1F</span></a></li>
+          <li class="basic_3F"><a class="btn_el" href="#nav_floor3"><span class="f">3F</span></a></li>
+          <li class="hover_3F" style="display: none;"><a class="btn_el" href="#nav_floor3"><span class="hf">3F</span></a></li>
+          <li class="basic_2F"><a class="btn_el" href="#nav_floor2"><span class="f">2F</span></a></li>
+          <li class="hover_2F" style="display: none;"><a class="btn_el" href="#nav_floor2"><span class="hf">2F</span></a></li>
+          <li class="basic_1F"><a class="btn_el" href="#nav_floor1"><span class="f">1F</span></a></li>
+          <li class="hover_1F" style="display: none;"><a class="btn_el" href="#nav_floor1"><span class="hf">1F</span></a></li>
+          <li class="basic_0F"><a class="btn_el" href="#nav_floor0"><span class="f">B1</span></a></li>
+          <li class="hover_0F" style="display: none;"><a class="btn_el" href="#nav_floor0"><span class="hf">B1</span></a></li>
         </ul>
         <a class="qbtn" id="navf_up" href="#nav_floor">
-          <img th:src="@{/image/ev_up_button.png}">
+          <img th:src="@{/image/ev_up_button1.png}">
           <p class="over" style="display: none;">
             <img th:src="@{/image/ev_hover_button.png}">
           </p>
         </a>
         <a class="qbtn" id="navf_down" href="#nav_floor">
-          <img th:src="@{/image/ev_down_button.png}">
+          <img th:src="@{/image/ev_down_button1.png}">
           <p class="over" style="display: none;">
             <img th:src="@{/image/ev_hover_button.png}">
           </p>
         </a>
-        <div><img th:src="@{/image/ev_bottom.png}"></div>
+        <script>
+        $(window).scroll(() => {
+          console.log($(window).scrollTop());
+          if($(window).scrollTop() <= 55 && $(window).scrollTop() == 0) {
+            $('.basic_3F').show();
+            $('.hover_3F').hide();
+            $('.basic_2F').show();
+            $('.hover_2F').hide();
+            $('.basic_1F').show();
+            $('.hover_1F').hide();
+            $('.basic_0F').show();
+            $('.hover_0F').hide();
+          } else if($(window).scrollTop() >55 && $(window).scrollTop() <826){
+            $('.basic_3F').hide();
+            $('.hover_3F').show();
+            $('.basic_2F').show();
+            $('.hover_2F').hide();
+            $('.basic_1F').show();
+            $('.hover_1F').hide();
+            $('.basic_0F').show();
+            $('.hover_0F').hide();
+          } else if ($(window).scrollTop() > 826 && $(window).scrollTop() <1604){
+            $('.basic_3F').show();
+            $('.hover_3F').hide();
+            $('.basic_2F').hide();
+            $('.hover_2F').show();
+            $('.basic_1F').show();
+            $('.hover_1F').hide();
+            $('.basic_0F').show();
+            $('.hover_0F').hide();
+          } else if ($(window).scrollTop() >=1604 && $(window).scrollTop() <2310) {
+            $('.basic_3F').show();
+            $('.hover_3F').hide();
+            $('.basic_2F').show();
+            $('.hover_2F').hide();
+            $('.basic_1F').hide();
+            $('.hover_1F').show();
+            $('.basic_0F').show();
+            $('.hover_0F').hide();
+          } else if ($(window). scrollTop() >= 2310) {
+            $('.basic_3F').show();
+            $('.hover_3F').hide();
+            $('.basic_2F').show();
+            $('.hover_2F').hide();
+            $('.basic_1F').show();
+            $('.hover_1F').hide();
+            $('.basic_0F').hide();
+            $('.hover_0F').show();
+          }
+        })
+          
+        function upnav(){
+          $(document).on('click', '#navf_up', function(ev){
+          var lengthfloor = $('.btn_el').length;
+          var navfloor; 
+          if($(window).scrollTop() >55 && $(window).scrollTop() <826){
+            navfloor=3;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >=826 && $(window).scrollTop() <= 828) {
+            navfloor=3;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() > 828 && $(window).scrollTop() < 1604) {
+            navfloor=2;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >=1604 && $(window).scrollTop() <= 1605) {
+            navfloor=2;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() > 1605 && $(window).scrollTop() < 2374) {
+            navfloor=1;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() == 2374){
+            navfloor=1;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >2374){
+            navfloor=1;
+            location.href='#nav_floor'+navfloor+'';
+          }
+          })
+        }
+        
+        function downnav(){
+          $(document).on('click', '#navf_down', function(ev){
+          var navfloor; 
+          if ($(window).scrollTop() <= 55){
+            navfloor=2;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >55 && $(window).scrollTop() <811){
+            navfloor=2;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >=811 && $(window).scrollTop() <=812) {
+            navfloor=1;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >812 && $(window).scrollTop() <1604) {
+            navfloor=1;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >=1604 && $(window).scrollTop() <= 1605) {
+            navfloor=0;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() > 1605 && $(window).scrollTop() <2400) {
+            navfloor=0;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() == 2400){
+            navfloor=0;
+            location.href='#nav_floor'+navfloor+'';
+          } else if ($(window).scrollTop() >2400){
+            navfloor=0;
+            total = lengthfloor -navfloor -1;
+            location.href='#nav_floor'+navfloor+'';
+            return;
+          }
+          })
+        }
+        upnav();
+        downnav();
+        </script>
+        <div><img th:src="@{/image/ev_bottom1.png}"></div>
       </div>
-    </div>
+
     
     <div class="main_body">
-      <a class="nav_floor" id="nav_floor1"></a>
+      <a class="nav_floor" id="nav_floor3"></a>
       <div class="full_img">
         <p>
-          <img th:src="@{image/top_wood.png}" alt>
+          <img th:src="@{image/top_wood.png}" width="1275px" alt>
         </p>  
       </div>
       <div class="wood_bg_top">
         <div class="fl_name">
           <span>
             "3F "
-            <strong>몰라임마</strong>
+            <strong>목욕</strong>
           </span>
         </div>
         <div class="full_img3">
           <p>
-            <img th:src="@{image/cat2.png}">
+            <img th:src="@{image/cat2.png}" style="width: 1000px; height: 400px;">
           </p>
         </div>
-      </div>
       <div class="full_img" style="display: none;">
         <p>
-          <img>
+          <img th:src="@{image/top_wood.png}" alt>
         </p>
+      </div>
       </div>
       <div class="wood_bg">
         <div class="mprd_box">
@@ -194,25 +371,168 @@
                 <br>
               </div>
             </div>
-              <div class="side2"></div>
+              <div class="side2">
+                <div class="img_box">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                </div>
+              </div>
           </div>
         </div>
-      </div> 
+      </div>
+      <!--/* 2층 구간 */-->
       <div class="full_img">
+      <a class="nav_floor" id="nav_floor2"></a>
         <p>
-          <img th:src="@{image/middle_floor.png}">
+          <img th:src="@{image/middle_floor.png}" width="1275px">
         </p>
       </div>
+      <div class="wood_bg_top">
+        <div class="fl_name">
+          <span>
+            "2F "
+            <strong>간식</strong>
+          </span>
+        </div>
+        <div class="full_img3">
+          <p>
+            <img th:src="@{image/cat2.png}" style="width: 1000px; height: 400px;">
+          </p>
+        </div>
+      <div class="full_img" style="display: none;">
+        <p>
+          <img th:src="@{image/top_wood.png}" alt>
+        </p>
+      </div>
+      </div>
+      <div class="wood_bg">
+        <div class="mprd_box">
+          <div class="item_floor">
+            <div class="side1">
+              <div class="fl_name2">Food Restaurant</div>
+              <div class="fl_desc">
+                " Tasty, high in nutrition custom-made "
+                <br>
+                " pet food to assist keeping your pets healthy "
+                <br>
+                <br>
+                " 아이들의 건강 관리에 도움이 되는 맛있는"
+                <br>
+                " 고영양 기능 맞춤형 펫푸드"
+                <br>
+              </div>
+            </div>
+              <div class="side2">
+                <div class="img_box">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <!--*/ 1층 구간*/-->
+      <div class="full_img">
+      <a class="nav_floor" id="nav_floor1"></a>
+        <p>
+          <img th:src="@{image/middle_floor.png}" width="1275px">
+        </p>
+      </div>
+      <div class="wood_bg_top">
+        <div class="fl_name">
+          <span>
+            "1F "
+            <strong>놀이용품</strong>
+          </span>
+        </div>
+        <div class="full_img3">
+          <p>
+            <img th:src="@{image/cat2.png}" style="width: 1000px; height: 400px;">
+          </p>
+        </div>
+      <div class="full_img" style="display: none;">
+        <p>
+          <img th:src="@{image/top_wood.png}" alt>
+        </p>
+      </div>
+      </div>
+      <div class="wood_bg">
+        <div class="mprd_box">
+          <div class="item_floor">
+            <div class="side1">
+              <div class="fl_name2">Play Room</div>
+              <div class="fl_desc">
+                " Through various collaborations, "
+                <br>
+                " 이생망 provides great products "
+                <br>
+                " and services to our customers. "
+                <br>
+                <br>
+                " 이생망은 다양한 협업을 통해 고객님들께"
+                <br>
+                " 멋진 제품과 서비스를 선보입니다"
+                <br>
+              </div>
+            </div>
+              <div class="side2">
+                <div class="img_box">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                  <img th:src="@{image/cat1.png}" width="200px" height="200px">
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <!--*/ 지하1층 /*-->
+      <div class="full_img">
+      <a class="nav_floor" id="nav_floor0"></a>
+        <p>
+          <img th:src="@{image/top_wood.png}" alt width="1275px">
+        </p>  
+      </div>
+      <div class="wood_bg_top">
+        <div class="fl_name">
+          <span>
+            "B1 "            
+            <strong>Basement</strong>
+          </span>
+        </div>
+        <div class="full_img3">
+          <p>
+            <img th:src="@{image/cat8.png}" style="width: 1000px; height: 800px;">
+          </p>
+        </div>
+      <div class="full_img" style="display: none;">
+        <p>
+          <img th:src="@{image/top_wood.png}" alt>
+        </p>
+      </div>
+      </div>
       
-      
+      <div class="full_img">
+        <p>
+          <img th:src="@{image/top_wood.png}" alt width="1275px">
+        </p>  
+      </div>    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
       
     </div>      
       
+   </div>     
       
-      
-      
-      
-    </div>      
+  </div>      
       
       
       
