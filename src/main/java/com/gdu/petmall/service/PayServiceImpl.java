@@ -9,15 +9,4 @@ import java.util.List;
 @Service
 public class PayServiceImpl implements PayService {
 
-    private final PayMapper payMapper;
-
-    
-    public PayServiceImpl(PayMapper payMapper) {
-        this.payMapper = payMapper;
-    }
-
-    @Override
-    public List<OrderDto> getPayment() {
-        return payMapper.getPayment();
-    }
 }
