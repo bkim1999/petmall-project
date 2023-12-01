@@ -11,21 +11,22 @@
    
    <script>
        var IMP = window.IMP;
-      IMP.init('imp75336553');
+      IMP.init('imp75336553');	//  가맹점 번호	
    
        function requestPay() {
            IMP.request_pay(
                {
-                   pg: "tosspay",
-                   pay_method: "card",
-                   merchant_uid: "57008833-33004",
-                   name: "테스트 상점",
-                   amount: 1004,
-                   buyer_email: 'test@naver.com',
-                   buyer_name: '코드쿡',
-                   buyer_tel: '010-8551-8106',
-                   buyer_addr: '서울특별시',
-                   buyer_postcode: '123-456',
+				   
+                   pg: "tosspay",					// 결제 수단 (토스페이)
+                   pay_method: "card",				// 결제 방법 (카드)
+                   merchant_uid: "57008833-33005",	// 가맹점 주문번호
+                   name: "구디아카데미",					// 결제 입력되는 상품명
+                   amount: 100,						// 결제 금액
+                   buyer_email: 'test@naver.com',	// 구매자 이메일
+                   buyer_name: '코드쿡',				// 구매자 정보
+                   buyer_tel: '010-8551-8106',		// 구매자 전화번호
+                   buyer_addr: '서울특별시',			// 구매자 주소
+                   buyer_postcode: '123-456',		// 구매자 
                },
                function (rsp) {
                $.ajax({
@@ -41,6 +42,40 @@
            });
        }
    </script>
+   
+      <script>
+       var IMP = window.IMP;
+      IMP.init('imp75336553');	//  가맹점 번호	
+   
+       function rePay() {
+           IMP.request_pay(
+               {
+                   pg: "kakaopay",				// 결제 수단 (토스페이)
+                   pay_method: "card",				// 결제 방법 (카드)
+                   merchant_uid: "57008833-3300",	// 가맹점 주문번호
+                   name: "구디아카데미",					// 결제 입력되는 상품명
+                   amount: 100,						// 결제 금액
+                   buyer_email: 'test@naver.com',	// 구매자 이메일
+                   buyer_name: '코드쿡',				// 구매자 정보
+                   buyer_tel: '010-8551-8106',		// 구매자 전화번호
+                   buyer_addr: '서울특별시',			// 구매자 주소
+                   buyer_postcode: '123-456',		// 구매자 
+               },
+               function (rsp) {
+               $.ajax({
+                   type: 'POST',
+                   url: '/verifyIamport/' + rsp.imp_uid
+               }).done(function(data) {
+                   if(rsp.paid_amount === data.response.amount){
+                       alert("결제 성공");
+                   } else {
+                       alert("결제 실패");
+                   }
+               });
+           });
+       }
+   </script>
+   
    <div th:replace="~{/layout/header::header}"></div>
    <h1> 결제 화면</h1>
       
@@ -60,6 +95,7 @@
 
             
 <button onclick="requestPay()">토스 페이 결제하기</button>
+<button onclick="rePay()">카카오 페이 결제하기</button>
 
 <h4>받는 사람 정보</h4>
 <p>작성 정보와 일치한지 확인해주세요</p>

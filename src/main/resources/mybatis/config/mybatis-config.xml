@@ -13,6 +13,7 @@
     <typeAlias alias="UserDto"         type="com.gdu.petmall.dto.UserDto"/>
     <typeAlias alias="LeaveUserDto"    type="com.gdu.petmall.dto.LeaveUserDto"/>
     <typeAlias alias="InactiveUserDto" type="com.gdu.petmall.dto.InactiveUserDto"/>
+    <typeAlias alias="ProfileDto" type="com.gdu.petmall.dto.ProfileDto"/>
     <typeAlias alias="ProductDto" type="com.gdu.petmall.dto.ProductDto" />
     <typeAlias alias="ProductOptionDto" type="com.gdu.petmall.dto.ProductOptionDto" />
     <typeAlias alias="ProductOptionListDto" type="com.gdu.petmall.dto.ProductOptionListDto" />
