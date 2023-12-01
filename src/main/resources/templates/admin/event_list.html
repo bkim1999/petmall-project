@@ -18,7 +18,13 @@
     padding-top: 20px;
   }
   .table {
-    width :1000px;
+    width :100%;
+    position: relative;
+  }
+  .table_wrap{
+    width: 1200px;
+    justify-content: center;
+    text-align: center;
   }
 </style>
 
@@ -32,7 +38,8 @@
     <button type="button" class="btn btn-danger">danger</button>
     <button type="button" class="btn btn-warning">warning</button>
   </div>
-    
+  
+  <div class="table_wrap">
   <table border="1" class="table table-hover table_font">  
     <thead class="table-primary">
       <tr>
@@ -51,7 +58,7 @@
     </thead>
     <tbody id="event_list"></tbody>
   </table>
-  
+  </div>
   <div>
     <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>
   </div>
@@ -75,7 +82,7 @@
     	   let str ='<tr class="tr_font">'
     	   str +='<td class="td_font">'+event.eventNo+'</td>';
     	   str +='<td class="td_font">'+event.title+'</td>';
-    	   str +='<td class="td_font"><img src="'+'${contextPath}'+event.eventThumnailUrl+'"width="100px" height="100px"></td>'
+    	   str +='<td class="td_font"><img src="'+event.eventThumnailUrl+'"width="100px" height="100px"></td>'
     	   str +='<td class="td_font">'+event.startAt+'</td>';
     	   str +='<td class="td_font">'+event.endAt+'</td>';
     	   str +='<td class="td_font">';
@@ -203,13 +210,19 @@
      
      function fnChangePercent() {
        $(document).on('click','.change_Percent',function(ev){
+      let value = $(this).prev().val();
     	let maxPercent = 100;
     	let minPercent = 0;
-        if($(this).prev().val() > maxPercent){
+    	let nullPercent = null;
+    	  if(value == null || value == '') {
+          alert('값을 입력해주세요');
+          return;
+        }
+        if(value > maxPercent){
             alert('할인율의 최대는 100입니다');
             return;
         }
-        if($(this).prev().val() < minPercent){
+        if(value < minPercent){
             alert('할인율의 최소는 0입니다');
             return;	
         }
@@ -238,6 +251,16 @@
      
      function fnChangePrice() {
          $(document).on('click','.change_Price',function(ev){
+          let value = $(this).prev().val();
+          let minPrice = 0;
+          if(value == '') {
+            alert('값을 입력해주세요');
+            return;
+          }
+          if(value <= minPrice) {
+            alert('0보다 작은수는 불가합니다.');
+            return;
+          }
          	if(!confirm('해당 할인율을 변경시키겠습니까?')){
         	  return;
            }

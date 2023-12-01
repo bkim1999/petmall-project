@@ -22,7 +22,7 @@
   <div>이벤트글 작성하로왔니?</div>
   
   <div>
-    <form method="post" th:action="@{/event/addevent.do}" enctype="multipart/form-data">
+    <form id="frm_event_write" method="post" th:action="@{/event/addevent.do}" enctype="multipart/form-data">
       <div>
         <label for="title">제목</label>
         <input type="text" name="title" id="title">
@@ -40,34 +40,130 @@
        <div>
         <label for="files" class="form-label">이벤트사진</label>
         <input type="file" name="event_images" id="event_images" class="form-control" multiple>
-      </div>
+       </div>
       
       <div>
         <label id="startAt">시작일</label>
-        <input type="text" name="startAt"  id="startAt">
-        <label id="endAt">종료일</label>
-        <input type="text" name="endAt" id="endAt">
+        <input type="date" name="startAt"  class="startAt">
       </div>
       
       <div>
         <label id="discountPercent">할인율</label>
-        <input type="text" name="discountPercent" id="discountPercent">
+        <input type="text" name="discountPercent" id="discountPercent" value="0">
       </div>
       
       <div>
         <label id="discountPrice">할인가</label>
-        <input type="text" name="discountPrice" id="discountPrice">
+        <input type="text" name="discountPrice" id="discountPrice" value="0">
+      </div>
+      
+      <div>
+        <label id="endAt">종료일</label>
+        <input type="date" name="endAt" class="endAt">
       </div>
       
       <hr>
       
       <div>
-        <button class="btn btn-primary col-12" type="submit">작성완료</button>
+        <button class="btn btn-primary col-12 eventWrite" type="submit">작성완료</button>
       </div>
       
     </form>
   </div>
 <script th:inline="javascript">
+  
+  /********************전역변수******************************************************/
+  
+  
+  function StartDatechecking() {
+    $(document).on('blur', '.startAt', function(ev){
+      var dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
+      var datevalue = $('.startAt').val();
+      var startDate = $('.startAt').val().replaceAll('-','');
+      var endDate = $('.endAt').val().replaceAll('-','');
+      
+      let today = new Date();
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      let date = today.getDate();  // 날짜
+      let full = year+'-'+month+'-'+date;
+      let withoutfull = (year+'/'+month+'/'+date).replaceAll('/','');
+      
+      if(startDate != 0 && endDate != 0){
+        if(startDate - endDate < 0){
+        alert('종료일이 시작일보다 느릴수없습니다. 시작일을 현재날짜로 설정합니다.');
+        return $('.startAt').val(full);
+        }
+      }
+      
+      
+      if(!dateCheck.test(datevalue)){
+       alert('해당 시작일은 설정이 불가합니다. 현재날짜로 재설정합니다.');
+       return $('.startAt').val(full);
+      } 
+      
+      datevalue = datevalue.replaceAll('-','');
+      if((datevalue-withoutfull) < 0){
+        alert('지난 날짜는 선택할 수 없습니다. 현재날짜로 재설정합니다.');
+        $('.startAt').val(full);
+        return $('.startAt').focus();
+      }
+    })
+  }
+  
+  function endDatechecking() {
+    $(document).on('blur', '.endAt', function(ev){
+      var dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
+      var datevalue = $('.endAt').val();
+      var startDate = $('.startAt').val().replaceAll('-','');
+      var endDate = $('.endAt').val().replaceAll('-','');
+      
+      
+      let today = new Date();   
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      let date = today.getDate();  // 날짜
+      let full = year+'-'+month+'-'+date;
+      let withoutfull = (year+'/'+month+'/'+date).replaceAll('/','');
+      
+      if(!dateCheck.test(datevalue)){
+        alert('해당 종료일은 설정이 불가합니다. 현재날짜로 재설정합니다.');
+        return $('.endAt').val(full);
+      }
+      
+      datevalue = datevalue.replaceAll('-','');
+      if((datevalue-withoutfull) < 0){
+        alert('지난 날짜는 선택할 수 없습니다. 현재날짜로 재설정합니다.');
+        return $('.endAt').val(full);
+      }
+      if(startDate == 0){
+        alert('시작일을 설정하지않았습니다. 현재날짜로 설정합니다.');
+        return $('.startAt'),val(full);
+      }
+      
+      if(endDate == 0){
+        alert('종료일을 설정하지않았습니다. 현재날짜로 설정합니다.');
+        return $('.startAt'),val(full);
+      }
+      
+      if(endDate-startDate < 0) {
+        alert('종료일이 시작일보다 느릴수없습니다. 시작일을 현재날짜로 설정합니다.');
+        return $('.startAt').val(full);
+      }
+      
+    })
+  }
+  
+  
+  
+  
+  StartDatechecking();
+  endDatechecking();
+  
+  
+  
+  
+  
 const fnCkeditor = () => {
     ClassicEditor
       .create(document.getElementById('contents'), {
@@ -102,6 +198,8 @@ const fnCkeditor = () => {
        console.log(err)
      });
   }
+  
+  
   
   
   fnCkeditor();
