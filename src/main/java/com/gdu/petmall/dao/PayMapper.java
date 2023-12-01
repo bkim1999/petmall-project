@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface PayMapper {
-    List<OrderDto> getPayment();
+
 }
