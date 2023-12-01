@@ -32,6 +32,7 @@
     </div>
         
     <div>받는분 정보</div>
+    
 <!--/* 주소 */-->
 <div>
 <input type="text" id="postcode" name="postcode" placeholder="우편번호"  class="form-control" readonly>
@@ -108,13 +109,19 @@
 
 
 </div>
-    
+
+    <div>
+        <label for="reText">메모</label>
+        <input type="text" name="reText" id="reText">
+        <span id="re_text"></span>
+    </div>    
     
     <div>
         <label for="totalPrice">총금액</label>
         <input type="text" name="totalPrice" id="totalPrice">
         <span id="total_price"></span>
     </div>
+    
     <input type="hidden" name="userNo" th:value="${session.user.userNo}">
     <button type="submit" id="btn_answer">주문하기</button>
 </form>

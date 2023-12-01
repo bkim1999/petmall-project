@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::head('결재를 기다리는 정보')}"></head>
+
+<body>
+  <div th:replace="~{/layout/header::header}"></div>
+  <div class="main_wrap">
+    <h1>저장된 결제 정보 이어서 진행하기</h1>
+    <!-- 전체 리스트 목록별 정보를 불러온다. -->
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>받는분 이름</th>
+            <th>받는분 휴대전화</th>
+            <th>받는분 우편번호</th>
+            <th>받는분 도로명주소</th>
+            <th>받는분 지번주소</th>
+            <th>받는분 요청사항</th>
+            <th>상품 결제하러가기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="order, vs : ${myOrderList}" th:if="${order.orderState == 0}">
+            <td th:text="${order.reName}"></td>
+            <td th:text="${order.reTel}"></td>
+            <td th:text="${order.postcode}"></td>
+            <td th:text="${order.roadAddress}"></td>
+            <td th:text="${order.jibunAddress}"></td>
+            <td th:text="${order.reText}"></td>
+         <td>
+            <a th:href="@{/pay/payment(orderNo=${order.orderNo})}">
+                <button>결제하러가기</button>
+            </a>
+         </td>          
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> 
+  
+  <hr>
+    
+  <div th:replace="~{/layout/footer::footer}"></div>
+</body>
+</html>

@@ -20,9 +20,12 @@ public class OrderDto {
   private int point;
   private int payment;
   private String reName;
-  private String zipcode;
-  private String address;
-  private String addressDetail;
+  
+  private String postcode;
+  private String roadAddress;
+  private String jibunAddress;
+  private String detailAddress;
+  
   private String reTel;
   private String reText;
 }
