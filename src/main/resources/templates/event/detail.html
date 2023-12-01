@@ -21,7 +21,7 @@
   <hr>
     <div th:text="|조회수 ${event.hit}|"></div>
   <hr>
-  <div th:text="${event.contents}"></div>
+  <div th:utext="${event.contents}"></div>
     <div th:text="${event.eventImageDto.path}"></div>
     <th:block th:if="${event.eventImageDto.path != null}">
       <img th:src="${event.eventImageDto.path}" width = "500px" height = "300px">   
