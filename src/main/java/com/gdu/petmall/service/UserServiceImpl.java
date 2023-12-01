@@ -1,13 +1,16 @@
 package com.gdu.petmall.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,14 +27,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gdu.petmall.dao.ProfileMapper;
 import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.InactiveUserDto;
+import com.gdu.petmall.dto.ProfileDto;
 import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.util.MyFileUtils;
 import com.gdu.petmall.util.MyJavaMailUtils;
 import com.gdu.petmall.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 
 
 @Transactional
@@ -40,6 +46,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 	
 	private final UserMapper userMapper;
+	private final ProfileMapper profileMapper;
 	private final MySecurityUtils mySecurityUtils;
 	private final MyJavaMailUtils myJavaMailUtils;
 	private final MyFileUtils myFileUtils;
@@ -925,40 +932,107 @@ public void active(HttpSession session, HttpServletRequest request, HttpServletR
 	
 }
 
-/* ************** 프로필 이미지 첨부****************************/
+
+
+
+
+/* ************************************** 프로필 이미지 ****************************/
+
+/*프로필 이미지 첨부*/
 @Override
-public Map<String, Object> addAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
+public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequest) throws Exception {
   
-  MultipartFile file=multipartRequest.getFile("file");
-  
-/////////// 첨부된 파일이 있는지 확인
-  int attachCount;
-  
-  if(file.getSize() == 0) {
-    attachCount = 1;  // 첨부된게 있음
-  } else {
-    attachCount = 0;  // 첨부된게 없어서 0
-  }
-  
-  
-if(file!=null&& !file.isEmpty()) {
-  
+	
+	int editResult=1;
+	int attachCount;
+	
+	// ajax로 전달한 formData 정보
+	 List<MultipartFile> files = multipartRequest.getFiles("files");
+	 int userNo=Integer.parseInt(multipartRequest.getParameter("userNo"));
+	 
+	 
+	 
+	//업로드된 파일이 있는지 없는지 확인
+	    if(files.get(0).getSize() == 0) {
+	        attachCount = 1;
+	      } else {
+	        attachCount = 0;
+	      }
+	    
+	    MultipartFile multipartFile = files.get(0); 
+	    
+	//파일이 존재하는지
+	    if(multipartFile != null && !multipartFile.isEmpty()) {
+	    	
+	        String path ="/user/myProfile"; // 파일 저장할 경로
+	        File dir = new File(path);
+	        if(!dir.exists()) {
+	          dir.mkdirs();
+	        }//if2
+	        
+	//  파일 생성
+        String originalFilename = multipartFile.getOriginalFilename(); //원본이름
+        String filesystemName = myFileUtils.getFilesystemName(originalFilename);//저장이름
+        File file = new File(dir, filesystemName);   // 파일생성(저장경로,파일명)
+   
+    // 서버에 생성된 파일 저장
+        multipartFile.transferTo(file);
+	    
+    	//파일 타입 확인
+	    String contentType = Files.probeContentType(file.toPath());  // 이미지의 Content-Type은 image/jpeg, image/png 등 image로 시작한다.
+    // 타입이 image 라면 썸네일을 가진다.
+	    int hasThumbnail = (contentType != null && contentType.startsWith("image")) ? 1 : 0;
+	
+	    
+	// 썸네일을 갖는다면 썸네일 파일을 생성한다.
+        if(hasThumbnail == 1) {
+            File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
+            Thumbnails.of(file)
+                      .size(200, 180)      // 가로 100px, 세로 100px
+                      .toFile(thumbnail);  
+          }   
+
+        ProfileDto profile=ProfileDto.builder()
+        							 .path(path)
+        							 .originalFilename(originalFilename)
+        							 .filesystemName(filesystemName)
+        							 .hasThumbnail(hasThumbnail)
+        							 .userDto(UserDto.builder()
+        									 		 .userNo(userNo)
+        									 		 .build())
+        							 .build();
+        
+        profileMapper.deleteOld();
+        editResult=profileMapper.insertProfile(profile);  
+
+	    }//if1
+
+  return Map.of("editResult",editResult);
 }
-  
-  
-  
-  
-  return null;
-}
 
 
-
+/*프로필 이미지 가져오기*/
+@Override
+	public Map<String, Object> getProfileImage(HttpServletRequest request) {
+		
+	int userNo=Integer.parseInt(request.getParameter("userNo"));
 	
 	
+	ProfileDto profile=ProfileDto.builder()
+								 .userDto(UserDto.builder()
+											.userNo(userNo)
+											.build())
+								 .build();
+								 
 	
+	return Map.of("profile", profileMapper.getProfileImage(profile));
+	}	
+
 
 
 }
+
+
 
 
 
