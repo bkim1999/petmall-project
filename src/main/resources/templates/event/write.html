@@ -72,22 +72,20 @@
   </div>
 <script th:inline="javascript">
   
-  /********************전역변수******************************************************/
-  
   
   function StartDatechecking() {
     $(document).on('blur', '.startAt', function(ev){
-      var dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
-      var datevalue = $('.startAt').val();
-      var startDate = $('.startAt').val().replaceAll('-','');
-      var endDate = $('.endAt').val().replaceAll('-','');
+      let dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
+      let datevalue = $('.startAt').val();
+      let startDate = $('.startAt').val().replaceAll('-','');
+      let endDate = $('.endAt').val().replaceAll('-','');
       
       let today = new Date();
       let year = today.getFullYear(); // 년도
       let month = today.getMonth() + 1;  // 월
-      let date = today.getDate();  // 날짜
+      let date = String(today.getDate()).padStart(2,"0");  // 날짜
       let full = year+'-'+month+'-'+date;
-      let withoutfull = (year+'/'+month+'/'+date).replaceAll('/','');
+      let withoutfull = (full).replaceAll('-','');
       
       if(startDate != 0 && endDate != 0){
         if(startDate - endDate < 0){
@@ -103,26 +101,27 @@
       } 
       
       datevalue = datevalue.replaceAll('-','');
-      if((datevalue-withoutfull) < 0){
+      
+      if((datevalue - withoutfull) < 0){
         alert('지난 날짜는 선택할 수 없습니다. 현재날짜로 재설정합니다.');
         $('.startAt').val(full);
-        return $('.startAt').focus();
+        return $('.startAt').val(full);
       }
     })
   }
   
   function endDatechecking() {
     $(document).on('blur', '.endAt', function(ev){
-      var dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
-      var datevalue = $('.endAt').val();
-      var startDate = $('.startAt').val().replaceAll('-','');
-      var endDate = $('.endAt').val().replaceAll('-','');
+      let dateCheck = /^[0-9]{4}-[0-9]{2}-\d{2}$/;
+      let datevalue = $('.endAt').val();
+      let startDate = $('.startAt').val().replaceAll('-','');
+      let endDate = $('.endAt').val().replaceAll('-','');
       
       
       let today = new Date();   
       let year = today.getFullYear(); // 년도
       let month = today.getMonth() + 1;  // 월
-      let date = today.getDate();  // 날짜
+      let date = String(today.getDate()).padStart(2,"0");  // 날짜
       let full = year+'-'+month+'-'+date;
       let withoutfull = (year+'/'+month+'/'+date).replaceAll('/','');
       
