@@ -100,9 +100,11 @@ public class ProductServiceImpl implements ProductService {
     int productNo = Integer.parseInt(request.getParameter("productNo"));
     ProductDto product = productMapper.getProduct(productNo);
     List<ProductOptionDto> optionList = productMapper.getOptionList(productNo);
+    List<ProductImageDto> imageList = productMapper.getProductImageList(productNo);
     
     model.addAttribute("product", product);
     model.addAttribute("optionList", optionList);
+    model.addAttribute("imageList", imageList);
   }
   
   @Override
@@ -322,12 +324,6 @@ public class ProductServiceImpl implements ProductService {
     // 상품, 옵션, 사진 정보 삽입 결과 반환
     return addProductResult && addOptionResult && addThumbnailResult && addDisplayImageResult && addContentsImageResult;
       
-  }
-  
-  @Override
-  public Map<String, Object> loadProductImageList(HttpServletRequest request) {
-    int productNo = Integer.parseInt(request.getParameter("productNo"));
-    return Map.of("productImageList", productMapper.getProductImageList(productNo));
   }
   
   @Override

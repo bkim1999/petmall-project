@@ -1,6 +1,5 @@
 package com.gdu.petmall.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gdu.petmall.dto.CategoryDto;
 import com.gdu.petmall.dto.ProductDto;
 import com.gdu.petmall.service.ProductService;
 
@@ -73,11 +71,22 @@ public class ProductController {
     redirectAttributes.addFlashAttribute("addProductResult", addProductResult);
     return "redirect:/product/list.do";
   }
-
-  @ResponseBody
-  @GetMapping(value="/getProductImageList.do", produces="application/json")
-  public Map<String, Object> loadProductImageList(HttpServletRequest request){
-    return productService.loadProductImageList(request);
+  
+  @GetMapping(value="/editProduct.form")
+  public String editProductForm(HttpServletRequest request, Model model) {
+    Map<String, Object> map = productService.loadCategoryList();
+    model.addAttribute("categoryList", map.get("categoryList"));
+    productService.loadProductInfo(request, model);
+    return "/product/edit_product";
+  }
+  
+  @PostMapping(value="/editProduct.do")
+  public String editProduct(@ModelAttribute ProductDto product
+                          , MultipartHttpServletRequest multipartrequest
+                          , RedirectAttributes redirectAttributes) throws Exception {
+//    boolean editProductResult = productService.addProduct(product, multipartrequest);
+//    redirectAttributes.addFlashAttribute("editProductResult", addProductResult);
+    return "redirect:/product/list.do";
   }
   
   @PostMapping(value="/removeProduct.do")
