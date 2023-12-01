@@ -44,12 +44,13 @@ public interface UserService {
   
   /*카카오 api 관련*/
   public String getKakaoLoginURL(HttpServletRequest request) throws Exception;//  카카오 로그인 url 가져와
-  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response);//네이버 간편가입
+  public void kakaoJoin(HttpServletRequest request, HttpServletResponse response);//카카오 간편가입
   public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception; //인증토큰 가져와
-  public UserDto getKakaoProfile(String accessToken) throws Exception; // 네이버 로그인 후속작업
-  
+  public UserDto getKakaoProfile(String accessToken) throws Exception; // 카카오 로그인 후속작업
+  public void kakaoLogin(HttpServletRequest request, HttpServletResponse response, UserDto kakaoProfile) throws Exception;//카카오로그인
+
   
   /*프로필 이미지 첨부 관련*/
-  public int addUpload(MultipartHttpServletRequest request) throws Exception;
-  
+  public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequest) throws Exception;// 첨부
+  public Map<String,Object>getProfileImage(HttpServletRequest request);
 }

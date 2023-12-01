@@ -56,55 +56,68 @@
       <result column="PRODUCT_NO"             property="productNo" />
       <result column="OPTION_NAME"            property="optionName" />
       <result column="ADD_PRICE"              property="addPrice" />
-    </association>  
+    </association>
+    <association javaType="ProductImageDto"    property="productImageDto">
+      <id     column="IMAGE_CODE"              property="imageCode" />
+      <result column="PRODUCT_NO"              property="position" />
+      <result column="PATH"                    property="path" />
+      <result column="FILESYSTEM_NAME"         property="filesystemName" />
+    </association>
   </resultMap>
-  
-    <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
-      SELECT C.USER_NO 
-           , C.COUNT
-           , A.PRODUCT_NAME
-           , A.PRODUCT_PRICE
-           , A.PRODUCT_NO
-           , B.OPTION_NO
-           , B.ADD_PRICE
-           , E.DISCOUNT_PERCENT
-           , E.EVENT_NO 
-        FROM PRODUCT_T A 
-           , PRODUCT_OPTION_T B
-           , EVENT_T E
-           , CART_T C
-       WHERE A.PRODUCT_NO = B.PRODUCT_NO
-         AND E.DISCOUNT_PERCENT = E.DISCOUNT_PERCENT
-         AND E.EVENT_NO = E.EVENT_NO
-         AND B.OPTION_NO = C.OPTION_NO
-         AND C.USER_NO = ${userNo}
-    </select>
     
-   <insert id="insertCart" parameterType="CartDto">
-      INSERT INTO CART_T(
-          OPTION_NO
-        , USER_NO
-        , COUNT
-      ) VALUES (
-          #{productOptionDto.optionNo}
-        , #{userDto.userNo}
-        , #{count}
-      )
-   </insert>
+    <select id="getCartList" parameterType="CartDto" resultMap="CartMap">
+       SELECT C.USER_NO,
+              C.COUNT,
+              A.PRODUCT_NAME,
+              A.PRODUCT_PRICE,
+              A.PRODUCT_NO,
+              B.OPTION_NAME,
+              B.OPTION_NO,
+              B.ADD_PRICE,
+              E.DISCOUNT_PERCENT,
+              E.EVENT_NO,
+              C.OPTION_NO,
+              P.PATH AS THUMBNAIL_PATH,
+              P.FILESYSTEM_NAME AS THUMBNAIL_FILENAME
+         FROM PRODUCT_T A
+               JOIN PRODUCT_OPTION_T B ON A.PRODUCT_NO = B.PRODUCT_NO
+               JOIN EVENT_T E ON E.EVENT_NO = (SELECT MAX(EVENT_NO) FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT)
+               JOIN CART_T C ON C.OPTION_NO = B.OPTION_NO
+               LEFT JOIN PRODUCT_IMAGE_T P ON P.IMAGE_CODE = 'product_' || A.PRODUCT_NO AND P.POSITION = 'thumbnail' 
+        WHERE C.USER_NO = 3
+          AND E.DISCOUNT_PERCENT = (SELECT MAX(DISCOUNT_PERCENT) FROM EVENT_T WHERE EVENT_NO = (SELECT MAX(EVENT_NO) FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT))
+    </select>
+        
+    <insert id="insertCart" parameterType="List">
+      <foreach collection="addCartList" item="cart" separator=";">
+        INSERT INTO CART_T (
+               OPTION_NO
+             , USER_NO
+             , COUNT
+        ) VALUES (
+               #{cart.productOptionDto.optionNo}
+             , #{cart.userDto.userNo}
+             , #{cart.count}
+        )
+      </foreach>
+    </insert>
    
-   <update id="updateCart" parameterType="map">
-      UPDATE CART_T
-        SET COUNT = #{count}  
-        WHERE USER_NO = #{userNo} AND OPTION_NO = #{optionNo}
-   </update>
+    <update id="updateCart" parameterType="map">
+       UPDATE CART_T
+          SET COUNT = #{count}
+        WHERE USER_NO = #{userNo}
+          AND OPTION_NO IN (SELECT OPTION_NO
+                              FROM PRODUCT_OPTION_T P
+                             WHERE P.OPTION_NAME = #{optionName}
+                               AND P.PRODUCT_NO = #{productNo}) 
+    </update>
    
-   <delete id="deleteCart" parameterType="map">
-      DELETE
-        FROM CART_T
-       WHERE OPTION_NO = #{optionNo}
-         AND USER_NO = #{userNo}
-   </delete>           
-   
+    <delete id="deleteCart" parameterType="map">
+        DELETE 
+          FROM CART_T
+         WHERE OPTION_NO = #{optionNo}
+    </delete>           
+      
    
    
 </mapper>

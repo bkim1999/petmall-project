@@ -48,7 +48,6 @@
  .btn-outline-primary{
    background-color:transparent ;
     --bs-btn-color:#E0C891;
-   --bs-btn-border-color:#E0C891;
     --bs-btn-active-bg:#E0C891;
     --bs-btn-active-border-color: #E0C891;
     color: rgb(124, 113, 107);}
@@ -62,6 +61,35 @@
 #modify_profile_img{ background-color: transparent; color:silver; border: 0;}
 #modify_profile_img:active{color: darkgray;}
 
+/* 첨부파일 외관 수정*/
+#file{display: none;}
+.edit_image{
+  margin-left: 40px;
+  text-align: center;
+    width: 115px;
+    height: 25px;
+    line-height:15px;
+    font-size: small;
+    letter-spacing: -2px;
+    background: #fff;
+    border: 1px solid ;
+    color:silver;
+    
+    margin-bottom:20px;
+    }
+    
+    
+/*프로필 이미지 썸네일*/
+ #profile_thumbnail ,#profile_thumbnail_img{
+ width: 200px;
+ height: 170px;
+ }
+ #profile_thumbnail{
+   margin-top: 20px;
+   margin-bottom: 20px;
+   width:200px; height: 200px; border-radius: 80%; overflow: hidden; border:5px solid rgb(143, 132, 118)
+ }
+ #profile_thumbnail_img{width: 100%; height: 100%; object-fit: cover;}
 </style>
   
   <!-- 마이페이지 네비게이션  -->
@@ -78,10 +106,33 @@
 
 
 <div>
-  <div id="profile_thumbnail"></div>
-  <button type="button" id="modify_profile_img">프로필사진 수정하기</button>
+  <!--프로필 이미지 썸네일 -->
+  <div id="profile_thumbnail">
+    <img id="profile_thumbnail_img" src="" >
+  </div>
+  <!--프로필 사진 첨부-->
+        <div>
+          <label for="file"  class="btn edit_image" id="edit_image">프로필이미지변경</label>
+          <input type="file" name="file" id="file" accept="image/jpeg" multiple>
+        </div>
 </div>
 
+<!--/*추후에 삭제 해야함 */-->
+<script th:inline="javascript">
+	
+	 $('#file').change((ev) => {
+		 
+		 
+		 <!-- 콘솔로 정보 확인 -->
+		//console.log($('#file').prop('files')[0].name);
+		//console.log($('#file').prop('files')[0]);
+		 
+ 
+        })
+      
+	
+	
+</script>
 
 
 <!-- 이메일  -->
@@ -283,7 +334,7 @@ $('#mobile2').val(mobile2);
  <div class="btn_area">
  
  <div>
-<input type="hidden" name="userNo" th:value="${session.user.userNo}">
+<input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
 <button type="button" id="btn_modify" class="btn btn-primary btn-danger">회원정보수정</button>
 <button type="button" id="btn_cancel" class="btn btn-primary btn-danger ">취소</button>
 <button type="button" id="btn_leave" class="btn btn-primary btn-danger">회원탈퇴</button>
@@ -304,9 +355,9 @@ $('#mobile2').val(mobile2);
 </div>
 
 <!-- 스크립트 영역  -->
-<script>
-
-
+<script th:inline="javascript">
+	
+	
 /**********************전역변수 선언*************************************/
 var pwPassed = false;
 var pw2Passed = false;
@@ -314,6 +365,76 @@ var namePassed = true;
 var mobilePassed = false;
 var mobile1=false;
 var mobile2=false;
+/****************************프로필 첨부****************************/
+
+/*****업로드한 파일이 변경됐는지 체크******/
+    const fnFileCheck = () => {
+		
+		
+		
+        $('#file').change((ev) => {		
+		
+		// 초기화	
+		let formData= new FormData();
+		let file = $('#file')[0];
+		
+		
+		
+		//값 넣기.			
+		formData.append('files',file.files[0]);
+		formData.append('userNo', $('#userNo').val());
+       	
+       	
+       /**사용자가 이미지를 선택시 ajax실행**/
+       $.ajax({
+		   //요청
+		   type:'post',
+		   url:'/user/editProfile.do',
+		   data: formData,
+		   contentType:false,
+		   processData:false,
+		   //응답
+		   
+		   dataType:'json',
+		   success:(resData)=>{
+			   $('#file').empty();
+			   fnGetProfile();
+		   } //success
+		   
+	   			})//ajax
+       
+        })//event
+      }//function
+
+
+/********현재 업로드 된 이미지 불러오기********/
+
+const fnGetProfile =() =>{
+	$.ajax({
+	//요청
+	type:'get',
+	url:'/user/getProfileImage.do',
+	data: { userNo: $('#userNo').val() },
+	
+	//응답
+	dataType:'json',
+	success:(resData)=>{
+		 $('#profile_thumbnail_img').empty();
+		 if(resData.hasThumbnail===0){
+			console.log(resData);
+			 
+		 }
+		 else{
+			console.log(resData);
+			str=resData.profile.path+'/'+resData.profile.filesystemName;
+			console.log(str);
+			$('#profile_thumbnail_img').attr('src',str);
+		 }//else
+	}//success
+	
+	})//ajax
+}//function
+
 
 
 
@@ -360,6 +481,8 @@ var mobile2=false;
      } else {
        $('#msg_mobile').text('휴대전화번호를 확인하세요.');       
      }
+     
+     
    })
 
  }
@@ -455,8 +578,9 @@ const fnCancel=()=>{
  
 /*****************함수호출***********************/
 
-
-
+//프로필 이미지 첨부
+ fnFileCheck(); // 파일 체크
+ 
 //비번 체크
 fnCheckPassword();
 fnCheckPassword2();

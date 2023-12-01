@@ -25,6 +25,10 @@
   .ck-editor.is-invalid {
     border: solid 2px red;
   }
+  .option {
+    padding: 30px 0;
+    border-top: 0.5px solid gray;
+  }
 </style>
 
 <body>
@@ -96,9 +100,9 @@
         <hr>
         <h1>옵션 정보</h1>
         <div id="option_list">
-         <div class="option">
+         <div class="option" style="border:none;">
            <div class="form-group">
-             <label class="form-label mt-4" for="productOptionList[0].optionName">옵션명</label>
+             <label class="form-label" for="productOptionList[0].optionName">옵션명</label>
              <input type="text" name="productOptionList[0].optionName" id="productOptionList[0].optionName" class="not-empty form-control">
              <div class="invalid-feedback"></div>
            </div>
@@ -119,9 +123,12 @@
                <div class="invalid-feedback"></div>
              </div>
            </div>
+           <div>
+             <button type="button" class="btn btn-danger btn_remove_option mt-3">옵션 삭제</button>
+           </div>
          </div>
         </div>
-        <button type="submit" class="btn btn-secondary mt-4" id="btn_add_option">옵션 추가</button>
+        <button type="button" class="btn btn-secondary mt-4" id="btn_add_option">옵션 추가</button>
         </div>
       <div class="d-grid gap-2 mt-5">
         <button type="button" id="btn_add_product" class="btn btn-lg btn-primary mb-5">상품 등록</button>
@@ -159,137 +166,83 @@
      });
   }
   
+  const fnToggleValid = (input, isInvaild, feedback) => {
+    if(isInvaild){
+      if(!input.hasClass('is-invalid')){
+        input.removeClass('is-valid');
+        input.addClass('is-invalid');
+      }
+      input.siblings('.invalid-feedback').text(feedback); 
+      input.val('');
+    } else {
+      if(!input.hasClass('is-valid')){
+        input.removeClass('is-invalid');
+        input.addClass('is-valid');
+      }
+    }
+  }
+  
   const fnCheckInput = () => {
     $(document).on('keyup', '.ck-editor__editable', function(){
-      var ckeditor = $('.ck-editor');
-      if($.trim($(this).text()) === ''){
-        if(!ckeditor.hasClass('is-invalid')){
-          ckeditor.removeClass('is-valid');
-          ckeditor.addClass('is-invalid');
-          ckeditor.siblings('.invalid-feedback').text('필수 입력 항목입니다.');
-        }
-      } else {
-        if(!ckeditor.hasClass('is-valid')){
-          ckeditor.removeClass('is-invalid');
-          ckeditor.addClass('is-valid');
-        }
-      }
+      fnToggleValid($('.ck-editor'), $.trim($(this).text()) === '', ' * 필수 입력 항목입니다.');
     });
     $(document).on('keyup', '.not-empty', function(){
-      if($.trim($(this).val()) === ''){
-        if(!$(this).hasClass('is-invalid')){
-          $(this).removeClass('is-valid');
-          $(this).addClass('is-invalid');
-          $(this).siblings('.invalid-feedback').text('필수 입력 항목입니다.');
-        }
-      } else {
-        if(!$(this).hasClass('is-valid')){
-          $(this).removeClass('is-invalid');
-          $(this).addClass('is-valid');
-        }
-      }
+      fnToggleValid($(this), $.trim($(this).val()) === '', ' * 필수 입력 항목입니다.');
     });
     $(document).on('keyup', '.only-number', function(){
-      if(!/^[0-9]+$/.test($(this).val())){
-        console.log('ddd')
-        if(!$(this).hasClass('is-invalid')){
-          containsNonNumber = true;
-          $(this).removeClass('is-valid');
-          $(this).addClass('is-invalid');
-          $(this).siblings('.invalid-feedback').text('숫자만 입력할 수 있습니다.'); 
-          $(this).val('');
-        }
-      } else {
-        if(!$(this).hasClass('is-valid')){
-          $(this).removeClass('is-invalid');
-          $(this).addClass('is-valid');
-        }
-      }
+      fnToggleValid($(this), !/^[0-9]+$/.test($(this).val()), ' * 숫자만 입력해주세요.');
     });
+    $(document).on('change', '#thumbnail, #product_images', function(){
+      fnToggleValid($(this), $(this)[0].files.length === 0 || $(this)[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
+    });
+     
   }
   
   const fnCheckRequired = () => {
-	  $(document).on('click', '#btn_add_product', function(){
-      let isEmptyInput = false;
-      var ckeditor = $('.ck-editor');
-      if($.trim($('.ck-editor__editable').text()) === ''){
-        if(!ckeditor.hasClass('is-invalid')){
-          isEmptyInput = true;
-          ckeditor.removeClass('is-valid');
-          ckeditor.addClass('is-invalid');
-          ckeditor.siblings('.invalid-feedback').text('필수 입력 항목입니다.');
-        }
-      } else {
-        if(!ckeditor.hasClass('is-valid')){
-          ckeditor.removeClass('is-invalid');
-          ckeditor.addClass('is-valid');
-        }
-      }
-	    $.each($('.not-empty'), (i, input) => {
-        if($.trim($(input).val()) === ''){ // 입력칸이 공백일 경우
-          if(!$(input).hasClass('is-invalid')){
-            isEmptyInput = true;
-            $(input).removeClass('is-valid');
-            $(input).addClass('is-invalid');
-            $(input).siblings('.invalid-feedback').text('필수 입력 항목입니다.'); 
-          }
-        } else {
-          if(!$(input).hasClass('is-valid')){
-            $(input).removeClass('is-invalid');
-            $(input).addClass('is-valid');
-          }
-        }
-	    });
-	    if(isEmptyInput === true){ // 공백인 입력칸이 있을 경우 submit 안함
-        return;
-      }
-      let containsNonNumber = false;
-	    $.each($('.number_input'), (i, input) => {
-        if(!/^[0-9]+$/.test($('.only-number').val())){
-          if(!$(input).hasClass('is-invalid')){
-            containsNonNumber = true;
-            $(input).removeClass('is-valid');
-            $(input).addClass('is-invalid');
-            $(input).siblings('.invalid-feedback').text('숫자만 입력할 수 있습니다.'); 
-            $(input).val('');
-          }
-        } else {
-          if(!$(input).hasClass('is-valid')){
-            $(input).removeClass('is-invalid');
-            $(input).addClass('is-valid');
-          }
-        }
+    $(document).on('click', '#btn_add_product', function(){
+      
+      // ckeditor 빈칸인지 체크
+      fnToggleValid($('.ck-editor'), $.trim($('.ck-editor__editable').text()) === '', ' * 필수 입력 항목입니다.');
+      
+      // 필수항목 빈칸인지 체크
+      $.each($('.not-empty'), (i, input) => {
+        fnToggleValid($(input), $.trim($(input).val()) === '', ' * 필수 입력 항목입니다.');
       });
       
-      // 첨부파일 목록
-      let isNonImage = false;
-	    var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
-	    for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
-  	    let filetype = files[i].type;
+      // 공백인 입력칸이 있을 경우 submit 안함
+      if($(".not-empty").is(".is-invalid")){
+        return;
+      }
+      
+      // 숫자항목 숫자만 입력되었는지 체크
+      $.each($('.only-number'), (i, input) => {
+        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()), ' * 숫자만 입력해주세요.');
+      });
+      
+      // 이미지 첨부항목 개수는 최소 1개, 최대 4개인지 체크
+      fnToggleValid($('#thumbnail'), $('#thumbnail')[0].files.length === 0 || $('#thumbnail')[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
+      fnToggleValid($('#product_images'), $('#product_images')[0].files.length === 0 || $('#product_images')[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
+      
+      // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크 
+      var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
+      for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
+        let filetype = files[i].type;
         let input = (i === 0) ? $('#thumbnail') : $('#product_images');
-  	    if(filetype.substring(0, filetype.indexOf('/')) !== 'image'){
-  	    	if(!input.hasClass('is-invalid')){
-            isNonImage = true;
-            input.removeClass('is-valid');
-            input.addClass('is-invalid');
-            input.siblings('.invalid-feedback').text('이미지 파일만 첨부할 수 있습니다.'); 
-          }
-        } else {
-          if(!input.hasClass('is-valid')){
-            input.removeClass('is-invalid');
-            input.addClass('is-valid');
-          }
-	      }
-	    }
-      if(containsNonNumber === true){ // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우 submit 안함
+        if(filetype.substring(0, filetype.indexOf('/')) !== 'image') {
+          fnToggleValid(input, true, ' * 이미지 파일만 첨부할 수 있습니다.');
+          break;
+        }
+      }
+      
+      // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우/이미지가 아닌 파일이 첨부된 경우 submit 안함
+      if($(".not-empty").is(".is-invalid")){
         return;
       }
-	    if(isNonImage === true){ // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우 submit 안함
-        return;
-      }
-      console.log('서브밋 끝: ' + $(this).parents('form').html());
-	    $(this).parents('form').submit();
-	  });
+      
+      // 문제 없으면 SUBMIT
+      $(this).parents('form').submit();
+      
+    });
   }
   
   const fnFileCheck = () => {
@@ -314,10 +267,10 @@
     });
   }
   
-  let optionCount = 1;
+  let optionCount = 1; // 현재 옵션 개수
   
   const fnAddOption = () => {
-	  $('#btn_add_option').click((ev) => {
+    $('#btn_add_option').click((ev) => {
       let str = '';
       if(optionCount === 5){
         str += '<div class="alert alert-dismissible alert-danger mt-5">';
@@ -326,12 +279,12 @@
         $('#option_list').append(str);
         return;
       }
-		  str += '<div class="option">';
-		  str += '  <div class="form-group">';
-		  str += '    <label class="form-label mt-4" for="productOptionList[' + optionCount + '].optionName">옵션명</label>';
-			str += '    <input type="text" name="productOptionList[' + optionCount + '].optionName" id="productOptionList[' + optionCount + '].optionName" class="not-empty form-control">';
-			str += '    <div class="invalid-feedback"></div>';
-			str += '  </div>';
+      str += '<div class="option">';
+      str += '  <div class="form-group">';
+      str += '    <label class="form-label" for="productOptionList[' + optionCount + '].optionName">옵션명</label>';
+      str += '    <input type="text" name="productOptionList[' + optionCount + '].optionName" id="productOptionList[' + optionCount + '].optionName" class="not-empty form-control">';
+      str += '    <div class="invalid-feedback"></div>';
+      str += '  </div>';
       str += '  <div class="form-group">';
       str += '    <label class="form-label mt-4" for="productOptionList[' + optionCount + '].addPrice">추가금액</label>';
       str += '    <div class="input-group mb-3">';
@@ -346,21 +299,28 @@
       str += '    <div class="input-group mb-3">';
       str += '      <input type="text" name="productOptionList[' + optionCount + '].optionCount" id="productOptionList[' + optionCount + '].optionCount" class="not-empty only-number form-control">';
       str += '      <span class="input-group-text">개</span>';
-			str += '      <div class="invalid-feedback"></div>';
+      str += '      <div class="invalid-feedback"></div>';
       str += '    </div>';
       str += '  </div>';
       str += '  <div>';
       str += '    <button type="button" class="btn btn-danger btn_remove_option mt-3">옵션 삭제</button>';
       str += '  </div>'
       str += '</div>';
-		  $('#btn_add_option').before(str);
-		  optionCount = optionCount + 1;
-	  });
+      $('#btn_add_option').before(str);
+      optionCount = optionCount + 1;
+    });
   }
   
   const fnRemoveOption = () => {
     $(document).on('click', '.btn_remove_option', function(){
-      $(this).parents('.option').remove();
+      if(optionCount === 1) {
+        alert('옵션은 반드시 1개 이상이어야 합니다.');
+        return;
+      }
+      if(confirm('이 옵션을 삭제하시겠습니까?')){
+        $(this).parents('.option').remove();
+        optionCount -= 1;
+      }
     });
   }
   

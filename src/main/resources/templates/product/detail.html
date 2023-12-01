@@ -206,7 +206,7 @@
       </th:block>
       <th:block th:if="${product.productRating == 0}">
         <span>아직 평점이 없습니다.</span>
-      </th:block>
+      </th:block> 
     </div>
     <div id="review_list"></div>
   </div>
@@ -292,8 +292,8 @@
   const fnIncreaseCount = () => {
     $(document).on('click', '.plus_count', function(){
         var count = $(this).siblings('.count');
-        if(count.val() >= count.val()){
-          alert('too much')
+        if(count.val() >= count.data('option-count')){
+          alert('해당 옵션의 재고가 부족합니다.');
           return;
         }
         count.val(parseInt(count.val()) + 1); // 화면에 보이는 개수 증가

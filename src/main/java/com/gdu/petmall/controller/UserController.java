@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.service.UserService;
@@ -28,15 +28,15 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class UserController {
 
-	
-	private final UserService userService;
+  
+  private final UserService userService;
 
-	
-	//로그인 폼으로 이동
-	@GetMapping(value = "/login.form")
-	public String loginForm(HttpServletRequest request, Model model) throws Exception{
-		
-		// 이전 주소 저장되는 요청 Header  값
+  
+  //로그인 폼으로 이동
+  @GetMapping(value = "/login.form")
+  public String loginForm(HttpServletRequest request, Model model) throws Exception{
+    
+    // 이전 주소 저장되는 요청 Header  값
     String referer = request.getHeader("referer");
     
     // 이전 페이지가 아닌 메인으로 되돌릴 url 
@@ -45,20 +45,20 @@ public class UserController {
     
     
     if(referer!=null) {
-    	
-    			for(String url:exceptUrl) {
-    			
-    	// 강제로 메인으로 되돌릴 url
-    					if(referer.contains(url)) {
-    					ret =request.getContextPath()+"/main.do";
-    					}
+      
+          for(String url:exceptUrl) {
+          
+      // 강제로 메인으로 되돌릴 url
+              if(referer.contains(url)) {
+              ret =request.getContextPath()+"/main.do";
+              }
 
-    			}
+          }
 
-    	}else {
+      }else {
      // 이전 페이지 값이 없어서 메인으로 되돌림
-    	ret=request.getContextPath()+"/main.do";
-    	}
+      ret=request.getContextPath()+"/main.do";
+      }
     
     // ret 값이 들어있지 않으면 referer, ret에 값이 있으면 ret 저장
     model.addAttribute("referer", ret.isEmpty() ? referer : ret);
@@ -72,41 +72,41 @@ public class UserController {
     //카카오 간편 로그인 방식 선택시
     model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL  (request));
     
-		return"user/login";
-	}
-	
-	
-	
+    return"user/login";
+  }
+  
+  
+  
  // 회원가입 방식 선택 폼으로 이동
-	@GetMapping(value = "/join_option.form")
-	public String joinOption(HttpServletRequest request, Model model)throws Exception {
-		
-		
-	// 네이버 간편 가입 (가입되어있다면 로그인)	 
-	 model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
-	 
-	 // 카카오 간편 가입 (가입되어있다면 로그인)  
-	 model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL(request));
-	
-		return"user/join_option";
-	}
-	
+  @GetMapping(value = "/join_option.form")
+  public String joinOption(HttpServletRequest request, Model model)throws Exception {
+    
+    
+  // 네이버 간편 가입 (가입되어있다면 로그인)   
+   model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
+   
+   // 카카오 간편 가입 (가입되어있다면 로그인)  
+   model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL(request));
+  
+    return"user/join_option";
+  }
+  
  //회원가입폼 으로 이동
-	@GetMapping("/join.form")
-	public String joinForm() {
-		
-		return "user/join";
-	}
-	
-	
-	//마이페이지로 이동
-	@GetMapping(value = "/mypage")
-	public String myPage() {
-	  
-		return"user/mypage";
-	}
-	
-	//회원정보 수정폼으로 이동
+  @GetMapping("/join.form")
+  public String joinForm() {
+    
+    return "user/join";
+  }
+  
+  
+  //마이페이지로 이동
+  @GetMapping(value = "/mypage")
+  public String myPage() {
+    
+    return"user/mypage";
+  }
+  
+  //회원정보 수정폼으로 이동
   @GetMapping("/mypage/profile.form")
   public String mypageForm() {
     return "user/profile";
@@ -115,26 +115,26 @@ public class UserController {
   
   //포인트 확인 페이지로 이동
   @PostMapping(value ={"/point","/mypage/point"})
-	public String myPoint(HttpServletRequest request,Model model ) { 
-  	userService.getPoint(request,model); 
-  	int userNo=Integer.parseInt(request.getParameter("userNo"));
-  	return "user/point";
+  public String myPoint(HttpServletRequest request,Model model ) { 
+    userService.getPoint(request,model); 
+    int userNo=Integer.parseInt(request.getParameter("userNo"));
+    return "user/point";
   }
-	
-	
+  
+  
   //아이디 찾기 폼
   @GetMapping(value = "/find_id.form")
   public String findIdForm() {
-  	
-  	return "user/find_id";
+    
+    return "user/find_id";
   }
   
   
   //비번 찾기 폼
   @GetMapping(value = "/change_pw.form")
   public String findPwForm() {
-  	
-  	return "user/change_pw";
+    
+    return "user/change_pw";
   }
   
   
@@ -146,26 +146,26 @@ public class UserController {
   
   
  /* ******************************************************* */ 
-	
-	// 로그인 
-	@PostMapping(value = "/login.do")
-		public void login(HttpServletRequest request, HttpServletResponse response)throws Exception {
-		userService.login(request, response);
-		}
-	
-	
-	//로그아웃
-	@GetMapping("/logout.do")
-	public void logout(HttpServletRequest request, HttpServletResponse response) {
-		userService.logout(request,response);
-	}
-	
-	//회원가입
+  
+  // 로그인 
+  @PostMapping(value = "/login.do")
+    public void login(HttpServletRequest request, HttpServletResponse response)throws Exception {
+    userService.login(request, response);
+    }
+  
+  
+  //로그아웃
+  @GetMapping("/logout.do")
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
+    userService.logout(request,response);
+  }
+  
+  //회원가입
   @PostMapping("/join.do")
   public void join(HttpServletRequest request, HttpServletResponse response) {
     userService.join(request, response);
   }
-	
+  
   
   /* * ****************네이버 간편 가입******************* ** */
   
@@ -221,7 +221,7 @@ public class UserController {
       model.addAttribute("kakaoProfile", kakaoProfile);
       return "user/kakao_join";
     } else {
-      userService.naverLogin(request, response, kakaoProfile);
+      userService.kakaoLogin(request, response, kakaoProfile);
       return "redirect:/main.do";
     }
   }
@@ -264,22 +264,22 @@ public class UserController {
   // 아이디 찾기
   @PostMapping(value = "/find_id.do",produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Object>> findId(HttpServletRequest request) {
-  	return userService.findId(request);
-  	
+    return userService.findId(request);
+    
   }
   
   
   // 비밀번호 변경 폼 응답
   @PostMapping(value = "/change_pw.do",produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Object>> changePw(HttpServletRequest request) {
-  	return userService.changePw(request);
+    return userService.changePw(request);
   }
   
   
   // 비밀번호 변경 적용
   @PostMapping(value = "/modify_pw.do")
   public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
-  	 userService.modifyPw(request,response);
+     userService.modifyPw(request,response);
   }
   
   
@@ -292,12 +292,22 @@ public class UserController {
   
   
   /* **********************  프로필 이미지 첨부  ************************** */
-  @PostMapping("/upload_image.do")
-  public String add(MultipartHttpServletRequest request
-                  , RedirectAttributes redirectAttributes) throws Exception {
-    int addResult = userService.addUpload(request);
-    redirectAttributes.addFlashAttribute("addResult", addResult);
-    return "redirect:/user/mypage/profile.form";
+  
+  //프로필 이미지 첨부 
+  @ResponseBody
+  @PostMapping(value="/editProfile.do", produces="application/json")
+  public Map<String, Object> addAttach(MultipartHttpServletRequest multipartRequest) throws Exception {
+   
+    return userService.editProfile(multipartRequest);
   }
-	
+  
+  //프로필 이미지 불러오기
+  @ResponseBody
+  @GetMapping(value="/getProfileImage.do", produces="application/json")
+  public Map<String, Object> getProfileImage(HttpServletRequest request) {
+    return userService.getProfileImage(request);
+  }
+
+  
+  
 }

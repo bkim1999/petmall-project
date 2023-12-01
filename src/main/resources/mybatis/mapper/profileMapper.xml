@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.ProfileMapper">
+
+ 	  <!-- ProfileDto에는 UserDto가 포함되어 있으므로 resultMap을 만들어서 ProfileDto의 설명을 넣어줌 -->
+  	<resultMap type="ProfileDto"      			id="ProfileMap">
+    	<result  column="PATH"        			property="path"/>
+    	<result  column="ORIGINAL_FILENAME"   	property="originalFilename"/>
+    	<result  column="FILESYSTEM_NAME"  		property="filesystemName"/>
+    	<result  column="HAS_THUMBNAIL" 		property="hasThumbnil"/>
+    <association javaType="UserDto"      		property="userDto">
+      	<id        column="USER_NO"        		property="userNo"/>
+      	<result    column="EMAIL"          		property="email" />
+      	<result    column="PW"             		property="pw" />
+      	<result    column="NAME"           		property="name" />
+      	<result    column="GENDER"         		property="gender" />
+      	<result    column="MOBILE"         		property="mobile" />
+      	<result    column="POSTCODE"       		property="postcode" />
+      	<result    column="ROAD_ADDRESS"   		property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  		property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" 		property="detailAddress" />
+      	<result    column="AGREE"          		property="agree" />
+      	<result    column="JOIN_STATE"          property="joinState" />
+      	<result    column="PW_MODIFIED_AT" 		property="pwModifiedAt" />
+      	<result    column="JOINED_AT"      		property="joinedAt" />
+      	<result    column="ADMIN_AUTHOR_STATE" 	property="adminAuthorState" />
+      	<result    column="POINT"      			property="point" />
+    </association>
+  </resultMap>
+
+<!--첨부된 프로필 가져오기-->
+<select id="getProfileImage" parameterType="ProfileDto" resultType="ProfileDto"> 
+	 SELECT USER_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME, HAS_THUMBNAIL
+	 FROM PROFILE_ATTACH_T
+	 WHERE USER_NO=#{userDto.userNo}
+</select>
+
+
+<!--db에 저장된 모든 정보 지우기-->
+<delete id="deleteOld" >
+DELETE  FROM PROFILE_ATTACH_T 
+</delete>
+
+<!--프로필 썸네일 등록-->
+	<insert id="insertProfile" parameterType="ProfileDto">
+		INSERT INTO PROFILE_ATTACH_T (
+		 USER_NO
+		,PATH
+		,ORIGINAL_FILENAME
+		,FILESYSTEM_NAME
+		,HAS_THUMBNAIL
+		)
+		VALUES(
+		#{userDto.userNo}
+		,#{path}
+		,#{originalFilename}
+		,#{filesystemName}
+		,#{hasThumbnail}
+		
+		)
+		
+	</insert>
+	
+
+</mapper>
+
+ 
