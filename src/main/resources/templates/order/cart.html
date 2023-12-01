@@ -78,9 +78,7 @@
             <tr class="a">
               <td class="cart_info_td">         
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                
-                <img class="image" th:src="T" th:alt="이미지">
-                
+                <img th:src="@{${c.productImageDto.position}}" alt="Thumbnail">
                 <input type="text" class="pr_Name" th:value="${c.productDto.productName}" size="9" readonly>
                 <input type="text" class="pr_Price" th:value="${c.productDto.productPrice}" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
@@ -95,8 +93,8 @@
                 </span>                                   
                 <input type="text" class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
                 <input type="hidden" name="userNo" th:value="${c.userDto.userNo}">
-                <input type="text" name="productNo" class="productNo" th:value="${c.productDto.productNo}"size="3" >
-                <input type="text" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
+                <input type="hidden" name="productNo" class="productNo" th:value="${c.productDto.productNo}"size="3" >
+                <input type="hidden" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
                 <input type="text" name="optionName" class="delete_optionName" th:value="${c.productOptionDto.optionName}" size="15">
                 <button type="submit" class="btn_remove btn btn-danger">삭제</button>
               </td>
