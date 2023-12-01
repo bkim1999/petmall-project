@@ -5,7 +5,7 @@
 
  <div th:replace="~{/layout/header::header}"></div>
  
- <div class="wrap wrap 9"><h1>주문 상세 정보 입력창 </h1></div>
+ <div class="wrap wrap 9"><h1>주문 상세 정보 입력 </h1></div>
 
     <h3>주문자 정보</h3>
     
@@ -121,6 +121,7 @@
         <input type="text" name="totalPrice" id="totalPrice">
         <span id="total_price"></span>
     </div>
+    
     <input type="hidden" name="userNo" th:value="${session.user.userNo}">
     <button type="submit" id="btn_answer">주문하기</button>
 </form>
