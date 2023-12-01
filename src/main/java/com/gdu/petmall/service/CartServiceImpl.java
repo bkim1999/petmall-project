@@ -60,7 +60,7 @@ public class CartServiceImpl implements CartService {
     
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     model.addAttribute("cartList", cartList);
-  
+    model.addAttribute("optionList", cartList);
   }
   
   @Override
