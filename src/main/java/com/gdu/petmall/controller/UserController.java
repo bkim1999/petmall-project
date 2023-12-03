@@ -309,5 +309,11 @@ public class UserController {
   }
 
   
+  //프로필 이미지 삭제
+  @ResponseBody
+  @PostMapping(value="/removeProfileImage.do", produces="application/json")
+  public void removeProfileImage(HttpServletRequest request) {
+  userService.removeProfileImage(request);
+  }
   
 }

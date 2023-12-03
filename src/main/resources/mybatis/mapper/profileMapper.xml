@@ -10,7 +10,6 @@
     	<result  column="PATH"        			property="path"/>
     	<result  column="ORIGINAL_FILENAME"   	property="originalFilename"/>
     	<result  column="FILESYSTEM_NAME"  		property="filesystemName"/>
-    	<result  column="HAS_THUMBNAIL" 		property="hasThumbnil"/>
     <association javaType="UserDto"      		property="userDto">
       	<id        column="USER_NO"        		property="userNo"/>
       	<result    column="EMAIL"          		property="email" />
@@ -33,15 +32,16 @@
 
 <!--첨부된 프로필 가져오기-->
 <select id="getProfileImage" parameterType="ProfileDto" resultType="ProfileDto"> 
-	 SELECT USER_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME, HAS_THUMBNAIL
+	 SELECT USER_NO, PATH, ORIGINAL_FILENAME, FILESYSTEM_NAME
 	 FROM PROFILE_ATTACH_T
 	 WHERE USER_NO=#{userDto.userNo}
 </select>
 
 
 <!--db에 저장된 모든 정보 지우기-->
-<delete id="deleteOld" >
-DELETE  FROM PROFILE_ATTACH_T 
+<delete id="deleteOld" parameterType="ProfileDto">
+    DELETE  FROM PROFILE_ATTACH_T 
+    WHERE USER_NO=#{userDto.userNo}    
 </delete>
 
 <!--프로필 썸네일 등록-->
@@ -51,14 +51,12 @@ DELETE  FROM PROFILE_ATTACH_T
 		,PATH
 		,ORIGINAL_FILENAME
 		,FILESYSTEM_NAME
-		,HAS_THUMBNAIL
 		)
 		VALUES(
 		#{userDto.userNo}
 		,#{path}
 		,#{originalFilename}
 		,#{filesystemName}
-		,#{hasThumbnail}
 		
 		)
 		

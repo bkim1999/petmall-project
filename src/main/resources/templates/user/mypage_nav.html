@@ -4,7 +4,14 @@
 
 <body>
   
-<div th:fragment="mypage_nav">
+<div th:fragment="mypage_nav" id="mypage_nav">
+  <style>
+    #mypage_nav .nav-link{background-color: transparent; color: black;}
+    #mypage_nav .nav-link:hover{color: silver;}
+    #mypage_nav .nav-link:active{color: rgb(225, 225, 225);}
+     
+  </style>
+  
   <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
   <div class="container-fluid">
     <a class="navbar-brand" th:href="@{/main.do}">PetMall</a>

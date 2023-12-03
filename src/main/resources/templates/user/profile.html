@@ -61,6 +61,8 @@
 #modify_profile_img{ background-color: transparent; color:silver; border: 0;}
 #modify_profile_img:active{color: darkgray;}
 
+#btn_image_wrap{display: flex;}
+
 /* 첨부파일 외관 수정*/
 #file{display: none;}
 .edit_image{
@@ -74,8 +76,9 @@
     background: #fff;
     border: 1px solid ;
     color:silver;
-    
+    margin-top: 50px;
     margin-bottom:20px;
+   
     }
     
     
@@ -84,12 +87,40 @@
  width: 200px;
  height: 170px;
  }
- #profile_thumbnail{
+ 
+ #profile_thumbnail #profile_frag_div {
    margin-top: 20px;
    margin-bottom: 20px;
    width:200px; height: 200px; border-radius: 80%; overflow: hidden; border:5px solid rgb(143, 132, 118)
  }
+ 
  #profile_thumbnail_img{width: 100%; height: 100%; object-fit: cover;}
+ 
+ /*프로필 이미지 없음*/
+  #no_image{
+    opacity:0.4;
+    width:100%; height:100%; object-fit: cover;
+     transform: translate(-10%, 10%); /* 이미지의 중심을 기준으로 이동 */   }
+     
+     
+ /*이미지 지우기*/
+ 
+ #btn_remove_image_div{
+   margin-left: 15px;
+ }
+ 
+ #btn_remove_image{
+  margin-top: 54.5px;
+  color: #969aa2;
+ }
+  #btn_remove_image:hover{
+   color:darkgray;
+ }
+ #btn_remove_image:active{
+   color:rgb(197, 197, 197);
+ }
+ 
+
 </style>
   
   <!-- 마이페이지 네비게이션  -->
@@ -107,31 +138,36 @@
 
 <div>
   <!--프로필 이미지 썸네일 -->
-  <div id="profile_thumbnail">
-    <img id="profile_thumbnail_img" src="" >
-  </div>
-  <!--프로필 사진 첨부-->
-        <div>
-          <label for="file"  class="btn edit_image" id="edit_image">프로필이미지변경</label>
-          <input type="file" name="file" id="file" accept="image/jpeg" multiple>
-        </div>
+
+ <div id="profile_thumbnail">
+      <div th:fragment="profile_thumbnail" id="profile_frag_div">
+         <img id="no_image" th:src="@{/image/member.png}"> 
+         <img id="profile_thumbnail_img">
+      </div> 
+ </div>
+  <!--프로필 사진 첨부버튼-->
+   <div id="btn_image_wrap">
+       <label for="file"  class="btn edit_image" id="edit_image">프로필이미지변경</label>
+       <input type="file" name="file" id="file" accept="image/jpeg" multiple>
+       <div id="btn_remove_image_div"> <i id="btn_remove_image" class="fa-solid fa-trash " ></i></div>
+   </div>
 </div>
 
 <!--/*추후에 삭제 해야함 */-->
 <script th:inline="javascript">
-	
-	 $('#file').change((ev) => {
-		 
-		 
-		 <!-- 콘솔로 정보 확인 -->
-		//console.log($('#file').prop('files')[0].name);
-		//console.log($('#file').prop('files')[0]);
-		 
+  
+   $('#file').change((ev) => {
+     
+     
+     <!-- 콘솔로 정보 확인 -->
+    //console.log($('#file').prop('files')[0].name);
+    //console.log($('#file').prop('files')[0]);
+     
  
         })
       
-	
-	
+  
+  
 </script>
 
 
@@ -160,19 +196,22 @@
 <div class="text_center gender_center">
  <div class="label"><span>성별</span></div>
  <div class="btn-group " role="group" aria-label="Basic radio toggle button group" >
-  <input type="radio" class="btn-check " name="btnradio" id="btnradio1" autocomplete="off" checked>
+  <input type="radio" class="btn-check " name="gender" id="btnradio1" autocomplete="off" value="N" checked >
   <label class="btn btn-outline-primary" for="btnradio1">선택안함</label>
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" >
+  <input type="radio" class="btn-check" name="gender" id="btnradio2" value="M" autocomplete="off" >
   <label class="btn btn-outline-primary" for="btnradio2">&nbsp;&nbsp;&nbsp;남자&nbsp;&nbsp;&nbsp;</label>
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" >
+  <input type="radio" class="btn-check" name="gender" id="btnradio3" value="F"  autocomplete="off" >
   <label class="btn btn-outline-primary" for="btnradio3">&nbsp;&nbsp;&nbsp;여자&nbsp;&nbsp;&nbsp;</label>
  </div>
 </div>
 
 
 <!-- 회원이 기존에 선택한값 적용  -->
-<script>
-$(':radio[value=${session.user.gender}]').prop('checked',true);
+<script th:inline="javascript">
+
+ $(':radio[value=[[${session.user.gender}]]]').prop('checked', true);
+
+
 </script>
 
 
@@ -356,8 +395,8 @@ $('#mobile2').val(mobile2);
 
 <!-- 스크립트 영역  -->
 <script th:inline="javascript">
-	
-	
+  
+  
 /**********************전역변수 선언*************************************/
 var pwPassed = false;
 var pw2Passed = false;
@@ -369,39 +408,39 @@ var mobile2=false;
 
 /*****업로드한 파일이 변경됐는지 체크******/
     const fnFileCheck = () => {
-		
-		
-		
-        $('#file').change((ev) => {		
-		
-		// 초기화	
-		let formData= new FormData();
-		let file = $('#file')[0];
-		
-		
-		
-		//값 넣기.			
-		formData.append('files',file.files[0]);
-		formData.append('userNo', $('#userNo').val());
-       	
-       	
+    
+    
+    
+        $('#file').change((ev) => {   
+    
+    // 초기화  
+    let formData= new FormData();
+    let file = $('#file')[0];
+    
+    
+    
+    //값 넣기.     
+    formData.append('files',file.files[0]);
+    formData.append('userNo', $('#userNo').val());
+        
+        
        /**사용자가 이미지를 선택시 ajax실행**/
        $.ajax({
-		   //요청
-		   type:'post',
-		   url:'/user/editProfile.do',
-		   data: formData,
-		   contentType:false,
-		   processData:false,
-		   //응답
-		   
-		   dataType:'json',
-		   success:(resData)=>{
-			   $('#file').empty();
-			   fnGetProfile();
-		   } //success
-		   
-	   			})//ajax
+       //요청
+       type:'post',
+       url:'/user/editProfile.do',
+       data: formData,
+       contentType:false,
+       processData:false,
+       //응답
+       
+       dataType:'json',
+       success:(resData)=>{
+         $('#file').empty();
+         fnGetProfile();
+       } //success
+       
+          })//ajax
        
         })//event
       }//function
@@ -410,32 +449,53 @@ var mobile2=false;
 /********현재 업로드 된 이미지 불러오기********/
 
 const fnGetProfile =() =>{
-	$.ajax({
-	//요청
-	type:'get',
-	url:'/user/getProfileImage.do',
-	data: { userNo: $('#userNo').val() },
-	
-	//응답
-	dataType:'json',
-	success:(resData)=>{
-		 $('#profile_thumbnail_img').empty();
-		 if(resData.hasThumbnail===0){
-			console.log(resData);
-			 
-		 }
-		 else{
-			console.log(resData);
-			str=resData.profile.path+'/'+resData.profile.filesystemName;
-			console.log(str);
-			$('#profile_thumbnail_img').attr('src',str);
-		 }//else
-	}//success
-	
-	})//ajax
+  $.ajax({
+  //요청
+  type:'get',
+  url:'/user/getProfileImage.do',
+  data: { userNo: $('#userNo').val() },
+  
+  //응답
+  dataType:'json',
+  success:(resData)=>{
+     
+     if(resData.profile.path=='null'){
+      $('#profile_thumbnail_img').attr('src','');
+      $('#profile_thumbnail_img').hide();
+      $('#no_image').show();
+     }
+     else{
+      str=resData.profile.path+'/'+resData.profile.filesystemName;
+      $('#no_image').hide();
+      $('#profile_thumbnail_img').attr('src',str);
+      $('#profile_thumbnail_img').show();
+     }//else
+  }//success
+  
+  })//ajax
 }//function
 
-
+/*************************프로필 이미지 삭제*****************************/
+const fnRemoveProfile = () =>{
+  $('#btn_remove_image').click(()=>{
+      $('#profile_thumbnail_img').hide();
+      $('#no_image').show();
+          
+     $.ajax({
+       //요청
+       type:'post',
+       url:'/user/removeProfileImage.do',
+       data:{ userNo: $('#userNo').val() },
+       //응답
+       dataType:'json',
+       success:(resData)=>{
+        location.reload();
+        fnGetProfile();
+       }
+       
+     })
+  })
+}
 
 
 /**********************정규식*******************************************/
@@ -579,7 +639,9 @@ const fnCancel=()=>{
 /*****************함수호출***********************/
 
 //프로필 이미지 첨부
- fnFileCheck(); // 파일 체크
+ fnFileCheck(); // 이미지 저장 및 파일체크
+ fnGetProfile();// 저장된 이미지 불러오기
+ fnRemoveProfile();// 프로필 이미지 지우기
  
 //비번 체크
 fnCheckPassword();

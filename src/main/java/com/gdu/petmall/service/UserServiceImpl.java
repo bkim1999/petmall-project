@@ -978,31 +978,19 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
     // 서버에 생성된 파일 저장
         multipartFile.transferTo(file);
 	    
-    	//파일 타입 확인
-	    String contentType = Files.probeContentType(file.toPath());  // 이미지의 Content-Type은 image/jpeg, image/png 등 image로 시작한다.
-    // 타입이 image 라면 썸네일을 가진다.
-	    int hasThumbnail = (contentType != null && contentType.startsWith("image")) ? 1 : 0;
 	
 	    
-	// 썸네일을 갖는다면 썸네일 파일을 생성한다.
-        if(hasThumbnail == 1) {
-            File thumbnail = new File(dir, "s_" + filesystemName);  // small 이미지를 의미하는 s_을 덧붙임
-            Thumbnails.of(file)
-                      .size(200, 180)      // 가로 100px, 세로 100px
-                      .toFile(thumbnail);  
-          }   
 
         ProfileDto profile=ProfileDto.builder()
         							 .path(path)
         							 .originalFilename(originalFilename)
         							 .filesystemName(filesystemName)
-        							 .hasThumbnail(hasThumbnail)
         							 .userDto(UserDto.builder()
         									 		 .userNo(userNo)
         									 		 .build())
         							 .build();
         
-        profileMapper.deleteOld();
+        profileMapper.deleteOld(profile);
         editResult=profileMapper.insertProfile(profile);  
 
 	    }//if1
@@ -1027,6 +1015,31 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
 	
 	return Map.of("profile", profileMapper.getProfileImage(profile));
 	}	
+
+
+/*프로필 이미지 삭제하기*/
+@Override
+public void removeProfileImage(HttpServletRequest request) {
+
+  int userNo=Integer.parseInt(request.getParameter("userNo"));
+  
+  // 삭제시 대체할 정보
+  ProfileDto profile=ProfileDto.builder()
+      .path("null")
+      .originalFilename("null")
+      .filesystemName("null")
+      .userDto(UserDto.builder()
+              .userNo(userNo)
+              .build())
+      .build();
+  
+  // 삭제하기
+  profileMapper.deleteOld(profile);
+  
+  
+  //삽입하기
+  profileMapper.insertProfile(profile);
+}
 
 
 
