@@ -138,7 +138,6 @@
     SELECT IMAGE_CODE, POSITION, PATH, FILESYSTEM_NAME
       FROM PRODUCT_IMAGE_T
      WHERE IMAGE_CODE = 'product_' || #{productNo}
-       AND POSITION = 'display'
   </select>
     
   <insert id="insertProductImage" parameterType="ProductImageDto">

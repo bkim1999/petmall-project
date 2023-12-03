@@ -78,7 +78,7 @@
             <tr class="a">
               <td class="cart_info_td">         
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <img th:src="@{${c.productImageDto.position}}" alt="Thumbnail">
+                <img th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail">
                 <input type="text" class="pr_Name" th:value="${c.productDto.productName}" size="9" readonly>
                 <input type="text" class="pr_Price" th:value="${c.productDto.productPrice}" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>

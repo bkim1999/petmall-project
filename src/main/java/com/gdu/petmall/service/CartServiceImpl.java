@@ -59,8 +59,9 @@ public class CartServiceImpl implements CartService {
     int userNo = user.getUserNo();
     
     List<CartDto> cartList = cartMapper.getCartList(userNo);
+    System.out.println(cartList.get(0));
     model.addAttribute("cartList", cartList);
-  
+    model.addAttribute("optionList", cartList);
   }
   
   @Override
