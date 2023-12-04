@@ -22,7 +22,6 @@ public interface CartMapper {
   // 카트 수량 수정
   public int updateCart(Map<String, Object> map);
   
-  // 카트 썸네일
   
   
 }
