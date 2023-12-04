@@ -19,7 +19,11 @@ public interface ProductMapper {
   public List<ProductOptionDto> getOptionList(int productNo);
   public int insertProduct (ProductDto product);
   public int insertProductOption (ProductOptionDto option);
-  public List<ProductImageDto> getProductImageList(int productNo);
+  public List<ProductImageDto> getProductImageList(Map<String, Object> map);
   public int insertProductImage(ProductImageDto productImage);
+  public int updateProduct(ProductDto product);
+  public int updateProductOption(ProductOptionDto productOption);
+  public int deleteProductOption(int optionNo);
+  public int deleteProductImage(String filesystemName);
   public int deleteProduct(int productNo);
 }
