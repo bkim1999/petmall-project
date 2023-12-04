@@ -37,6 +37,7 @@ public class CartController {
   
   @GetMapping(value="/order/cart.go")
   public String cartList(HttpServletRequest request, Model model){
+    System.out.println("optionNo:" + request.getParameter("option_no"));
     cartService.getList(request, model);
     return "/order/cart";
   }
@@ -51,8 +52,7 @@ public class CartController {
   @ResponseBody
   @PostMapping(value="/order/delete.do", produces="application/json")
   public Map<String, Object> deleteCart(HttpServletRequest request) {
-    System.out.println("delete:" + request.getParameter("optionName"));
-    System.out.println("delete:" + request.getParameter("optionNo"));
+   System.out.println("delete:" + request.getParameter("optionNo"));
     System.out.println("delete:" + request.getParameter("userNo"));
     return cartService.deleteCart(request);
   }
