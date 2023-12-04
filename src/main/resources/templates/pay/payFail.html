@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::head('QNA 게시판')}"></head>
+
+<body>
+  
+  <div th:replace="~{/layout/header::header}"></div>
+    <div class="main_wrap">
+
+  <div class="wrap wrap 9"><h1>결제 실패 페이지</h1></div>
+  <div>해당 결제를 시도하던 도중 오류 혹은 취소로 실패하셨습니다.</div>
+
+      <div class="text-center">
+        <div class="d-inline-block mr-3">
+          <a th:href="@{/order/myOrderList}">
+            <button type="button" class="btn btn-outline-primary">결제 이어서 진행 하러가기</button>
+          </a>
+        </div>
+      
+        <div class="d-inline-block ml-3">
+          <a th:href="@{/main.do}">
+            <button type="button" class="btn btn-outline-primary">메인 페이지로 돌아가기</button>
+          </a>
+        </div>
+      </div>
+  
+
+  <div th:replace="~{/layout/footer::footer}"></div>
+  
+</body>
+</html>

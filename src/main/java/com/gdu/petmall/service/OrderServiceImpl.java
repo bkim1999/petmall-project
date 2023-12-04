@@ -39,7 +39,9 @@ public class OrderServiceImpl implements OrderService {
         String jibunAddress = multipartRequest.getParameter("jibunAddress");
         String detailAddress =multipartRequest.getParameter("detailAddress");
         String reText =multipartRequest.getParameter("reText");
-
+        String yourOrder = multipartRequest.getParameter("yourOrder");
+        
+        
         OrderDto order = OrderDto.builder()
                 .reName(reName)
                 .reTel(reTel)
@@ -49,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
                 .detailAddress(detailAddress)
                 .reText(reText)
                 .totalPrice(totalPrice)
+                .yourOrder(yourOrder)
                 .userDto(UserDto.builder()
                         .userNo(userNo)
                         .build())
@@ -88,8 +91,12 @@ public class OrderServiceImpl implements OrderService {
     
 
     @Override
-    public List<OrderDto> getOrder(int orderNo) {
-        return orderMapper.getOrder(orderNo);
+    public List<OrderDto> getOrder(int totalPrice,String yourOrder ) {
+       OrderDto orderDto =OrderDto.builder()
+                            .yourOrder(yourOrder)
+                            .totalPrice(totalPrice)
+                            .build();
+        return orderMapper.getOrder(orderDto);
     }
 
 

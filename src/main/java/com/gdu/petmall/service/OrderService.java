@@ -17,5 +17,5 @@ public interface OrderService {
     
     public Map<String, Object> myOrderList(HttpServletRequest request);
     
-    public  List<OrderDto> getOrder(int OrderNo);
+    public  List<OrderDto> getOrder(int totalPrice, String yourOrder);
 }
