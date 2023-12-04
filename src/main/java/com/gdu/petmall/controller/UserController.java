@@ -144,12 +144,7 @@ public class UserController {
     return "user/active";
   }
   
-  //내 주문 조회로 이동
-  @GetMapping("mypage/orderList.do")
-  public String getOrderList() {
-    return "user/orderList";
-  }
-  
+
  /* ******************************************************* */ 
   
   // 로그인 
@@ -320,5 +315,8 @@ public class UserController {
   public void removeProfileImage(HttpServletRequest request) {
   userService.removeProfileImage(request);
   }
+  
+  //쿠키
+  
   
 }
