@@ -14,6 +14,7 @@ public interface EventMapper {
   public List<EventDto> getEventList(Map<String, Object> map);
   public int getEventCount();
   public EventDto getEventDetailList(int eventNo);
+  public List<EventImageDto> geteventImageList(int eventNo);
   public int updateHit(int eventNo);
   public int insertEventWrite(EventDto eventDto);
   public int insertEventImage(EventImageDto eventImageDto);
@@ -22,4 +23,7 @@ public interface EventMapper {
   public int eventStart(int eventNo);
   public int changeDiscountPercent(Map<String, Object> map);
   public int changeDiscountPrice(Map<String, Object> map);
+  public int updateDetailEvent(EventDto eventDto);
+  public int updateImageEvent(EventImageDto eventImageDto);
+  public int deleteEventImage(int eventNo);
 }
