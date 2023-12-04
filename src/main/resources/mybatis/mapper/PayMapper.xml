@@ -24,4 +24,18 @@
   </resultMap>  
     
 
+    <select id="getMyPayList" parameterType="java.util.Map" resultType="OrderDto">
+       SELECT *
+         FROM ORDER_T
+        WHERE USER_NO = #{userNo}
+          AND ORDER_STATE = '1'     
+        ORDER BY ORDER_NO DESC
+   </select>	
+   
+   <update id="updatePay" parameterType="OrderDto">
+	   UPDATE ORDER_T
+	     SET ORDER_STATE =1
+	    WHERE ORDER_NO = #{orderNo}
+   </update>
+
 </mapper>
