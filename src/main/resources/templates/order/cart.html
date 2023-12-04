@@ -6,8 +6,9 @@
 <style>
   .img_line{
      padding-left: 0px;
-     word-spacing:0px;
+     word-spacing: 40px;
      text-align: left;
+     
      
   }
   .cart_info_td {
@@ -52,6 +53,10 @@
     text-align: center;
   }
   
+  .a-block {
+    text-align: center;
+    font-size: 50px;
+  }
   
 </style>
 
@@ -65,38 +70,37 @@
   
   <div>
     <div>
-      <h3 id="center_title">상품정보</h3>
+      <h3 id="center_title">장바구니</h3>
     </div>
     <form id="frm_btn"> 
       <table class="b">
         <thead border="1">
-          <tr><th class="img_line">이미지  상품명 가격 배송비 적립금  할인율 수량 합계 productNo optionNo optionName</th></tr>
+          <tr><th class="img_line">이미지  상품명 상품옵션  가격  배송비  적립금  할인율  수량  합계금액</th></tr>
         </thead>
         <tbody>
-        <caption>장바구니</caption>
-          <th:block th:each="c:${cartList}"> 
+         <th:block th:each="c:${cartList}"> 
             <tr class="a">
-              <td class="cart_info_td">         
+              <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <img th:src="@{${c.productImageDto.position}}" alt="Thumbnail">
-                <input type="text" class="pr_Name" th:value="${c.productDto.productName}" size="9" readonly>
-                <input type="text" class="pr_Price" th:value="${c.productDto.productPrice}" size="5" readonly>
+                <img   th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail">
+                <input type="text" class="pr_Name"       th:value="${c.productDto.productName}" size="8" readonly>
+                <input type="text" class="optionName"    th:value="${c.productOptionDto.optionName}" name="optionName" size="11" readonly>
+                <input type="text" class="pr_Price"      th:value="${c.productDto.productPrice}+'원'" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
-                <input type="text" class="" th:value="적립금" size="4">
-                <input type="text" class="discount" th:value="${c.eventDto.discountPercent} + '%'" size="3" readonly>
+                <input type="text" class="reserves"      th:value="적립금" size="4">
+                <input type="text" class="discount"      th:value="${c.eventDto.discountPercent} + '%'" size="3" readonly>
                 <span id="count_span">
-                  <input type="text" class="totalCount" th:value="${c.count}" size="2" readonly>
+                  <input  type="text"   class="totalCount" th:value="${c.count}" size="1" readonly>
                   <button type="button" class="plus_btn btn btn-danger btn btn-primary btn-sm" >+</button>
-                  <input type="hidden" class="plus_cartcount" name="count" th:value="${c.count}"></input>
+                  <input  type="hidden" class="plus_cartcount" name="count" th:value="${c.count}"></input>
                   <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" >-</button>
-                  <input type="hidden" class="minus_cartcount" name="count" th:value="${c.count}"></input>
+                  <input  type="hidden" class="minus_cartcount" name="count" th:value="${c.count}"></input>
                 </span>                                   
-                <input type="text" class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
-                <input type="hidden" name="userNo" th:value="${c.userDto.userNo}">
-                <input type="hidden" name="productNo" class="productNo" th:value="${c.productDto.productNo}"size="3" >
+                <input type="text"   name=""         class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
+                <input type="hidden" name="userNo"   class="" th:value="${c.userDto.userNo}">
+                <input type="hidden" name="productNo"class="productNo" th:value="${c.productDto.productNo}"size="3" >
                 <input type="hidden" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
-                <input type="text" name="optionName" class="delete_optionName" th:value="${c.productOptionDto.optionName}" size="15">
-                <button type="submit" class="btn_remove btn btn-danger">삭제</button>
+                <button type="submit"name=""         class="btn_remove btn btn-danger">삭제</button>
               </td>
             </tr>  
           </th:block>
@@ -108,7 +112,7 @@
     
     
     
-    
+   <div class="a-block">결제 예정 금액</div>
    <div class="wrap_div1">
     <table border="1" id="all">
       <tbody>
@@ -117,7 +121,7 @@
           <td><span class="plus">+</span></td> 
           <td><span class="delivery_price"></span></td>
           <td><span class="inequality">=</span></td>
-          <td><span class="finalTotalPrice_span"></span></td>
+          <td><span class="finalTotalPrice_span + '원'"></span></td>
         </tr>
       </tbody>
     </table>
@@ -190,9 +194,7 @@
       $(".delivery_price").text(deliveryPrice);   
       // 최종 가격(총 가격 + 배송비)
       $(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());
-   
-      
-   }
+    }
    });
 
 </script>
@@ -202,7 +204,7 @@
   const fnMinusCount = () => {
     $(document).on('click', '.minus_btn', function(ev){
         var count = $(this).closest('tr').find('.totalCount').val();
-        var optionName = $(this).closest('tr').find('.delete_optionName').val();
+        var optionName = $(this).closest('tr').find('.optionName').val();
         var optionNo = $(this).closest('tr').find('.delete_optionNo').val();
         var productNo = $(this).closest('tr').find('.productNo').val();
         console.log(count);
@@ -227,7 +229,7 @@
   const fnPlusCount = () => {
     $(document).on('click', '.plus_btn', function(ev){
         var count = $(this).closest('tr').find('.totalCount').val();
-        var optionName = $(this).closest('tr').find('.delete_optionName').val();
+        var optionName = $(this).closest('tr').find('.optionName').val();
         var optionNo = $(this).closest('tr').find('.delete_optionNo').val();
         var productNo = $(this).closest('tr').find('.productNo').val();
         console.log(count);
@@ -250,18 +252,20 @@
   
   
   
-  const fnDeleteCart = () => {
-        $(document).on('click', '.btn_remove', (ev) => {
-          if(!confirm('상품을 삭제할까요?')){
-             return;
-           }
+    const fnDeleteCart = () => {
+      $(document).on('click', '.btn_remove', function (ev) {
+        if (!confirm('상품을 삭제할까요?')) {
+            return; 
+        }
+           var optionNo = $(this).closest('tr').find('.delete_optionNo').val();
+           console.log(optionNo);
           $.ajax({
             type: 'post',
             url: '/order/delete.do',
-            data:$('#frm_btn').serialize(),
+            data: 'optionNo=' + optionNo,
             dataType: 'json',
             success: (resData) => {  
-               if(resData.removeResult === 1){
+               if(resData.removeResult === '0'){
                   alert('상품삭제를 취소합니다.');
                      location.reload();
                   } else {

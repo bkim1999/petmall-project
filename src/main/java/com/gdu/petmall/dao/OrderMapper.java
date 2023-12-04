@@ -14,5 +14,5 @@ public interface OrderMapper {
       public List<OrderDto> getMyOrderList(Map<String, Object> map);
 
   
-       public  List<OrderDto> getOrder(int OrderNo);
+       public  List<OrderDto> getOrder(OrderDto orderDto);
 }

@@ -44,10 +44,11 @@
   </select>
   
   <select id="getProductList" parameterType="Map" resultMap="ProductMap">
-    SELECT RN, PRODUCT_NO, PRODUCT_NAME, PRODUCT_TITLE, PRODUCT_PRICE, PRODUCT_CREATED_AT, PRODUCT_SALES, PRODUCT_HIT, PRODUCT_RATING, PRODUCT_COUNT, REVIEW_COUNT, PATH, FILESYSTEM_NAME
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, A.PRODUCT_NO, A.PRODUCT_NAME, A.PRODUCT_TITLE, A.PRODUCT_PRICE, A.PRODUCT_CREATED_AT, A.PRODUCT_SALES, A.PRODUCT_HIT, A.PRODUCT_RATING, A.PRODUCT_COUNT, A.REVIEW_COUNT, A.PATH, A.FILESYSTEM_NAME
-              FROM (SELECT P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_SALES, P.PRODUCT_HIT, P.PRODUCT_RATING
+    SELECT RN, PRODUCT_NO, PRODUCT_NAME, PRODUCT_TITLE, PRODUCT_PRICE, PRODUCT_CREATED_AT, PRODUCT_HIT, PRODUCT_RATING, PRODUCT_COUNT, PRODUCT_SALES, REVIEW_COUNT, PATH, FILESYSTEM_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, A.PRODUCT_NO, A.PRODUCT_NAME, A.PRODUCT_TITLE, A.PRODUCT_PRICE, A.PRODUCT_CREATED_AT, A.PRODUCT_HIT, A.PRODUCT_RATING, A.PRODUCT_COUNT, A.PRODUCT_SALES, A.REVIEW_COUNT, A.PATH, A.FILESYSTEM_NAME
+              FROM (SELECT P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_TITLE, P.PRODUCT_PRICE, P.PRODUCT_CREATED_AT, P.PRODUCT_HIT, P.PRODUCT_RATING
                          , (SELECT SUM(OPTION_COUNT) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
+                         , (SELECT SUM(OPTION_SALES) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_SALES
                          , (SELECT COUNT(*) FROM REVIEW_T R WHERE R.OPTION_NO IN (SELECT OPT.OPTION_NO FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO)) AS REVIEW_COUNT
                          , PI.PATH, PI.FILESYSTEM_NAME
                       FROM PRODUCT_T P LEFT OUTER JOIN PRODUCT_IMAGE_T PI
@@ -67,15 +68,16 @@
   </select>
   
   <select id="getProduct" parameterType="int" resultType="ProductDto">
-    SELECT PRODUCT_NO, PRODUCT_NAME, PRODUCT_TITLE, PRODUCT_CONTENTS, PRODUCT_PRICE, PRODUCT_CREATED_AT, PRODUCT_DESCRIPTION, PRODUCT_SIZE, PRODUCT_WARNING, CATEGORY_NO, PRODUCT_SALES, PRODUCT_HIT, PRODUCT_RATING
+    SELECT PRODUCT_NO, PRODUCT_NAME, PRODUCT_TITLE, PRODUCT_CONTENTS, PRODUCT_PRICE, PRODUCT_CREATED_AT, PRODUCT_DESCRIPTION, PRODUCT_SIZE, PRODUCT_WARNING, CATEGORY_NO, PRODUCT_HIT, PRODUCT_RATING
                     , (SELECT SUM(OPTION_COUNT) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
+                    , (SELECT SUM(OPTION_SALES) FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO) AS PRODUCT_COUNT
                     , (SELECT COUNT(*) FROM REVIEW_T R WHERE R.OPTION_NO IN (SELECT OPT.OPTION_NO FROM PRODUCT_OPTION_T OPT WHERE P.PRODUCT_NO = OPT.PRODUCT_NO)) AS REVIEW_COUNT
            FROM PRODUCT_T P
      WHERE PRODUCT_NO = #{productNo}
   </select>
   
   <select id="getOptionList" parameterType="int" resultType="ProductOptionDto">
-    SELECT OPTION_NO, PRODUCT_NO, OPTION_NAME, ADD_PRICE, OPTION_COUNT
+    SELECT OPTION_NO, PRODUCT_NO, OPTION_NAME, ADD_PRICE, OPTION_COUNT, OPTION_SALES
       FROM PRODUCT_OPTION_T
      WHERE PRODUCT_NO = #{productNo}
   </select>
@@ -98,7 +100,6 @@
       , PRODUCT_WARNING
       , CATEGORY_NO
       , PRODUCT_HIT
-      , PRODUCT_SALES
       , PRODUCT_RATING
       ) VALUES (
         #{productNo}
@@ -113,7 +114,6 @@
       , #{productWarning}
       , #{categoryNo}
       , 0
-      , 0
       , null
     )
   </insert>
@@ -125,20 +125,31 @@
     , OPTION_NAME
     , ADD_PRICE
     , OPTION_COUNT    
+    , OPTION_SALES
     ) VALUES (
       PRODUCT_OPTION_SEQ.NEXTVAL
     , #{productNo}
     , #{optionName}
     , #{addPrice}
     , #{optionCount}
+    , 0
     )
   </insert>
 
-  <select id="getProductImageList" parameterType="int" resultType="ProductImageDto">
+  <select id="getProductImageList" parameterType="Map" resultType="ProductImageDto">
     SELECT IMAGE_CODE, POSITION, PATH, FILESYSTEM_NAME
       FROM PRODUCT_IMAGE_T
-     WHERE IMAGE_CODE = 'product_' || #{productNo}
-       AND POSITION = 'display'
+    <where>
+      <if test="productNo != null">
+        IMAGE_CODE = 'product_' || #{productNo}
+      </if>
+      <if test="reviewNo != null">
+        IMAGE_CODE = 'review_' || #{reviewNo}
+      </if>
+      <if test="position != null">
+        AND POSITION = #{position}
+      </if>
+    </where>
   </select>
     
   <insert id="insertProductImage" parameterType="ProductImageDto">
@@ -155,6 +166,38 @@
     )
   </insert>
   
+  <update id="updateProduct" parameterType="ProductDto">
+    UPDATE PRODUCT_T 
+       SET PRODUCT_NAME = #{productName}
+         , PRODUCT_TITLE = #{productTitle}
+         , PRODUCT_CONTENTS = #{productContents}
+         , PRODUCT_PRICE = #{productPrice}
+         , PRODUCT_MODIFIED_AT = TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+         , PRODUCT_DESCRIPTION = #{productDescription}
+         , PRODUCT_SIZE = #{productSize}
+         , PRODUCT_WARNING = #{productWarning}
+         , CATEGORY_NO = #{categoryNo}
+     WHERE PRODUCT_NO = #{productNo}
+  </update>
+  
+  <update id="updateProductOption" parameterType="ProductOptionDto">
+    UPDATE PRODUCT_OPTION_T 
+       SET OPTION_NAME = #{optionName}
+         , ADD_PRICE = #{addPrice}
+         , OPTION_COUNT = #{optionCount}
+     WHERE OPTION_NO = #{optionNo}
+  </update>
+  
+  <delete id="deleteProductOption" parameterType="int">
+    DELETE FROM PRODUCT_OPTION_T
+     WHERE OPTION_NO = #{optionNo}
+  </delete>
+  
+  <delete id="deleteProductImage" parameterType="String">
+    DELETE FROM PRODUCT_IMAGE_T
+     WHERE FILESYSTEM_NAME = #{filesystemName}    
+  </delete>
+    
   <delete id="deleteProduct" parameterType="int">
     DELETE 
       FROM PRODUCT_T

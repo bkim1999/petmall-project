@@ -52,5 +52,6 @@ public interface UserService {
   
   /*프로필 이미지 첨부 관련*/
   public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequest) throws Exception;// 첨부
-  public Map<String,Object>getProfileImage(HttpServletRequest request);
+  public Map<String,Object>getProfileImage(HttpServletRequest request);// 로드
+  public void removeProfileImage(HttpServletRequest request);//삭제
 }

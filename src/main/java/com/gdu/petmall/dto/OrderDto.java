@@ -28,4 +28,6 @@ public class OrderDto {
   
   private String reTel;
   private String reText;
+  
+  private String yourOrder;
 }

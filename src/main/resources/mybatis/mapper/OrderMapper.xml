@@ -39,7 +39,8 @@
         DETAIL_ADDRESS,
         RE_TEXT,
         TOTAL_PRICE,
-        ORDER_STATE
+        ORDER_STATE,
+        YOUR_ORDER
     ) VALUES (
         #{orderNo},
         #{userDto.userNo},
@@ -51,7 +52,8 @@
         #{detailAddress},
         #{reText},
         #{totalPrice},
-        0
+        0,
+        #{yourOrder}
     )
   </insert>
   
@@ -63,10 +65,11 @@
      ORDER BY ORDER_NO DESC
    </select>
    
-  <select id="getOrder" parameterType="int" resultMap="OrderMap">
-   SELECT O.ORDER_NO, O.USER_NO, O.RE_NAME, O.RE_TEL, O.POSTCODE, O.ROAD_ADDRESS,O.JIBUN_ADDRESS, O.DETAIL_ADDRESS, O.RE_TEXT, O.TOTAL_PRICE, O.ORDER_STATE
+  <select id="getOrder" parameterType="orderDto" resultMap="OrderMap">
+   SELECT O.ORDER_NO, O.USER_NO, O.RE_NAME, O.RE_TEL, O.POSTCODE, O.ROAD_ADDRESS,O.JIBUN_ADDRESS, O.DETAIL_ADDRESS, O.RE_TEXT, O.TOTAL_PRICE, O.ORDER_STATE, O.YOUR_ORDER
     FROM ORDER_T O
-    WHERE O.ORDER_NO = #{orderNo}
+    WHERE O.TOTAL_PRICE = #{totalPrice}
+     AND O.YOUR_ORDER = #{yourOrder}      
       AND O.ORDER_STATE = '0'
    </select>
    

@@ -59,7 +59,7 @@
     </association>
     <association javaType="ProductImageDto"    property="productImageDto">
       <id     column="IMAGE_CODE"              property="imageCode" />
-      <result column="PRODUCT_NO"              property="position" />
+      <result column="POSITION"              property="position" />
       <result column="PATH"                    property="path" />
       <result column="FILESYSTEM_NAME"         property="filesystemName" />
     </association>
@@ -72,33 +72,32 @@
               A.PRODUCT_PRICE,
               A.PRODUCT_NO,
               B.OPTION_NAME,
-              B.OPTION_NO,
               B.ADD_PRICE,
               E.DISCOUNT_PERCENT,
               E.EVENT_NO,
               C.OPTION_NO,
-              P.PATH AS THUMBNAIL_PATH,
-              P.FILESYSTEM_NAME AS THUMBNAIL_FILENAME
+              P.PATH,
+              P.FILESYSTEM_NAME
          FROM PRODUCT_T A
-               JOIN PRODUCT_OPTION_T B ON A.PRODUCT_NO = B.PRODUCT_NO
-               JOIN EVENT_T E ON E.EVENT_NO = (SELECT MAX(EVENT_NO) FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT)
-               JOIN CART_T C ON C.OPTION_NO = B.OPTION_NO
-               LEFT JOIN PRODUCT_IMAGE_T P ON P.IMAGE_CODE = 'product_' || A.PRODUCT_NO AND P.POSITION = 'thumbnail' 
-        WHERE C.USER_NO = 3
-          AND E.DISCOUNT_PERCENT = (SELECT MAX(DISCOUNT_PERCENT) FROM EVENT_T WHERE EVENT_NO = (SELECT MAX(EVENT_NO) FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT))
+              JOIN PRODUCT_OPTION_T B ON A.PRODUCT_NO = B.PRODUCT_NO
+              JOIN EVENT_T E ON E.EVENT_NO = (SELECT MAX(EVENT_NO) FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT)
+              JOIN CART_T C ON C.OPTION_NO = B.OPTION_NO
+              LEFT JOIN PRODUCT_IMAGE_T P ON P.IMAGE_CODE = 'product_' || A.PRODUCT_NO AND P.POSITION = 'preview' 
+        WHERE C.USER_NO = ${userNo}
+          AND E.DISCOUNT_PERCENT = (SELECT MAX(DISCOUNT_PERCENT) 
+                                      FROM EVENT_T WHERE EVENT_NO = (SELECT MAX(EVENT_NO) 
+                                                                       FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT))
     </select>
         
     <insert id="insertCart" parameterType="List">
       <foreach collection="addCartList" item="cart" separator=";">
-        INSERT INTO CART_T (
-               OPTION_NO
-             , USER_NO
-             , COUNT
-        ) VALUES (
-               #{cart.productOptionDto.optionNo}
-             , #{cart.userDto.userNo}
-             , #{cart.count}
-        )
+        MERGE INTO CART_T USING DUAL
+           ON (OPTION_NO = #{cart.productOptionDto.optionNo} AND USER_NO = #{cart.userDto.userNo})
+         WHEN MATCHED THEN
+       UPDATE SET COUNT = COUNT + #{cart.count}
+         WHEN NOT MATCHED THEN
+       INSERT (OPTION_NO, USER_NO, COUNT)
+       VALUES (#{cart.productOptionDto.optionNo}, #{cart.userDto.userNo}, #{cart.count})
       </foreach>
     </insert>
    
@@ -116,6 +115,7 @@
         DELETE 
           FROM CART_T
          WHERE OPTION_NO = #{optionNo}
+           AND USER_NO = #{userNo} 
     </delete>           
       
    

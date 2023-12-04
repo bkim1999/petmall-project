@@ -43,10 +43,12 @@ public class CartServiceImpl implements CartService {
                           .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
                           .count(count)
                           .build();
-        
+     
+    
+    
      addCartList.add(cart);
     }
-
+    
     int addCartListResult = cartMapper.insertCart(addCartList);
     model.addAttribute("addCartListResult", addCartListResult);
   }
@@ -59,8 +61,9 @@ public class CartServiceImpl implements CartService {
     int userNo = user.getUserNo();
     
     List<CartDto> cartList = cartMapper.getCartList(userNo);
+    
     model.addAttribute("cartList", cartList);
-  
+    
   }
   
   @Override
@@ -70,13 +73,12 @@ public class CartServiceImpl implements CartService {
     UserDto user = (UserDto)session.getAttribute("user");
     int userNo = user.getUserNo();
     int optionNo = Integer.parseInt(request.getParameter("optionNo"));
-    String optionName = request.getParameter("optionName");
+    
     
     Map<String, Object> map = new HashMap<>();
     map.put("userNo", userNo);
     map.put("optionNo", optionNo);
-    map.put("optionName", optionName);          
-    
+             
     int removeResult = cartMapper.deleteCart(map);
     
     return Map.of("removeResult", removeResult);
