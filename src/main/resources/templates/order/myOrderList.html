@@ -11,6 +11,7 @@
       <table class="table align-middle">
         <thead>
           <tr>
+         <th>주문 번호</th>
             <th>받는분 이름</th>
             <th>받는분 휴대전화</th>
             <th>받는분 우편번호</th>
@@ -22,6 +23,7 @@
         </thead>
         <tbody>
           <tr th:each="order, vs : ${myOrderList}" th:if="${order.orderState == 0}">
+            <td th:text="${order.yourOrder}"></td>
             <td th:text="${order.reName}"></td>
             <td th:text="${order.reTel}"></td>
             <td th:text="${order.postcode}"></td>
@@ -29,7 +31,7 @@
             <td th:text="${order.jibunAddress}"></td>
             <td th:text="${order.reText}"></td>
          <td>
-            <a th:href="@{/pay/payment(orderNo=${order.orderNo})}">
+            <a th:href="@{/pay/payment(totalPrice=${order.totalPrice}, yourOrder=${order.yourOrder})}">
                 <button>결제하러가기</button>
             </a>
          </td>          

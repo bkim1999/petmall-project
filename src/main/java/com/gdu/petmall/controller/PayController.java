@@ -16,7 +16,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class PayController {
+   
     private final PayService payService;
-
+    
+    @GetMapping("/pay/payFail")
+    public String list() {
+      return "pay/payFail";
+    }
     
 }
