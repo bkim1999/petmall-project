@@ -144,6 +144,11 @@ public class UserController {
     return "user/active";
   }
   
+  //내 주문 조회로 이동
+  @GetMapping("mypage/orderList.do")
+  public String getOrderList() {
+    return "user/orderList";
+  }
   
  /* ******************************************************* */ 
   
