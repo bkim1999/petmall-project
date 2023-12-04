@@ -4,8 +4,24 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.gdu.petmall.dao.PayMapper">
-   
-
-  
+  <resultMap type="com.gdu.petmall.dto.OrderDto" id="OrderMap">
+    <id column="ORDER_NO" property="orderNo" />
+    <result column="RE_NAME" property="reName" />
+    <result column="RE_TEL" property="reTel" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" /> 
+    <result column="DETAIL_ADDRESS" property="detailAddress" /> 
+    <result column="POSTCODE" property="postcode" /> 
+    <result column="ROAD_ADDRESS" property="roadAddress" /> 
+    <result column="RE_TEXT" property="reText" /> 
+    <result column="TOTAL_PRICE" property="totalPrice" /> 
+    <result column="ORDER_STATE" property="orderState" /> 
+    <association javaType="com.gdu.petmall.dto.UserDto" property="userDto">
+      <id column="USER_NO" property="userNo" />
+      <result column="EMAIL" property="email"/>
+      <result column="NAME" property="name"/>
+      <result column="MOBILE" property="mobile"/>   
+    </association>
+  </resultMap>  
+    
 
 </mapper>
