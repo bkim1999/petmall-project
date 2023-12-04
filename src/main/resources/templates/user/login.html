@@ -7,32 +7,57 @@
 
 <style>
 
+
+.main_wrap{
+  margin:0 auto; width:100%; 
+
+  
+  background-image: url(../../image/dog1.png),url(../../image/music_cat.png),url(../../image/dog1.png);
+  background-size: 450px 450px, 400px 400px;
+  background-position:1300px 0px, 1200px -10px ;
+  background-repeat: no-repeat;
+
+}
 /*중앙정렬*/
-.btn_naver{margin-top:40px;}
-.login_wrap{margin:0 auto; width:290px;}
+.login_wrap{
+  margin:0 auto; width:440px; margin-top:40px;
+ }
 
 
 /*버튼간 간격*/
 .btn_margin{margin-bottom:10px;}
+.btn-primary{background-color:rgb(200, 176, 128); border:1px solid #E0C891; letter-spacing:2px; font-weight:600; color: white;}
+.btn-primary:hover{border:1px solid rgb(234, 217, 179); background-color: rgb(169, 147, 99); color: antiquewhite;}
+
+
+.simple_login_wrap{display: flex;}
 
 /*네이버 가입버튼*/
-.btn_naver{margin-top:40px;}
-.btn_naver img{width:290px; height:70px;}
+.btn_naver{margin-top: 10px; margin-right: 10px;}
+.btn_naver img{width:215px; height:55px;}
 .join_opt_wrap{margin:0 auto;}
 
+
+/*카카오 가입버튼*/
+.btn_kakao{margin-top: 10px;}
+.btn_kakao img{width:215px; height:55px;}
+
+
+
 /*로그인 폼 */
-.form-control{margin-bottom:10px;}
+.form-control{margin-bottom:10px; height:60px; }
 
 
 /*로그인 버튼*/
-#btn_login{width:290px; height:60px;}
+#btn_login{width:440px; height:60px;}
 
 /*비번/아이디 찾기*/
 .bar::before{
- content: "|";
- color:gray;
+ content: "| ";
+ color:rgb(171, 171, 171);
 }
-.span_center{text-align:center;}
+.span_center{text-align:center; margin-bottom: 20px; }
+.span_center a{color: rgb(192, 192, 192);}
 </style>
 
 <body>
@@ -42,15 +67,13 @@
 
 
 <hr>
+<div class="main_wrap">
+
 <div class="login_wrap">
 
 
 
-<!-- 네이버 로그인 페이지 이동  -->
-<div class="btn_naver btn_margin"><a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_완성형.png}" width="200px"></a></div>
 
-<!-- 카카오 로그인 페이지 이동  -->
-<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_login_large_narrow.png}" width="290px"></a></div>
 
 
 <!-- 로그인 폼  (post)-->
@@ -65,9 +88,18 @@
   <div>
 
       <input type="hidden" name="referer" th:value="${referer}">
-      <div><button id="btn_login" type="submit"  class="btn btn-lg btn-primary  ">로그인</button></div>
+      <div><button id="btn_login" type="submit"  class="btn btn-lg btn-primary ">로그인</button></div>
       
   </div>
+  
+  
+<div class="simple_login_wrap">
+    <!-- 네이버 로그인 페이지 이동  -->
+<div class="btn_naver btn_margin"><a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_완성형.png}"></a></div>
+
+<!-- 카카오 로그인 페이지 이동  -->
+<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_login_large_narrow.png}" ></a></div>
+</div>
 
 <div class="span_center">
 <span ><a th:href="@{/user/find_id.form}">아이디찾기</a></span>
@@ -80,6 +112,7 @@
 </form>
 
 
+</div>
 </div>
  <div th:replace="~{layout/footer :: footer}"></div>
 

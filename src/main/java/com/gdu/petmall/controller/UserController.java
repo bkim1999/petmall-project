@@ -144,6 +144,11 @@ public class UserController {
     return "user/active";
   }
   
+  //내 주문 조회로 이동
+  @GetMapping("mypage/orderList.do")
+  public String getOrderList() {
+    return "user/orderList";
+  }
   
  /* ******************************************************* */ 
   
@@ -309,5 +314,11 @@ public class UserController {
   }
 
   
+  //프로필 이미지 삭제
+  @ResponseBody
+  @PostMapping(value="/removeProfileImage.do", produces="application/json")
+  public void removeProfileImage(HttpServletRequest request) {
+  userService.removeProfileImage(request);
+  }
   
 }

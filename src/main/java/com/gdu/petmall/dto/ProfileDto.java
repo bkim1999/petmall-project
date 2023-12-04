@@ -13,6 +13,5 @@ public class ProfileDto {
 private String path;
 private String originalFilename;
 private String filesystemName;
-private int hasThumbnail;
 private UserDto userDto;// userNo 
 }
