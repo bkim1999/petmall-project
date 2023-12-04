@@ -134,10 +134,20 @@
     )
   </insert>
 
-  <select id="getProductImageList" parameterType="int" resultType="ProductImageDto">
+  <select id="getProductImageList" parameterType="Map" resultType="ProductImageDto">
     SELECT IMAGE_CODE, POSITION, PATH, FILESYSTEM_NAME
       FROM PRODUCT_IMAGE_T
-     WHERE IMAGE_CODE = 'product_' || #{productNo}
+    <where>
+      <if test="productNo != null">
+        IMAGE_CODE = 'product_' || #{productNo}
+      </if>
+      <if test="reviewNo != null">
+        IMAGE_CODE = 'review_' || #{reviewNo}
+      </if>
+      <if test="position != null">
+        AND POSITION = #{position}
+      </if>
+    </where>
   </select>
     
   <insert id="insertProductImage" parameterType="ProductImageDto">
@@ -154,6 +164,38 @@
     )
   </insert>
   
+  <update id="updateProduct" parameterType="ProductDto">
+    UPDATE PRODUCT_T 
+       SET PRODUCT_NAME = #{productName}
+         , PRODUCT_TITLE = #{productTitle}
+         , PRODUCT_CONTENTS = #{productContents}
+         , PRODUCT_PRICE = #{productPrice}
+         , PRODUCT_MODIFIED_AT = TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+         , PRODUCT_DESCRIPTION = #{productDescription}
+         , PRODUCT_SIZE = #{productSize}
+         , PRODUCT_WARNING = #{productWarning}
+         , CATEGORY_NO = #{categoryNo}
+     WHERE PRODUCT_NO = #{productNo}
+  </update>
+  
+  <update id="updateProductOption" parameterType="ProductOptionDto">
+    UPDATE PRODUCT_OPTION_T 
+       SET OPTION_NAME = #{optionName}
+         , ADD_PRICE = #{addPrice}
+         , OPTION_COUNT = #{optionCount}
+     WHERE OPTION_NO = #{optionNo}
+  </update>
+  
+  <delete id="deleteProductOption" parameterType="int">
+    DELETE FROM PRODUCT_OPTION_T
+     WHERE OPTION_NO = #{optionNo}
+  </delete>
+  
+  <delete id="deleteProductImage" parameterType="String">
+    DELETE FROM PRODUCT_IMAGE_T
+     WHERE FILESYSTEM_NAME = #{filesystemName}    
+  </delete>
+    
   <delete id="deleteProduct" parameterType="int">
     DELETE 
       FROM PRODUCT_T

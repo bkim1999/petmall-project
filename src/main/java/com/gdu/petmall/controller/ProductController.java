@@ -84,8 +84,10 @@ public class ProductController {
   public String editProduct(@ModelAttribute ProductDto product
                           , MultipartHttpServletRequest multipartrequest
                           , RedirectAttributes redirectAttributes) throws Exception {
-//    boolean editProductResult = productService.addProduct(product, multipartrequest);
-//    redirectAttributes.addFlashAttribute("editProductResult", addProductResult);
+    System.out.println("checkProduct");
+    System.out.println(product);
+    boolean editProductResult = productService.editProduct(product, multipartrequest);
+    redirectAttributes.addFlashAttribute("editProductResult", editProductResult);
     return "redirect:/product/list.do";
   }
   
