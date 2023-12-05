@@ -102,13 +102,13 @@ public class FaqServiceImpl implements FaqService {
   
   public int addFaq(HttpServletRequest request) {
     
-    String categore = request.getParameter("category");
+    String category = request.getParameter("category");
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     
     
     FaqDto faq = FaqDto.builder()
-                    .categore(categore)
+                    .category(category)
                     .faqTitle(faqTitle)
                     .faqContents(faqContents)
                     .build();
@@ -129,13 +129,13 @@ public class FaqServiceImpl implements FaqService {
   @Override
   public Map<String, Object> modifyList(HttpServletRequest request) {
     
-    String categore = request.getParameter("category");
+    String category = request.getParameter("category");
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     int faqNo = Integer.parseInt(request.getParameter("faqNo"));
     
     FaqDto faq = FaqDto.builder()
-                       .categore(categore)
+                       .category(category)
                        .faqTitle(faqTitle)
                        .faqContents(faqContents)
                        .faqNo(faqNo)
