@@ -11,24 +11,37 @@
   </select>
   
   <select id="getFaqList" parameterType="Map" resultType="FaqDto">
-    SELECT FAQ_NO, CATEGORE, FAQ_TITLE, FAQ_CONTENTS, STATUS, DEPTH, GROUP_NO, GROUP_ORDER
+    SELECT FAQ_NO
+         , CATEGORY
+         , FAQ_TITLE
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, FAQ_NO, CATEGORY, FAQ_TITLE, FAQ_CONTENTS, STATUS, DEPTH, GROUP_NO, GROUP_ORDER
+              FROM FAQ_T)         
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="adminFaqList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , CATEGORY
+         , FAQ_TITLE
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, FAQ_NO, CATEGORE, FAQ_TITLE, FAQ_CONTENTS, STATUS, DEPTH, GROUP_NO, GROUP_ORDER
               FROM FAQ_T)         
      WHERE RN BETWEEN #{begin} AND #{end}
   </select> 
   
-  <update id="updateGroupOrder" parameterType="FaqDto" > <!-- parameterType="FreeDto"는 원글을 의미함 -->
-    UPDATE FAQ_T
-       SET GROUP_ORDER = GROUP_ORDER + 1
-     WHERE GROUP_NO = #{groupNo}
-       AND GROUP_ORDER > #{groupOrder}  
-  </update>
-  
-  <!-- 댓글 달기 2: 댓글 삽입하기 -->
-  <insert id="insertReply" parameterType="FaqDto">
-    INSERT INTO FREE_T (
+  <insert id="insertFaq" parameterType="FaqDto">
+    INSERT INTO FAQ_T (
         FAQ_NO
-      , CATEGORE
+      , CATEGORY
       , FAQ_TITLE
       , FAQ_CONTENTS
       , STATUS
@@ -36,16 +49,64 @@
       , GROUP_NO
       , GROUP_ORDER
     ) VALUES (
-        FAQ_SEQ.NEXTVAL
-      , #{faqNo}
-      , #{categore}
+         FAQ_SEQ.NEXTVAL
+      , #{category}
       , #{faqTitle}
       , #{faqContents}
       , 1
-      , #{depth}
-      , #{groupNo}
-      , #{groupOrder}
-    )
+      , 0
+      , FAQ_SEQ.CURRVAL
+      , 0
+     )
   </insert>
+  
+  <select id="getSearchCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM FAQ_T
+     WHERE STATUS = 1
+       AND ${column} LIKE '%' || #{query} || '%'
+  </select>
    
+  <select id="getSearchList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , CATEGORY
+         , FAQ_TITLE
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
+                   FAQ_NO
+                 , CATEGORY
+                 , FAQ_TITLE
+                 , FAQ_CONTENTS
+                 , STATUS
+                 , DEPTH
+                 , GROUP_NO
+                 , GROUP_ORDER
+             FROM FAQ_T
+            WHERE STATUS = 1
+              AND ${column} LIKE '%' || #{query} || '%')          
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select> 
+   
+  <delete id="deleteFaq" parameterType="int">
+    DELETE 
+      FROM FAQ_T
+     WHERE FAQ_NO = #{faqNo}
+  </delete>
+  
+  <update id="updateFaq" parameterType="FaqDto">
+    UPDATE FAQ_T
+       SET CATEGORY = #{category}
+          ,FAQ_TITLE = #{faqTitle}
+          ,FAQ_CONTENTS = #{faqContents}
+     WHERE FAQ_NO = #{faqNo}
+  </update>
+  
+   
+   
+  
+  
 </mapper>
