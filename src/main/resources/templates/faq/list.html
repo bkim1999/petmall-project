@@ -109,7 +109,7 @@
     box-sizing: border-box;
   }
   
-  #categore_box {
+  #category_box {
     width:100px;
     height: 100px;
     border: 1px solid grey;
@@ -165,7 +165,7 @@
         <div id="exchange_box">배송후/교환반품</div>
         <div id="etc_box">기타</div>
         <div>
-          <select id="categore_box">카테고리
+          <select id="category_box">카테고리
             <option th:value="'전체'">전체</option>
             <option th:value="'주문/결제'">주문/결제</option>
             <option th:value="'배송'">배송</option>
@@ -198,7 +198,7 @@
             <th:block th:each="faq,vs:${faqList}">
               <tr class="list">
                 <td th:text="${beginNo - vs.index}"></td>
-                <td><span th:text="${faq.categore}"></span></td>
+                <td><span th:text="${faq.category}"></span></td>
                 <td><span class="click_title" th:text="${faq.faqTitle}"></span></td>
                 <td><span th:each="n:${#numbers.sequence(1, faq.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span>
               </tr>

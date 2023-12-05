@@ -38,7 +38,7 @@
             </th:block>
           </select>
           <label for="categore" class="form-label mt-4"></label>
-          <input type="text" class="form-control not-empty" name="categore" id="categore">
+          <input type="text" class="form-control not-empty" name="category" id="category">
           <div class="invalid-feedback"></div>
       </div>
       
@@ -74,7 +74,7 @@
             <th:block th:each="a,vs:${adminList}">
               <tr class="list">
                 <td th:text="${beginNo - vs.index}"></td>
-                <td><input type="text" name="categore" th:value="${a.categore}" size="4"></input></td>
+                <td><input type="text" name="category" th:value="${a.category}" size="4"></input></td>
                 <td><input type="text" name="faqTitle" th:value="${a.faqTitle}"></input></td>
                 <td><input type="text" name="faqContents" th:value="${a.faqContents}" ></span></td>
                 <td><span th:each="n:${#numbers.sequence(1, a.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span>

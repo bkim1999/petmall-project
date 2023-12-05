@@ -12,21 +12,21 @@
   
   <select id="getFaqList" parameterType="Map" resultType="FaqDto">
     SELECT FAQ_NO
-         , CATEGORE
+         , CATEGORY
          , FAQ_TITLE
          , FAQ_CONTENTS
          , STATUS
          , DEPTH
          , GROUP_NO
          , GROUP_ORDER
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, FAQ_NO, CATEGORE, FAQ_TITLE, FAQ_CONTENTS, STATUS, DEPTH, GROUP_NO, GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, FAQ_NO, CATEGORY, FAQ_TITLE, FAQ_CONTENTS, STATUS, DEPTH, GROUP_NO, GROUP_ORDER
               FROM FAQ_T)         
      WHERE RN BETWEEN #{begin} AND #{end}
   </select>
   
   <select id="adminFaqList" parameterType="Map" resultType="FaqDto">
     SELECT FAQ_NO
-         , CATEGORE
+         , CATEGORY
          , FAQ_TITLE
          , FAQ_CONTENTS
          , STATUS
@@ -41,7 +41,7 @@
   <insert id="insertFaq" parameterType="FaqDto">
     INSERT INTO FAQ_T (
         FAQ_NO
-      , CATEGORE
+      , CATEGORY
       , FAQ_TITLE
       , FAQ_CONTENTS
       , STATUS
@@ -50,7 +50,7 @@
       , GROUP_ORDER
     ) VALUES (
          FAQ_SEQ.NEXTVAL
-      , #{categore}
+      , #{category}
       , #{faqTitle}
       , #{faqContents}
       , 1
@@ -69,7 +69,7 @@
    
   <select id="getSearchList" parameterType="Map" resultType="FaqDto">
     SELECT FAQ_NO
-         , CATEGORE
+         , CATEGORY
          , FAQ_TITLE
          , FAQ_CONTENTS
          , STATUS
@@ -78,7 +78,7 @@
          , GROUP_ORDER
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
                    FAQ_NO
-                 , CATEGORE
+                 , CATEGORY
                  , FAQ_TITLE
                  , FAQ_CONTENTS
                  , STATUS
@@ -99,7 +99,7 @@
   
   <update id="updateFaq" parameterType="FaqDto">
     UPDATE FAQ_T
-       SET CATEGORE = #{categore}
+       SET CATEGORY = #{category}
           ,FAQ_TITLE = #{faqTitle}
           ,FAQ_CONTENTS = #{faqContents}
      WHERE FAQ_NO = #{faqNo}
