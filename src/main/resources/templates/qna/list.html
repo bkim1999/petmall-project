@@ -1,33 +1,85 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{/layout/header::head('QNA 게시판')}"></head>
-
 <body>
-  
-  <div th:replace="~{/layout/header::header}"></div>
-    <div class="main_wrap">
+<style>
+    .notice-main-text {
+        width: 100%;
+        margin: 0;
+        background-image: "@{/image/painting_cat.png}";
+        background-repeat: no-repeat;
+        height: 600px;
+        background-size: 100%;
+        background-position: 0 -120px;
+    }
+    
+    .notice-main-text {
+        text-align: center;
+        margin: 0 auto;
+        line-height: 4em;
+        position: relative;
+    }
+    
+    .notice-main-text h2 {
+        font-family: 'Frutiger LT Pro 75 Black';
+        font-size: 30px;
+        line-height: 38px;
+    }
+    
+    /*btn*/
+    .btn-write {
+        text-align: center;
+        color: #fcce00;
+        font-size: 16px;
+        letter-spacing: 2px;
+        display: inline-block;
+        margin: 0 8px 20px;
+    }
+    
+    .xans-board-buttonlist {
+        text-align: center;
+        margin-right: 0;
+        padding: 0;
+    }
+    
+    .qa-btn {
+        background-color: #213162;
+        border-radius: 10px;
+        height: 70px;
+        width: 320px;
+        line-height: 70px;
+        display: block;
+        font-size: 17px;
+    }
+    
+    .qa-btn:hover {
+        background-color: #fcce00;
+        color: #113F89;
+        transition: 0.3s;
+        font-weight: 500;
+    }
+</style>
 
-  <div class="wrap wrap 9"><h1>어떠한 목적으로 고객센터를 방문 하셨나요?</h1></div>
+<div th:replace="~{/layout/header::header}"></div>
+<div class="main_wrap">
+ 
+    <div class="image text-center">
+        <img th:src="@{/image/painting_cat.png}" style="max-width: 30%; height: auto;">
+    </div>
+     
+    <div class="notice-main-text">
+        <div class="notice-text">
+            <h1>어떠한 목적으로 고객센터를 방문 하셨나요?</h1>
+            <span>궁금한 점이 있으시다면 문의를 남겨주세요.<br>문의 내역 및 답변은 마이페이지에서 확인하실 수 있습니다!</span>
+        </div>
+   
+        <div class="notice_btn">
+            <a th:href="@{/qna/write.form}" class="btn-write"> <span class="qa-btn">1:1 문의하기<i class="xi xi-angle-right"></i> </span></a>
+            <a th:href="@{/user/myPostList}" class="btn-write"> <span class="qa-btn">문의내역 바로가기<i class="xi xi-angle-right"></i> </span></a>
+        </div>
+    </div>
 
-<hr>
-
-		<div class="text-center">
-		  <div class="d-inline-block mr-3">
-		    <a th:href="@{/qna/write.form}">
-		      <button type="button" class="btn btn-outline-primary">1:1문의글 작성하러가기</button>
-		    </a>
-		  </div>
-		
-		  <div class="d-inline-block ml-3">
-		    <a th:href="@{/user/myPostList}">
-		      <button type="button" class="btn btn-outline-primary">내가 작성한 문의글 보러가기</button>
-		    </a>
-		  </div>
-		</div>
-
-
-  <div th:replace="~{/layout/footer::footer}"></div>
-  
+    <div th:replace="~{/layout/footer::footer}"></div>
+</div>
 </body>
 </html>

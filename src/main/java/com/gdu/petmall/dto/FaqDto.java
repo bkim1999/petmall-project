@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class FaqDto {
 
   private int faqNo;
-  private String categore;
+  private String category;
   private String faqTitle;
   private String faqContents;
   private int status;
