@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     // 상품 개수로 페이지 생성
     opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
-    int display = 10;
+    int display = 9;
     myPageUtils.setPaging(page, productCount, display);
     int begin = myPageUtils.getBegin();
     int end = myPageUtils.getEnd();

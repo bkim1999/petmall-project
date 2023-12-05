@@ -82,7 +82,7 @@
       <h1>상품 정보</h1>
       <div class="form-group">
         <label for="category_select" class="form-label mt-4">카테고리 선택</label>
-        <select class="form-select not-empty" id="categoryNo" name="categoryNo">
+        <select class="form-select" id="categoryNo" name="categoryNo">
           <option value="">--선택 안함--</option>
           <th:block th:each="category : ${categoryList}">
             <th:block th:if="${category.categoryNo != 0}">
@@ -438,6 +438,9 @@
       orderedImageList.push(image);
       fnPreviewImage(i, image.path + '/' + image.filesystemName, $('#product_images_area .add-image-area'));
     });
+    if(displayImageList.length >= MAX_IMAGE_COUNT){
+      $('#product_images_area .add-image-area').remove();
+    }
   }
   
   // 업로드 예정의 이미지들 출력
@@ -462,7 +465,9 @@
       }
       let imageArea = $(this).parent();
       let index = imageArea.attr('index');
-      deletedDBImageList.push(orderedImageList[index].filesystemName);
+      if(orderedImageList[index].filesystemName !== null){
+        deletedDBImageList.push(orderedImageList[index].filesystemName);
+      }
       orderedImageList.splice(index, 1);
       imageArea.remove();
       fnPreviewImageList();
@@ -482,52 +487,58 @@
   
     
   const fnCheckInput = () => {
+    // ckeditor 칸에 이미지 추가 시 이미지가 1개 이상, 10개 이하인지 체크
     $(document).on('change', $(editor), function() { 
-      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      fnToggleValid($('.ck-editor'), isImageCountInvaild, ' * 이미지는 최소 1개, 최대 10개입니다.');
     });
-    $(document).on('keyup', $('.ck-editor__editable'), function() { 
-      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
+    // ckeditor 칸에 이미지 삭제 혹은 문자 입력/삭제 시 문자수가 200자 이하인지 체크
+    $(document).on('keyup', $('.ck-editor__editable'), function() {
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
+      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
     });
     $(document).on('keyup', '.not-empty', function(){
-      fnToggleValid($(this), $.trim($(this).val()) === '', ' * 필수 입력 항목입니다.');
+      fnToggleValid($(this), $.trim($(this).val()) === '' || $(this).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
+    });
+    $(document).on('change', 'select', function(){
+      fnToggleValid($(this), $(this).val() === '', ' * 카테고리를 선택해주세요.');
     });
     $(document).on('keyup', '.only-number', function(){
-      fnToggleValid($(this), !/^[0-9]+$/.test($(this).val()), ' * 숫자만 입력해주세요.');
+      if(!/^[0-9]+$/.test($(this).val()) || $(this).val().length > 30){
+        fnToggleValid($(this), true, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
+        $(this).val('');
+      }
     });
-     
   }
   
   const fnCheckRequired = () => {
     $(document).on('click', '#btn_edit_product', function(){
-      
-      // ckeditor 빈칸인지 체크
-      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
-      
-      // 필수항목 빈칸인지 체크
+
+      // ckeditor 글자수/ 이미지수 체크
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
+      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
+    
+      // 카테고리 체크
+      fnToggleValid($('select'), $('select').val() === '', ' * 카테고리를 선택해주세요.');
+    
+      // 필수항목 글자수 체크
       $.each($('.not-empty'), (i, input) => {
-        fnToggleValid($(input), $.trim($(input).val()) === '', ' * 필수 입력 항목입니다.');
+        fnToggleValid($(input), $.trim($(input).val()) === '' || $(input).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
       });
       
       
-      // 숫자항목 숫자만 입력되었는지 체크
+      // 숫자항목 숫자 외 문자 입력과 길이 체크
       $.each($('.only-number'), (i, input) => {
-        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()), ' * 숫자만 입력해주세요.');
+        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()) || $(input).val().length > 30, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
       });
       
       // 썸네일 이미지가 입력되었는지 체크
-      fnToggleValid($('#thumbnail_area'), $('#thumbnail')[0].files.length === 0 && deleteThumbnail === true, ' * 썸네일은 필수 입력 항목입니다.');
+      fnToggleValid($('#thumbnail_area'), deleteThumbnail === true && $('#thumbnail')[0].files.length === 0, ' * 썸네일은 필수 입력 항목입니다.');
       
       fnToggleValid($('#product_images_area'), orderedImageList.length < MIN_IMAGE_COUNT || orderedImageList.length > MAX_IMAGE_COUNT, ' * 상품사진은 최소 1개, 최대 4개입니다.');
       
-      // 공백인 입력칸이 있을 경우 submit 안함
-      if($(".not-empty, #thumbnail_area, #product_images_area").is(".is-invalid")){
-        $.each($('.not-empty'), function(i, elem){
-          if($(elem).is('.is-invalid')){
-            console.log($(elem));
-          }
-        });
-        return;
-      }
       
       // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크 
       var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
@@ -540,8 +551,8 @@
         }
       }
       
-      // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우/이미지가 아닌 파일이 첨부된 경우 submit 안함
-      if($(".only-number").is(".is-invalid")){
+      // 공백/초과인 입력칸이 있을 경우 submit 안함
+      if($(".not-empty, #thumbnail_area, #product_images_area, .only-number").is(".is-invalid")){
         return;
       }
       
@@ -554,7 +565,7 @@
       });
       $('#product_images')[0].files = dataTransfer.files;
       $('#deletedDBImageList').val(deletedDBImageList);
-
+      
       // 문제 없으면 SUBMIT
       $(this).parents('form').submit();
     });
