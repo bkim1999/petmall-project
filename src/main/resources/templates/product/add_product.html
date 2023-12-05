@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header :: head('상품 추가')}"></head>
+<head th:replace="~{/layout/header :: head('상품 등록')}"></head>
 <style>
   .ck.ck-editor {
     max-width: 1000px;
@@ -29,6 +29,50 @@
     padding: 30px 0;
     border-top: 0.5px solid gray;
   }
+  .preview-area {
+    margin: 30px;
+    padding: 10px;
+    border: 1px dotted gray;
+  }
+  .preview-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .preview-area.is-valid{
+    border: solid 2px green;
+  }
+  .preview-area.is-invalid{
+    border: solid 2px red;
+  }
+  
+  .add-image-area, .preview-image-area {
+    border: 1px  gray;
+    border-style: dashed;
+    border-radius: 10%;
+    padding: 10px;
+    margin: 10px;
+  }
+  .add-image-area:hover, .preview-image-area:hover {
+    cursor: pointer;
+    background-color: lightgray;
+  }
+  .btn_delete_image:hover {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin: 1px;
+  }
+  .btn_delete_image {
+    text-align: center;
+    color: red;
+    margin: 0;
+    height: 30px;
+  }
 </style>
 
 <body>
@@ -38,17 +82,19 @@
       <h1>상품 정보</h1>
       <div class="form-group">
         <label for="category_select" class="form-label mt-4">카테고리 선택</label>
-        <select class="form-select not-empty" id="categoryNo" name="categoryNo">
+        <select class="form-select" id="categoryNo" name="categoryNo">
           <option value="">--선택 안함--</option>
           <th:block th:each="category : ${categoryList}">
-            <option th:if="${category.categoryNo != 0}" th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
-          </th:block>
+            <th:block th:if="${category.categoryNo != 0}">
+              <option th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
+            </th:block>
+            </th:block>
         </select>
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label for="productName" class="form-label mt-4">상품이름</label>
-        <input type="text" class="form-control not-empty" name="productName" id="productName" aria-describedby="productNameHelp">
+        <input type="text" class="form-control not-empty" name="productName" id="productName">
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
@@ -73,12 +119,30 @@
       </div>
       <div class="form-group mt-3">
         <label for="files" class="form-label mt-4">썸네일</label>
-        <input type="file" class="form-control not-empty" name="thumbnail" id="thumbnail">
+        <div class="preview-area" id="thumbnail_area">
+          <div class="mb-2">썸네일 미리보기</div>
+          <div class="preview-list">
+            <input type="file" class="form-control image-input d-none" name="thumbnail" id="thumbnail">
+            <div class="add-image-area">
+              <img class="preview-image" src="/image/plus_sign.png">
+              <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>
+            </div>
+          </div>
+        </div>
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group mt-3">
         <label for="files" class="form-label mt-4">상품사진</label>
-        <input type="file" class="form-control not-empty" name="product_images" id="product_images" multiple>
+        <div class="preview-area" id="product_images_area">
+          <div class="mb-2">상품사진 미리보기</div>
+          <div class="preview-list">
+            <input type="file" class="d-none image-input" id="product_images" name="product_images" multiple>
+            <div class="add-image-area">
+              <img class="preview-image" th:src="@{/image/plus_sign.png}">
+              <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>
+            </div>
+          </div>
+        </div>
         <div class="invalid-feedback"></div>
       </div>
       <div>
@@ -100,17 +164,17 @@
         <hr>
         <h1>옵션 정보</h1>
         <div id="option_list">
-         <div class="option" style="border:none;">
+         <div class="option">
            <div class="form-group">
              <label class="form-label" for="productOptionList[0].optionName">옵션명</label>
-             <input type="text" name="productOptionList[0].optionName" id="productOptionList[0].optionName" class="not-empty form-control">
+             <input type="text" th:name="|productOptionList[0].optionName|" class="not-empty form-control">
              <div class="invalid-feedback"></div>
            </div>
            <div class="form-group">
              <label class="form-label mt-4" for="productOptionList[0].addPrice">추가금액</label>
              <div class="input-group mb-3">
                <span class="input-group-text">\</span>
-               <input type="text" name="productOptionList[0].addPrice" id="productOptionList[0].addPrice" class="not-empty only-number form-control">
+               <input type="text" th:name="|productOptionList[0].addPrice|" class="not-empty only-number form-control">
                <span class="input-group-text">원</span>
                <div class="invalid-feedback"></div>
              </div>
@@ -118,7 +182,7 @@
            <div class="form-group">
              <label class="form-label mt-4" for="productOptionList[0].optionCount">재고</label>
              <div class="input-group mb-3">
-               <input type="text" name="productOptionList[0].optionCount" id="productOptionList[0].optionCount" class="not-empty only-number form-control">
+               <input type="text" th:name="|productOptionList[0].optionCount|" class="not-empty only-number form-control">
                <span class="input-group-text">개</span>
                <div class="invalid-feedback"></div>
              </div>
@@ -172,8 +236,7 @@
         input.removeClass('is-valid');
         input.addClass('is-invalid');
       }
-      input.siblings('.invalid-feedback').text(feedback); 
-      input.val('');
+      input.siblings('.invalid-feedback').text(feedback);
     } else {
       if(!input.hasClass('is-valid')){
         input.removeClass('is-invalid');
@@ -181,70 +244,7 @@
       }
     }
   }
-  
-  const fnCheckInput = () => {
-    $(document).on('keyup', '.ck-editor__editable', function(){
-      fnToggleValid($('.ck-editor'), $.trim($(this).text()) === '', ' * 필수 입력 항목입니다.');
-    });
-    $(document).on('keyup', '.not-empty', function(){
-      fnToggleValid($(this), $.trim($(this).val()) === '', ' * 필수 입력 항목입니다.');
-    });
-    $(document).on('keyup', '.only-number', function(){
-      fnToggleValid($(this), !/^[0-9]+$/.test($(this).val()), ' * 숫자만 입력해주세요.');
-    });
-    $(document).on('change', '#thumbnail, #product_images', function(){
-      fnToggleValid($(this), $(this)[0].files.length === 0 || $(this)[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
-    });
-     
-  }
-  
-  const fnCheckRequired = () => {
-    $(document).on('click', '#btn_add_product', function(){
-      
-      // ckeditor 빈칸인지 체크
-      fnToggleValid($('.ck-editor'), $.trim($('.ck-editor__editable').text()) === '', ' * 필수 입력 항목입니다.');
-      
-      // 필수항목 빈칸인지 체크
-      $.each($('.not-empty'), (i, input) => {
-        fnToggleValid($(input), $.trim($(input).val()) === '', ' * 필수 입력 항목입니다.');
-      });
-      
-      // 공백인 입력칸이 있을 경우 submit 안함
-      if($(".not-empty").is(".is-invalid")){
-        return;
-      }
-      
-      // 숫자항목 숫자만 입력되었는지 체크
-      $.each($('.only-number'), (i, input) => {
-        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()), ' * 숫자만 입력해주세요.');
-      });
-      
-      // 이미지 첨부항목 개수는 최소 1개, 최대 4개인지 체크
-      fnToggleValid($('#thumbnail'), $('#thumbnail')[0].files.length === 0 || $('#thumbnail')[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
-      fnToggleValid($('#product_images'), $('#product_images')[0].files.length === 0 || $('#product_images')[0].files.length > 4, ' * 이미지 파일은 최소 1개, 최대 4개 첨부해야 합니다.');
-      
-      // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크 
-      var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
-      for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
-        let filetype = files[i].type;
-        let input = (i === 0) ? $('#thumbnail') : $('#product_images');
-        if(filetype.substring(0, filetype.indexOf('/')) !== 'image') {
-          fnToggleValid(input, true, ' * 이미지 파일만 첨부할 수 있습니다.');
-          break;
-        }
-      }
-      
-      // 숫자 입력칸에 숫자 이외의 문자를 입력할 경우/이미지가 아닌 파일이 첨부된 경우 submit 안함
-      if($(".not-empty").is(".is-invalid")){
-        return;
-      }
-      
-      // 문제 없으면 SUBMIT
-      $(this).parents('form').submit();
-      
-    });
-  }
-  
+
   const fnFileCheck = () => {
     $('#thumbnail, #product_images').change((ev) => {
       let maxSize = 1024 * 1024 * 100;
@@ -324,11 +324,233 @@
     });
   }
   
+  // '새 이미지 추가' 요소 클릭 시 파일 input 클릭
+  const fnOpenFileSelect = () => {
+    $(document).on('click', '.add-image-area', function(){
+      $(this).siblings('.image-input').click();
+    });
+  }
+  
+  // index와 이미지 src를 받아 출력하는 함수
+  const fnPreviewImage = (index, imageSrc, target) =>{
+    let str = '<div class="preview-image-area" index="' + index + '" draggable="true">';
+    str += '  <img class="preview-image" src="' + imageSrc + '" draggable="false">';
+    str += '  <div class="btn_delete_image" style="height: 30px;">X</div>';
+    str += '</div>';
+    target.before(str);
+  }
+  
+  const fnAddThumbnail = () => {
+    $(document).on('change', '#thumbnail_area .image-input', function(ev){
+      let target = $('#thumbnail_area .add-image-area');
+      fnPreviewImage(-1, URL.createObjectURL($(this)[0].files[0]), target);
+      target.remove();
+      fnToggleValid($('#thumbnail_area'), false, '');
+    });
+  }
+  
+  const fnDeleteThumbnail = () => {
+    $(document).on('click', '#thumbnail_area .btn_delete_image', function(ev){
+      if(!confirm('이 이미지를 삭제하시겠습니까?')){
+        return;
+      }
+      deleteThumbnail = true;
+      let str = '<div class="add-image-area">';
+      str += '  <img class="preview-image" src="/image/plus_sign.png">';
+      str += '  <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>';
+      str += '</div>';
+      $(this).parents('.preview-list').append(str);
+      $(this).parent().siblings('.image-input').val('');
+      $(this).parent().remove();
+      fnToggleValid($('#thumbnail_area'), true, ' * 썸네일은 필수 입력 항목입니다.');
+    });
+  }
+  
+  fnAddThumbnail();
+  fnDeleteThumbnail();
+  
+  
+  var MIN_IMAGE_COUNT = 1;
+  var MAX_IMAGE_COUNT = 5;
+  const orderedImageList = [];
+  
+  // 썸네일을 제외한 상품사진 개수 체크
+  const fnCheckCurrentImageCount = (fileCount) => {
+    let imageCount = orderedImageList.length + fileCount;
+    return imageCount < MIN_IMAGE_COUNT || imageCount > MAX_IMAGE_COUNT;
+  }
+  
+  
+  // 파일 input에서 이미지 추가 시 실행
+  const fnAddImageToList = () => {
+    $(document).on('change', '#product_images_area .image-input', function(){
+      // 등록할 이미지 개수가 0이거나 5 이상일 시
+      if(fnCheckCurrentImageCount($(this)[0].files.length)){
+        alert('상품사진은 최소 1개, 최대 5개입니다.');
+        return;
+      };
+      
+      // 추가 파일이 이미지 파일인지 체크
+      let isNonImage = false;
+      $.each($(this)[0].files, function(i, image){
+        // 첨부파일이 이미지가 아닐 시
+        if(image.type.split('/')[0] !== 'image'){
+          console.log('이미지가 아닙니다');
+          isNonImage = true;
+          return false;
+        }
+      });
+      if(isNonImage === true){
+        return;
+      }
+      
+      // 이미지 파일 orderedImageList에 저장
+      $.each($(this)[0].files, function(i, image){
+        orderedImageList.push(image);
+        fnPreviewImage(orderedImageList.length - 1, URL.createObjectURL(image), $('#product_images_area .add-image-area'));
+      });
+      $(this).val('');
+      if(orderedImageList.length >= MAX_IMAGE_COUNT){
+        $('#product_images_area .add-image-area').remove();
+      }
+      fnToggleValid($('#product_images_area'), orderedImageList.length < MIN_IMAGE_COUNT, '');
+    })
+  }
+  
+  // 업로드 예정의 이미지들 출력
+  const fnPreviewImageList = () => {
+    let target = $('#product_images_area .add-image-area');
+    target.siblings('.preview-image-area').remove();
+    $.each(orderedImageList, function(i, image){
+      // DB 이미지 정보일 경우
+      if(image.imageCode !== undefined){
+        fnPreviewImage(i, image.path + '/' + image.filesystemName, target);
+      } else {
+        fnPreviewImage(i, URL.createObjectURL(image), target);
+      }
+    });
+  }
+  
+  const fnDeleteImage = () => {
+    $(document).on('click', '#product_images_area .btn_delete_image', function(ev){
+      ev.stopPropagation();
+      if(!confirm('이 이미지를 삭제하시겠습니까?')){
+        return;
+      }
+      let imageArea = $(this).parent();
+      let index = imageArea.attr('index');
+      orderedImageList.splice(index, 1);
+      imageArea.remove();
+      fnPreviewImageList();
+      if(orderedImageList.length === MAX_IMAGE_COUNT - 1) {
+        let str = '<div class="add-image-area">';
+        str += '  <img class="preview-image" src="/image/plus_sign.png">';
+        str += '  <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>';
+        str += '</div>';
+        $('#product_images_area > .preview-list').append(str);
+      }
+      fnToggleValid($('#product_images_area'), orderedImageList.length < MIN_IMAGE_COUNT, ' * 상품사진은 최소 1개, 최대 5개입니다.');
+    });
+  }
+  
+  
+  
+  
+    
+  const fnCheckInput = () => {
+    // ckeditor 칸에 이미지 추가 시 이미지가 1개 이상, 10개 이하인지 체크
+    $(document).on('change', $(editor), function() { 
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      fnToggleValid($('.ck-editor'), isImageCountInvaild, ' * 이미지는 최소 1개, 최대 10개입니다.');
+    });
+    // ckeditor 칸에 이미지 삭제 혹은 문자 입력/삭제 시 문자수가 200자 이하인지 체크
+    $(document).on('keyup', $('.ck-editor__editable'), function() {
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
+      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
+    });
+    $(document).on('keyup', '.not-empty', function(){
+      fnToggleValid($(this), $.trim($(this).val()) === '' || $(this).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
+    });
+    $(document).on('change', 'select', function(){
+      fnToggleValid($(this), $(this).val() === '', ' * 카테고리를 선택해주세요.');
+    });
+    $(document).on('keyup', '.only-number', function(){
+      if(!/^[0-9]+$/.test($(this).val()) || $(this).val().length > 30){
+        fnToggleValid($(this), true, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
+        $(this).val('');
+      }
+    });
+  }
+  
+  const fnCheckRequired = () => {
+    $(document).on('click', '#btn_add_product', function(){
+
+      // ckeditor 글자수/ 이미지수 체크
+      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
+      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
+    
+      // 카테고리 체크
+      fnToggleValid($('select'), $('select').val() === '', ' * 카테고리를 선택해주세요.');
+    
+      // 필수항목 글자수 체크
+      $.each($('.not-empty'), (i, input) => {
+        fnToggleValid($(input), $.trim($(input).val()) === '' || $(input).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
+      });
+      
+      
+      // 숫자항목 숫자 외 문자 입력과 길이 체크
+      $.each($('.only-number'), (i, input) => {
+        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()) || $(input).val().length > 30, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
+      });
+      
+      // 썸네일 이미지가 입력되었는지 체크
+      fnToggleValid($('#thumbnail_area'), $('#thumbnail')[0].files.length === 0, ' * 썸네일은 필수 입력 항목입니다.');
+      
+      fnToggleValid($('#product_images_area'), orderedImageList.length < MIN_IMAGE_COUNT || orderedImageList.length > MAX_IMAGE_COUNT, ' * 상품사진은 최소 1개, 최대 4개입니다.');
+      
+      
+      // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크 
+      var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
+      for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
+        let filetype = files[i].type;
+        let input = (i === 0) ? $('#thumbnail') : $('#product_images');
+        if(filetype.substring(0, filetype.indexOf('/')) !== 'image') {
+          fnToggleValid(input, true, ' * 이미지 파일만 첨부할 수 있습니다.');
+          break;
+        }
+      }
+      
+      // 공백/초과인 입력칸이 있을 경우 submit 안함
+      if($(".not-empty, #thumbnail_area, #product_images_area, .only-number").is(".is-invalid")){
+        return;
+      }
+      
+      //
+      let dataTransfer = new DataTransfer();
+      $.each(orderedImageList, function(i, image){
+        if(image.imageCode === undefined){
+          dataTransfer.items.add(image);
+        }
+      });
+      $('#product_images')[0].files = dataTransfer.files;
+
+      // 문제 없으면 SUBMIT
+      $(this).parents('form').submit();
+    });
+  }
+  
+  
   fnCheckInput();
   fnCkeditor();
-  fnCheckRequired();
   fnFileCheck();
   fnAddOption();
   fnRemoveOption();
+  
+  fnOpenFileSelect();
+  fnAddImageToList();
+  
+  fnCheckRequired();
   
 </script>
