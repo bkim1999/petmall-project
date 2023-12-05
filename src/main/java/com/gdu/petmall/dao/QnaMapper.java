@@ -50,6 +50,6 @@ public interface QnaMapper {
     // 특정 게시글 댓글 리스트 
     public List<QnaDto> getCommentList(Map<String, Object> map);
     
-    //
-    public  int updateQna (int qnaNo);
- }
+    // 댓글 갱신 flag
+    public int updateQna(int qnaNo);
+}
