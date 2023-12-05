@@ -124,7 +124,6 @@
               </div>
             </th:block>
           </th:block>
-          
         </th:block>
       </div>
       <button class="carousel-control-prev" type="button" data-bs-target="#slideshow" data-bs-slide="prev">
@@ -152,13 +151,13 @@
         </ul>
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane fade show active" id="description" role="tabpanel">
-            <p th:text="${product.productDescription}"></p>
+            <p style="white-space:pre;" th:text="${product.productDescription}"></p>
           </div>
           <div class="tab-pane fade" id="size" role="tabpanel">
-            <p th:text="${product.productSize}"></p>
+            <p style="white-space:pre;" th:text="${product.productSize}"></p>
           </div>
           <div class="tab-pane fade" id="warning" role="tabpanel">
-            <p th:text="${product.productWarning}"></p>
+            <p style="white-space:pre;" th:text="${product.productWarning}"></p>
           </div>
         </div>
       </div>

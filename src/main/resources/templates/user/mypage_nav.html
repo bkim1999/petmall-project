@@ -4,12 +4,14 @@
 
 <body>
   
-<div th:fragment="mypage_nav" class="mypage_nav">
+<div th:fragment="mypage_nav" id="mypage_nav">
   <style>
-
- .mypage_nav .nav-link{background-color: transparent;  color: black;}
- .mypage_nav .nav-link:hover{ color: rgb(167, 167, 167);}
-</style>
+    #mypage_nav .nav-link{background-color: transparent; color: black;}
+    #mypage_nav .nav-link:hover{color: silver;}
+    #mypage_nav .nav-link:active{color: rgb(225, 225, 225);}
+     
+  </style>
+  
   <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
   <div class="container-fluid">
     <a class="navbar-brand" th:href="@{/main.do}">PetMall</a>
@@ -28,7 +30,7 @@
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/main.do}">Order</a>
+          <a class="nav-link" th:href="@{/user/mypage/orderList.do}">MyOrder</a>
         </li>
         
         <li class="nav-item">
@@ -67,4 +69,3 @@
 </html>
 
     
-

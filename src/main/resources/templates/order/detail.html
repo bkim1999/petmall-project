@@ -122,22 +122,36 @@
         <span id="total_price"></span>
     </div>
     
+    <input type="hidden" name="yourOrder" id="yourOrder">
     <input type="hidden" name="userNo" th:value="${session.user.userNo}">
     <button type="submit" id="btn_answer">주문하기</button>
 </form>
 
- <script th:inline="javascript">
-    
-    
-    
+<script th:inline="javascript">
+   // 주문번호 만들기
+   function createyourOrder(){
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      
+      let yourOrder = year + month + day;
+      for(let i=0;i<10;i++) {
+         yourOrder += Math.floor(Math.random() * 8);   
+      }
+      return yourOrder;
+   }
    function fnAnswer() {
        $(document).on('click', '#btn_answer', function(ev) {
+           
+           $('#yourOrder').val(createyourOrder());
            $('form').attr('method', 'post').submit();
        });
    }
-
   fnAnswer();
- </script>    
+  createyourOrder();
+  
+</script> 
  
   <div th:replace="~{/layout/footer::footer}"></div>
   

@@ -144,7 +144,7 @@ public class UserController {
     return "user/active";
   }
   
-  
+
  /* ******************************************************* */ 
   
   // 로그인 
@@ -308,6 +308,15 @@ public class UserController {
     return userService.getProfileImage(request);
   }
 
+  
+  //프로필 이미지 삭제
+  @ResponseBody
+  @PostMapping(value="/removeProfileImage.do", produces="application/json")
+  public void removeProfileImage(HttpServletRequest request) {
+  userService.removeProfileImage(request);
+  }
+  
+  //쿠키
   
   
 }

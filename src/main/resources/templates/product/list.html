@@ -120,6 +120,7 @@
   // 카테고리 버튼 클릭 시 data에서 카테고리번호 가져오기
   const fnGetCategoryProductList = () => {
     $(document).on('click', '.category', function(){
+      $('#product_list').empty();
       categoryNo = $(this).data('category-no');
       fnGetProductList();
     });
@@ -147,7 +148,6 @@
         }
         // 상품 목록이 있을 경우: 화면에 출력
         totalPage = resData.totalPage;
-        $('#product_list').empty();
         $.each(resData.productList, (i, product) => {
         	let str = '<div class="card product" data-product-no="' + product.productNo + '">';        	
         	str += '  <div class="product_thumbnail d-flex justify-content-center align-items-center">';
@@ -179,6 +179,7 @@
   // 검색 버튼 클릭 시 상품 목록 다시 가져오기
   const fnSearchProduct = () => {
     $(document).on('click', '#btn_search', function(){
+      $('#product_list').empty();
       fnGetProductList();
     });
   }
@@ -187,6 +188,7 @@
   const fnOrderProduct = () => {
     $(document).on('click', '.btn-check', function(){
       order = $(this).val();
+      $('#product_list').empty();
       fnGetProductList();
     });
   }
@@ -215,13 +217,25 @@
   }
 
   const fnAddProductResult = () => {
-    let addProductResult = /*[[${addProductResult}]]*/ '';  // '', 'true', 'false'
+    let addProductResult = /*[[${addProductResult}]]*/ null;  // '', true, false
     console.log(addProductResult)
     if(addProductResult !== null){
       if(addProductResult === true){
         alert('성공적으로 업로드 되었습니다.');
       } else {
         alert('업로드가 실패하였습니다.');
+      }
+    }
+  }
+  
+  const fnEditProductResult = () => {
+    let editProductResult = /*[[${editProductResult}]]*/ null;  // '', true, false
+    console.log(editProductResult)
+    if(editProductResult !== null){
+      if(editProductResult === true){
+        alert('성공적으로 수정되었습니다.');
+      } else {
+        alert('상품수정이 실패하였습니다.');
       }
     }
   }
