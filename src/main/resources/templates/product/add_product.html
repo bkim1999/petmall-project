@@ -524,6 +524,7 @@
       
       // 공백/초과인 입력칸이 있을 경우 submit 안함
       if($(".not-empty, #thumbnail_area, #product_images_area, .only-number").is(".is-invalid")){
+        alert('아직 작성되지 않았거나 잘못된 입력사항이 있습니다.')
         return;
       }
       

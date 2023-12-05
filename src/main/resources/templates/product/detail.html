@@ -201,7 +201,11 @@
     <h2>리뷰</h2>
     <div id="product_rating">
       <th:block th:if="${product.productRating != 0}">
-        이 상품의 평점: <span id="average_rating" th:text="${product.productRating}"></span>
+        이 상품의 평점: 
+        <span id="average_rating">
+          <th:block th:each="num:${#numbers.sequence(1, product.productRating)}">★</th:block><th:block th:each="num:${#numbers.sequence(1, 5 - product.productRating)}">☆</th:block>
+          <span th:text="${product.productRating}"></span>
+        </span>
       </th:block>
       <th:block th:if="${product.productRating == 0}">
         <span>아직 평점이 없습니다.</span>
@@ -358,9 +362,7 @@
         $.each(resData.reviewList, (i, review) => {
           let str = '<div class="review" data-review-no="' + review.reviewNo + '">';
           str += '<h4>';
-          for(let i = 0; i < review.reviewRating; i++){
-            str += '⭐';
-          }
+          str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '</h4>';
           str += '<div>' + review.userDto.name + '</div>'
           str += '<div class="review_thumbnail">';
