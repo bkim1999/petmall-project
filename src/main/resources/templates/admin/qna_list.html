@@ -8,11 +8,12 @@
   
   <div th:replace="~{/layout/header::header}"></div>
 
-  <div>Q&A 페이지에 오신것을 환영합니다.</div>
-
    <div>
     <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>
   </div>
+  
+  <div>Q&A 페이지에 오신것을 환영합니다.</div>
+
   
   <div th:text="|전체 문의글수 : ${qnaTotalCount}|"></div>
   <div th:text="|답변 완료된 문의글 수 : ${qnaAnswerCount}|"></div>
