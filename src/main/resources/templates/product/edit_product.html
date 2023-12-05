@@ -78,7 +78,7 @@
 <body>
   <div th:replace="~{layout/header :: header}"></div>
   <div id="wrapper">
-    <form id="frm_add_product" method="post" th:action="@{/product/editProduct.do}" enctype="multipart/form-data">
+    <form id="frm_edit_product" method="post" th:action="@{/product/editProduct.do}" enctype="multipart/form-data">
       <h1>상품 정보</h1>
       <div class="form-group">
         <label for="category_select" class="form-label mt-4">카테고리 선택</label>
@@ -482,8 +482,11 @@
   
     
   const fnCheckInput = () => {
-    $(document).on('keyup', '.ck-editor__editable', function(){
-      fnToggleValid($('.ck-editor'), $.trim($(this).html()) === '', ' * 필수 입력 항목입니다.');
+    $(document).on('change', $(editor), function() { 
+      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
+    });
+    $(document).on('keyup', $('.ck-editor__editable'), function() { 
+      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
     });
     $(document).on('keyup', '.not-empty', function(){
       fnToggleValid($(this), $.trim($(this).val()) === '', ' * 필수 입력 항목입니다.');
@@ -498,7 +501,7 @@
     $(document).on('click', '#btn_edit_product', function(){
       
       // ckeditor 빈칸인지 체크
-      fnToggleValid($('.ck-editor'), $.trim($('.ck-editor__editable').html()) === '', ' * 필수 입력 항목입니다.');
+      fnToggleValid($('.ck-editor'), $('.ck-editor__editable').has('figure').length === 0, ' * 이미지를 1개 이상 삽입해주세요.');
       
       // 필수항목 빈칸인지 체크
       $.each($('.not-empty'), (i, input) => {
