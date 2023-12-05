@@ -19,6 +19,7 @@
       <id column="USER_NO" property="userNo" />
       <result column="EMAIL" property="email"/>
       <result column="NAME"  property="name"/>
+      <result column="ADMIN_AUTHOR_STATE" property="adminAuthorState"/>
     </association>
   </resultMap>
 
@@ -166,13 +167,19 @@
 
 	<!-- 댓글조회 -->	 
     <select id="getCommentList" parameterType="int" resultMap="QnaMap">
-        SELECT Q.QNA_NO, Q.CONTENTS, Q.STATUS, Q.GROUP_NO, Q.DEPTH, U.USER_NO, U.EMAIL, U.NAME 
+        SELECT Q.QNA_NO, Q.CONTENTS, Q.STATUS, Q.GROUP_NO, Q.DEPTH, U.USER_NO, U.EMAIL, U.NAME
         FROM USER_T U, QNA_T Q
         WHERE U.USER_NO = Q.USER_NO       
         AND Q.GROUP_NO = #{groupNo}
         AND Q.STATUS =1
         AND Q.DEPTH =1
     </select> 	 
+    
+    <update id="updateQna" parameterType="qnaDto">
+		UPDATE QNA_T
+		  SET CHECK_FLAG = 1
+		 WHERE QNA_NO = #{qna_no} 
+	</update>
   
 </mapper>
 

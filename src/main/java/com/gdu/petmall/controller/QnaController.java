@@ -69,7 +69,8 @@ public class QnaController {
   
   // Q&A 문의글 답변 추가 기능
   @PostMapping("/user/qnadetail/addReply.do")
-  public String addReply(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+  public String addReply(@RequestParam(value="qnaNo", required=false, defaultValue="0")int QnaNo
+		  				,HttpServletRequest request, RedirectAttributes redirectAttributes ) throws Exception {
       int addReplyResult = qnaService.addReply(request, redirectAttributes);
       redirectAttributes.addFlashAttribute("addReplyResult", addReplyResult);
       return "redirect:/user/myPostList";
