@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dto.CategoryDto;
+import com.gdu.petmall.dto.EventDto;
 import com.gdu.petmall.dto.ProductDto;
 import com.gdu.petmall.dto.ProductImageDto;
 import com.gdu.petmall.dto.ProductOptionDto;
@@ -90,9 +91,14 @@ public class ProductServiceImpl implements ProductService {
     
     // 상품 목록 DB에 요청(map 전달)
     List<ProductDto> productList = productMapper.getProductList(map);
+    
+    // 현재 진행중인 이벤트 정보
+    EventDto event = productMapper.getCurrentEvent();
+    
     // Map에 담아 반환(상품 목록, 총 페이지수) 
     return Map.of("productList", productList
-                , "totalPage", myPageUtils.getTotalPage());
+                , "totalPage", myPageUtils.getTotalPage()
+                , "event", event);
     
   }
   
@@ -102,10 +108,14 @@ public class ProductServiceImpl implements ProductService {
     ProductDto product = productMapper.getProduct(productNo);
     List<ProductOptionDto> optionList = productMapper.getOptionList(productNo);
     List<ProductImageDto> imageList = productMapper.getProductImageList(Map.of("productNo", productNo));
+    EventDto event = productMapper.getCurrentEvent();
     
     model.addAttribute("product", product);
     model.addAttribute("optionList", optionList);
     model.addAttribute("imageList", imageList);
+    model.addAttribute("event", event);
+    
+    productMapper.updateProductHit(productNo);
   }
   
   @Override
