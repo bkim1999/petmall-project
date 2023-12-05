@@ -129,9 +129,10 @@
     
   	<!-- 답변이 필요한 게시글 전체 조회  -->  
 	   <select id="qnaTotalCount" resultType="int">
-	    SELECT COUNT (*)
-	     FROM QNA_T
-	    WHERE DEPTH =0
+        SELECT COUNT(CHECK_FLAG)
+        FROM QNA_T
+        WHERE CHECK_FLAG= 1
+          AND TITLE IS NOT NULL
 	   </select>
   
  	<!-- 전체 게시글 순서조회 --> 
