@@ -157,4 +157,19 @@
      WHERE EVENT_NO = #{eventNo}
   </delete>
   
+  <select id="getEventImageInYesterday" resultType="eventImageDto">
+     SELECT E.EVENT_NO, E.EVENT_THUMNAIL_URL, E.STATE, I.FILESYSTEM_NAME,E.END_AT, I.PATH 
+       FROM EVENT_T E LEFT OUTER JOIN EVENT_IMAGE_T I
+         ON E.EVENT_NO = I.EVENT_NO
+      WHERE E.STATE = 0
+        AND I.PATH LIKE '/event/' || TO_CHAR(SYSDATE -1,'YYYY/MM/DD') ||'%'
+        AND E.END_AT = TO_CHAR(SYSDATE -1, 'YYYY/MM/DD')
+  </select>
+  
+  <update id="autoEnd">
+     UPDATE EVENT_T
+        SET STATE = 0
+      WHERE END_AT = TO_CHAR(SYSDATE -1,'YYYY/MM/DD')
+  </update>
+  
 </mapper>

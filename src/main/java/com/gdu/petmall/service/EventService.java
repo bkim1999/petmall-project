@@ -20,4 +20,6 @@ public interface EventService {
   public Map<String, Object> changePercent(HttpServletRequest request);
   public Map<String, Object> changePrice(HttpServletRequest request);
   public void updateDetailEvent(MultipartHttpServletRequest multipartRequest, Model model) throws Exception;
+  public void eventImageBatch();
+  public void eventAutoEnd();
 }

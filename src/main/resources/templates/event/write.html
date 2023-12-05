@@ -82,14 +82,14 @@
       
       <div>
         <label id="discountPercent">할인율</label>
-        <input type="text" name="discountPercent" id="discountPercent" value="0">
+        <input type="text" class="discountPercent" name="discountPercent" id="discountPercent" value="0">
       </div>
       
       <hr>
       
       <div>
         <label id="discountPrice">할인가</label>
-        <input type="text" name="discountPrice" id="discountPrice" value="0">
+        <input type="text" class="discountPrice" name="discountPrice" id="discountPrice" value="0">
       </div>
       
       <hr>
@@ -294,6 +294,7 @@ const fnCkeditor = () => {
       } 
     })
   }
+  
   function priceChecking() {
     $(document).on('keyup', '.discountPrice', function(ev){
       let Check = /^[0-9]{1,100}$/g;

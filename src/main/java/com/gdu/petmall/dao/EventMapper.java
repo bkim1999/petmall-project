@@ -26,4 +26,6 @@ public interface EventMapper {
   public int updateDetailEvent(EventDto eventDto);
   public int updateImageEvent(EventImageDto eventImageDto);
   public int deleteEventImage(int eventNo);
+  public List<EventImageDto> getEventImageInYesterday();
+  public int autoEnd();
 }
