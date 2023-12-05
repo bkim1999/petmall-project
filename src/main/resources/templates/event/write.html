@@ -95,6 +95,7 @@
       <hr>
       
       <div>
+        <input type="hidden" name="state" class="makeState" >
         <input type="button" value="작성완료" class="btn btn-danger eventadd">
       </div>
       
@@ -108,6 +109,22 @@
   
   
 <script th:inline="javascript">
+  
+  
+  function makingstate() {
+      let today = new Date();
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      let date = String(today.getDate()).padStart(2,"0");  // 날짜
+      let full = year+'-'+month+'-'+date;
+      let withoutfull = (full).replaceAll('-','');
+      
+      if($('.startAt').val().replaceAll('-','') - withoutfull > 0){
+        $('.makeState').val(2);
+      } else {
+        $('.makeState').val(1);
+      }
+  }
   
   var titleValue = $('#title').val();
   
@@ -235,7 +252,7 @@
         $('.discountPrice').val(0);
       }
       
-      
+      makingstate();
       $('#frm_event_write').submit();
       
       

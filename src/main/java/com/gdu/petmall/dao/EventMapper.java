@@ -24,8 +24,8 @@ public interface EventMapper {
   public int changeDiscountPercent(Map<String, Object> map);
   public int changeDiscountPrice(Map<String, Object> map);
   public int updateDetailEvent(EventDto eventDto);
-  public int updateImageEvent(EventImageDto eventImageDto);
   public int deleteEventImage(int eventNo);
   public List<EventImageDto> getEventImageInYesterday();
   public int autoEnd();
+  public int autoStart();
 }

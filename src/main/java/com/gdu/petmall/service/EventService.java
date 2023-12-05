@@ -22,4 +22,6 @@ public interface EventService {
   public void updateDetailEvent(MultipartHttpServletRequest multipartRequest, Model model) throws Exception;
   public void eventImageBatch();
   public void eventAutoEnd();
+  public void eventAutoStart();
+  
 }

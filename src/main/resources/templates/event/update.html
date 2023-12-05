@@ -53,7 +53,6 @@
       <div>
         <input type="hidden" name="eventNo" th:value="${event.eventNo}">
         <input type="hidden" name="hit" th:value="${event.hit}">
-        <input type="hidden" name="state" th:value="${event.state}">
       </div>
       
       <div class="form_wrap">
@@ -78,9 +77,9 @@
       
       <div>
         <label id="startAt">시작일</label>
-        <input type="date" name="startAt"  class="startAt" th:value="${event.startAt}">
+        <input type="date" name="startAt"  class="startAt">
         <label id="endAt">종료일</label>
-        <input type="date" name="endAt" class="endAt" th:value="${event.endAt}">
+        <input type="date" name="endAt" class="endAt">
       </div>
       
       <hr>
@@ -100,6 +99,7 @@
       <hr>
       
       <div>
+        <input type="hidden" name="state" class="updateMakeState">
         <input type="button" value="수정완료" class="btn btn-danger event_update">
       </div>
       
@@ -113,6 +113,23 @@
   
   
 <script th:inline="javascript">
+  
+  
+   function updatemakingstate() {
+      let today = new Date();
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      let date = String(today.getDate()).padStart(2,"0");  // 날짜
+      let full = year+'-'+month+'-'+date;
+      let withoutfull = (full).replaceAll('-','');
+      let startDate = $('.startAt').val().replaceAll('-','');
+      
+      if( startDate - withoutfull > 0){
+          $('.updateMakeState').val(2);
+        } else {
+          $('.updateMakeState').val(1);
+        }
+     }
   
   var titleValue = $('#title').val();
   
@@ -161,7 +178,6 @@
       let startDate = $('.startAt').val().replaceAll('-','');
       let endDate = $('.endAt').val().replaceAll('-','');
       
-      console.log(endDate);
       
       let today = new Date();   
       let year = today.getFullYear(); // 년도
@@ -226,6 +242,10 @@
   function updateevent(){
     $(document).on('click', '.event_update', function(ev) {
       
+      updatemakingstate();
+      console.log($('.startAt').val());
+      console.log($('.startAt').val().replaceAll('-',''));
+      
       if($('#title').val() == '') {
         alert('제목 입력은 필수 입니다.');
         $('#title').focus();
@@ -262,6 +282,8 @@
         $('.discountPrice').val(0);
       }
       
+
+
       
       $('#frm_event_update').submit();
       

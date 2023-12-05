@@ -151,6 +151,8 @@ public class EventServiceImpl implements EventService {
     int discountPercent = Integer.parseInt(multipartRequest.getParameter("discountPercent"));
     int discountPrice = Integer.parseInt(multipartRequest.getParameter("discountPrice"));
     String contextPath = request.getContextPath();
+    int state = Integer.parseInt(multipartRequest.getParameter("state"));
+    
     
     List<MultipartFile> event_images = multipartRequest.getFiles("event_images");
     
@@ -169,7 +171,6 @@ public class EventServiceImpl implements EventService {
       for(MultipartFile multipartFile : files) {
       
       if(multipartFile != null && !multipartFile.isEmpty()) {
-        LocalDate today = LocalDate.now();
         String imagePath = "/event/" + endAt;
         File dir = new File(imagePath);
         if(!dir.exists()) {
@@ -206,6 +207,7 @@ public class EventServiceImpl implements EventService {
                                     .eventThumnailUrl(evntTHumnailUrl)
                                     .startAt(startAt)
                                     .endAt(endAt)
+                                    .state(state)
                                     .build();
         
        eventMapper.insertEventWrite(eventDto);
@@ -340,6 +342,9 @@ public class EventServiceImpl implements EventService {
     int discountPrice = Integer.parseInt(multipartRequest.getParameter("discountPrice"));
     String contextPath = multipartRequest.getContextPath();
     int eventNo = Integer.parseInt(multipartRequest.getParameter("eventNo"));
+    int state = Integer.parseInt(multipartRequest.getParameter("state"));
+    
+    System.out.println("*********************"+state+"**************");
     
     List<MultipartFile> event_images = multipartRequest.getFiles("event_images");
     
@@ -396,9 +401,21 @@ public class EventServiceImpl implements EventService {
                                     .eventThumnailUrl(evntTHumnailUrl)
                                     .startAt(startAt)
                                     .endAt(endAt)
+                                    .state(state)
                                     .build();
         
-       eventMapper.updateDetailEvent(eventDto);
+        eventMapper.updateDetailEvent(eventDto);
+
+
+        EventImageDto eventSdto = EventImageDto.builder()
+                                    .eventNo(eventNo)
+                                    .FilesystemName(filesystemName)
+                                    .originalFilename(originalFilename)
+                                    .path(evntTHumnailUrl)
+                                    .build();
+
+
+        eventMapper.insertEventImage(eventSdto);
        
        
       
@@ -437,9 +454,6 @@ public class EventServiceImpl implements EventService {
                                                      .originalFilename(event_originalFilename)
                                                      .FilesystemName(event_filesystemName)
                                                      .build();
-          
-          
-           
           
            eventMapper.insertEventImage(eventImageDto);
           
@@ -490,7 +504,13 @@ public class EventServiceImpl implements EventService {
   public void eventAutoEnd() {
     eventMapper.autoEnd();
   }
-      
+  
+  @Override
+  public void eventAutoStart() {
+    eventMapper.autoStart();
+  }
+  
+  
       
       
 }

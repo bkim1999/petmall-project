@@ -81,7 +81,7 @@
         , #{title}
         , #{contents}
         , 0
-        , 1
+        , #{state}
         , #{eventThumnailUrl}
         , #{discountPercent}
         , #{discountPrice}
@@ -134,22 +134,15 @@
        SET TITLE = #{title}
         ,  CONTENTS = #{contents}
         ,  HIT = #{hit}
-        ,  STATE = #{state}
         ,  EVENT_THUMNAIL_URL = #{eventThumnailUrl}
         ,  DISCOUNT_PERCENT = #{discountPercent}
         ,  DISCOUNT_PRICE = #{discountPrice}
         ,  START_AT = #{startAt}
         ,  END_AT = #{endAt}
+        ,  STATE = #{state}
      WHERE EVENT_NO = #{eventNo}
   </update>
   
-  <update id="updateImageEvent" parameterType="eventImageDto">
-    UPDATE EVENT_IMAGE_T
-       SET PATH = #{path}
-         , ORIGINAL_FILENAME = #{originalFilename}
-         , FILESYSTEM_NAME = #{filesystemName}
-     WHERE EVENT_NO = #{eventNo}
-  </update>
   
   <delete id="deleteEventImage" parameterType="int">
     DELETE 
@@ -171,5 +164,12 @@
         SET STATE = 0
       WHERE END_AT = TO_CHAR(SYSDATE -1,'YYYY/MM/DD')
   </update>
+  
+  <update id="autoStart">
+     UPDATE EVENT_T
+        SET STATE = 1
+      WHERE END_AT = TO_CHAR(SYSDATE,'YYYY/MM/DD')
+  </update>
+  
   
 </mapper>

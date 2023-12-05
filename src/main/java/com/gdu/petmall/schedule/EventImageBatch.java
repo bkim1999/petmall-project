@@ -13,14 +13,19 @@ public class EventImageBatch {
     
   private final EventService eventService;
   
-  @Scheduled(cron="0 1 0 1/1 * ?")
+  @Scheduled(cron="0 2 0 1/1 * ?")
   public void execute() {
     eventService.eventImageBatch();
   }
   
   @Scheduled(cron="0 0 0 1/1 * ?")
-  public void executes() {
+  public void executesAutoEnd() {
     eventService.eventAutoEnd();
+  }
+  
+  @Scheduled(cron="0 0 0 1/1 * ?")
+  public void executesAutoStart() {
+    eventService.eventAutoStart();
   }
   
 }

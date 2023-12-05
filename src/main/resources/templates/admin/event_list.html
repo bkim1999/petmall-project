@@ -40,9 +40,12 @@
   <div th:replace="~{/layout/header::header}"></div>
   
   <div class="nav_event_list">
+    <div><h1>EVENT관리</h1></div>
+    <hr>
     <button type="button" class="btn btn-light btn_write">이벤트 추가하기</button>
     <a th:href="@{/admin/admin.go}"><input type="button" class="btn btn-dark" value="관리자페이지돌아가기"></a> 
   </div>
+  <hr>
   
   <div class="table_wrap">
   <table border="1" class="table table-hover table_font">  
@@ -108,11 +111,14 @@
     	   str +='</form>';
     	   str +='</div>';
     	   str +='</td>';
-		   if(event.state === 1){
-	    	str +='<td class="td_font">이벤트 진행중</td>'; 			   
-		   }
+    	   if(event.state === 2){
+          str+='<td class="td_font">이벤트 대기중</td>';
+         }
+		     if(event.state === 1){
+	    	  str +='<td class="td_font">이벤트 진행중</td>'; 			   
+		     }
     	   if(event.state === 0){
-    		str +='<td class="td_font">이벤트 종료</td>';   
+    		  str +='<td class="td_font">이벤트 종료</td>';   
     	   }
     	   str +='<td class="td_font">';
     	   str +='<input style="width: 100px; font-size: 12px;" type="button" class="btn_event_update btn btn-warning" value="수정하기">';
