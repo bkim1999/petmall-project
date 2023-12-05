@@ -158,7 +158,8 @@ import lombok.RequiredArgsConstructor;
            int userNo = getLoggedInUserNo(request);
            int depth = Integer.parseInt(request.getParameter("depth"));
            int groupNo = Integer.parseInt(request.getParameter("groupNo"));
-
+           int qna
+           
            String contents = request.getParameter("contents");
 
            qnaMapper.getQna(groupNo);
@@ -174,6 +175,7 @@ import lombok.RequiredArgsConstructor;
                    .groupNo(groupNo)  
                    .build();
            int addReplyResult = qnaMapper.insertReply(reply);
+           qnaMapper.getQna(groupNo);
            return addReplyResult;
        }
        

@@ -173,6 +173,13 @@
         AND Q.STATUS =1
         AND Q.DEPTH =1
     </select> 	 
+  	
+  	    
+    <update id="updateQna" parameterType="int">
+		UPDATE QNA_T
+		  SET CHECK_FLAG = 1
+		 WHERE QNA_NO = #{qna_no} 
+	</update>
   
 </mapper>
 
