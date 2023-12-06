@@ -69,8 +69,6 @@ public class ReviewServiceImpl implements ReviewService {
     opt = Optional.ofNullable(request.getParameter("order"));
     String order = opt.orElse("REVIEW_MODIFIED_AT");
     
-    System.out.println("here!");
-    
     Map<String, Object> map = Map.of("userNo", userNo
                                    , "order", order
                                    , "begin", myPageUtils.getBegin()
@@ -139,7 +137,28 @@ public class ReviewServiceImpl implements ReviewService {
     
     return (addReviewResult == 1) && (reviewImages.size() == attachCount);
       
+  }
+  
+  @Override
+  public Map<String, Object> loadNotReviewedList(HttpServletRequest request) {
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int notReviewedCount = reviewMapper.getNotReviewedCount(userNo);
+    int display = 10;
+    myPageUtils.setPaging(page, notReviewedCount, display);
+    opt = Optional.ofNullable(request.getParameter("order"));
+    String order = opt.orElse("ORDER_DATE");
     
+    Map<String, Object> map = Map.of("userNo", userNo
+                                   , "order", order
+                                   , "begin", myPageUtils.getBegin()
+                                   , "end", myPageUtils.getEnd());
+    
+    List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
+    System.out.println("here!!!: " + notReviewedList);
+    return Map.of("notReviewedList", notReviewedList
+                , "paging", myPageUtils.getAjaxPaging());
   }
   
   
