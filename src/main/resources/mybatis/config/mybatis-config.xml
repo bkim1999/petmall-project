@@ -23,6 +23,7 @@
     <typeAlias alias="CartDto" type="com.gdu.petmall.dto.CartDto" />
     <typeAlias alias="CartOptionListDto" type="com.gdu.petmall.dto.CartOptionListDto" />
     <typeAlias alias="FaqDto" type="com.gdu.petmall.dto.FaqDto" />
+    <typeAlias alias="FaqCategoryDto" type="com.gdu.petmall.dto.FaqCategoryDto" />
     <typeAlias alias="OrderDto" type="com.gdu.petmall.dto.OrderDto" />
     <typeAlias alias="OrderDetailDto" type="com.gdu.petmall.dto.OrderDetailDto" />
     <typeAlias alias="EventDto" type="com.gdu.petmall.dto.EventDto" />
