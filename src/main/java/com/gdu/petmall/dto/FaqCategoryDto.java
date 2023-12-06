@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class FaqCategoryDto {
 
   private int faqCategoryNo;
-  private String faqCategoryName;
+  private String faqCategoryName; 
   
   
 }

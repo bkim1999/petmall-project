@@ -11,9 +11,12 @@ public interface FaqService {
   public void getFaqList(HttpServletRequest request, Model model);
   public void adminList(HttpServletRequest request, Model model);
   public void getSearchList(HttpServletRequest request, Model model);
+  
   public int addFaq(HttpServletRequest request);
   public int removeFaq(int faqNo);
+  
   public Map<String, Object> modifyList(HttpServletRequest request);
+  
   public Map<String, Object> getloadCategoryList();
   public Map<String, Object> getloadFaqCategoryList();
   

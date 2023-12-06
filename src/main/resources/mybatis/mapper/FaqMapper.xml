@@ -19,7 +19,15 @@
         <id     column="CATEGORY_NO"       property="categoryNo" />
         <result column="CATEGORY_NAME"     property="categoryName" />
       </association>
+      <association  javaType="faqCategoryDto" property="faqcategoryDto">
+        <id     column="FAQ_CATEGORY_NO"       property="faqCategoryNo" />
+        <result column="FAQ_CATEGORY_NAME"     property="faqCategoryName" />
+      </association>
   </resultMap>
+  
+  
+  
+  
 
 
   <select id="getFaqCount" resultType="int">
@@ -64,30 +72,6 @@
               FROM FAQ_T)         
      WHERE RN BETWEEN #{begin} AND #{end}
   </select> 
-  
-  <insert id="insertFaq" parameterType="FaqDto">
-    INSERT INTO FAQ_T (
-                FAQ_NO
-              , CATEGORY_NO
-              , FAQ_NAME
-              , FAQ_TITLE
-              , FAQ_CONTENTS
-              , STATUS
-              , DEPTH
-              , GROUP_NO
-              , GROUP_ORDER
-    ) VALUES (
-        FAQ_SEQ.NEXTVAL
-      , #{categoryDto.categoryNo}
-      , (SELECT CATEGORY_NAME FROM CATEGORY_T WHERE CATEGORY_NO = #{categoryDto.categoryNo})
-      , #{faqTitle}
-      , #{faqContents}
-      , 1
-      , 0
-      , FAQ_SEQ.CURRVAL
-      , 0
-              )
-  </insert>
   
   <select id="getSearchCount" parameterType="Map" resultType="int">
     SELECT COUNT(*)
@@ -134,6 +118,57 @@
      WHERE FAQ_NO = #{faqNo}
   </update>
   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+      <insert id="insertFaq" parameterType="FaqDto">
+    INSERT INTO FAQ_T (
+    FAQ_NO,
+    CATEGORY_NO,
+    FAQ_CATEGORY_NO,
+    FAQ_NAME,
+    FAQ_TITLE,
+    FAQ_CONTENTS,
+    STATUS,
+    DEPTH,
+    GROUP_NO,
+    GROUP_ORDER
+) VALUES (
+    FAQ_SEQ.NEXTVAL,
+    #{categoryDto.categoryNo},
+    #{faqCategoryDto.faqCategoryNo},
+    (
+        SELECT CATEGORY_NAME FROM CATEGORY_T WHERE CATEGORY_NO = #{categoryDto.categoryNo}
+    ) || (
+        SELECT FAQ_CATEGORY_NAME FROM FAQ_CATEGORY_T WHERE FAQ_CATEGORY_NO = #{faqCategoryDto.faqCategoryNo}
+    ),
+    #{faqTitle},
+    #{faqContents},
+    1,
+    0,
+    FAQ_SEQ.CURRVAL,
+    0
+)
+   </insert>
+   
+   
+   
+   
+   
    
    
   
