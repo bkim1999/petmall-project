@@ -7,21 +7,28 @@
 	
   <resultMap type="ReviewDto" id="ReviewMap">
     <id     column="REVIEW_NO"          property="reviewNo" />
-    <result column="OPTION_NO"          property="optionNo" />
     <result column="REVIEW_TITLE"       property="reviewTitle" />
     <result column="REVIEW_CONTENTS"    property="reviewContents" />
     <result column="REVIEW_RATING"      property="reviewRating" />
     <association javaType="UserDto"  property="userDto">
-      <id     column="USER_NO"             property="userNo" />
-      <result column="EMAIL"               property="email" />
-      <result column="NAME"                property="name" /> 
-      <result column="GENDER"              property="gender" />
+      <id     column="USER_NO"       property="userNo" />
+      <result column="EMAIL"         property="email" />
+      <result column="NAME"          property="name" /> 
+      <result column="GENDER"        property="gender" />
+    </association>
+    <association javaType="ProductOptionDto"  property="productOptionDto">
+      <id     column="OPTION_NO"              property="optionNo" />
+      <result column="OPTION_NAME"            property="optionName" />
+    </association>
+    <association javaType="ProductDto"  property="productDto">
+      <id     column="PRODUCT_NO"       property="productNo" />
+      <result column="PRODUCT_NAME"     property="productName" />
     </association>
     <association javaType="ProductImageDto"  property="reviewImageDto">
       <id     column="IMAGE_CODE"            property="imageCode" />
       <result column="POSITION"              property="position" />
       <result column="PATH"                  property="path" />
-      <result column="FILESYSTEM_NAME"      property="filesystemName" />
+      <result column="FILESYSTEM_NAME"       property="filesystemName" />
     </association>
   </resultMap>
   
@@ -32,11 +39,32 @@
   </select>
   
   <select id="getProductReviewList" parameterType="Map" resultMap="ReviewMap">
-    SELECT A.REVIEW_NO, A.OPTION_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.USER_NO, A.EMAIL, A.NAME, A.GENDER, RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
-      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, R.REVIEW_NO, R.OPTION_NO, R.REVIEW_TITLE, R.REVIEW_CONTENTS, R.REVIEW_RATING, R.REVIEW_CREATED_AT, R.REVIEW_MODIFIED_AT, U.USER_NO, U.EMAIL, U.NAME, U.GENDER 
+    SELECT A.REVIEW_NO, A.OPTION_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.USER_NO, A.EMAIL, A.NAME, A.GENDER, A.OPTION_NAME, RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, R.REVIEW_NO, R.OPTION_NO, R.REVIEW_TITLE, R.REVIEW_CONTENTS, R.REVIEW_RATING, R.REVIEW_CREATED_AT, R.REVIEW_MODIFIED_AT, U.USER_NO, U.EMAIL, U.NAME, U.GENDER
+                 , (SELECT OPTION_NAME FROM PRODUCT_OPTION_T O WHERE O.OPTION_NO = R.OPTION_NO) AS OPTION_NAME
               FROM REVIEW_T R LEFT OUTER JOIN USER_T U
                 ON R.USER_NO = U.USER_NO
              WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>)
+             ) A LEFT OUTER JOIN PRODUCT_IMAGE_T RI
+        ON RI.IMAGE_CODE = 'review_' || A.REVIEW_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getUserReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM REVIEW_T
+     WHERE USER_NO = #{userNo}
+  </select>
+  
+  <select id="getUserReviewList" parameterType="Map" resultMap="ReviewMap">
+    SELECT A.REVIEW_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.PRODUCT_NO, A.PRODUCT_NAME, A.OPTION_NO, A.OPTION_NAME, RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, R.REVIEW_NO, R.REVIEW_TITLE, R.REVIEW_CONTENTS, R.REVIEW_RATING, R.REVIEW_CREATED_AT, R.REVIEW_MODIFIED_AT
+                 , O.OPTION_NO, O.OPTION_NAME
+                 , (SELECT PRODUCT_NO FROM PRODUCT_T P WHERE P.PRODUCT_NO = O.PRODUCT_NO) AS PRODUCT_NO
+                 , (SELECT PRODUCT_NAME FROM PRODUCT_T P WHERE P.PRODUCT_NO = O.PRODUCT_NO) AS PRODUCT_NAME
+              FROM PRODUCT_OPTION_T O INNER JOIN REVIEW_T R
+                ON O.OPTION_NO = R.OPTION_NO
+             WHERE USER_NO = ${userNo}
              ) A LEFT OUTER JOIN PRODUCT_IMAGE_T RI
         ON RI.IMAGE_CODE = 'review_' || A.REVIEW_NO
      WHERE A.RN BETWEEN #{begin} AND #{end}

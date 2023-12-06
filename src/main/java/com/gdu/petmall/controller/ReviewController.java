@@ -30,13 +30,25 @@ public class ReviewController {
   @ResponseBody
   @GetMapping(value="/getReviewList.do", produces="application/json")
   public Map<String, Object> loadReviewList(HttpServletRequest request){
-    return reviewService.loadReviewList(request);
+    return reviewService.loadProductReviewList(request);
+  }
+  
+  @GetMapping(value="/list.do")
+  public String list() {
+    return "/review/list";
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/getMyReviewList.do", produces="application/json")
+  public Map<String, Object> loadMyReviewList(HttpServletRequest request){
+    System.out.println("here!");
+    return reviewService.loadUserReviewList(request);
   }
   
   @GetMapping(value="/addReview.form")
   public String addReviewForm(int productNo, int optionNo, String productName, String optionName, Model model) {
-    model.addAttribute("productNo", productNo);
     model.addAttribute("optionNo", optionNo);
+    model.addAttribute("productNo", productNo);
     model.addAttribute("productName", productName);
     model.addAttribute("optionName", optionName);
     return "/review/add_review";

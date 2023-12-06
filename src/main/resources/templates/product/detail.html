@@ -337,6 +337,9 @@
     })
   }
   
+  
+  // 상품명
+  var productName = /*[[${product.productName}]]*/ '상품명이 없습니다.';
   var page = 1;
   var order = 'REVIEW_CREATED_AT';
   const fnGetReviewList = () => {
@@ -364,16 +367,20 @@
           str += '<h4>';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '</h4>';
-          str += '<div>' + review.userDto.name + '</div>'
-          str += '<div class="review_thumbnail">';
+          str += '<div>' + review.userDto.name + '  ' + review.reviewModifiedAt + '</div>';
+          str += '<div>상품명: ' + productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
+          str += '<div class="d-flex">'
+          str += '  <div class="w-100">'
+          str += '    <h5 class="review_title">' + review.reviewTitle + '</h5>'
+          str += '    <div class="review_contents">' + review.reviewContents + '</div>';
+          str += '  </div>'
+          str += '  <div class="review_thumbnail">';
           if(review.reviewImageDto !== null){
-            str += '  <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+            str += '    <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
           } else {
-            str += '  <image src="기본이미지">';
+            str += '    <image src="기본이미지">';
           }
-          str += '</div>';
-          str += '<h5 class="review_title">' + review.reviewTitle + '</h5>'
-          str += '<div class="review_contents">' + review.reviewContents + '</div>';
+          str += '  </div>';
           str += '</div>';
           $('#review_list').append(str);
         });
