@@ -166,7 +166,6 @@ import lombok.RequiredArgsConstructor;
 
            int replyDepth = depth + 1;
            
-
            QnaDto reply = QnaDto.builder()
                    .contents(contents)
                    .depth(replyDepth)

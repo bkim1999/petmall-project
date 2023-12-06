@@ -26,6 +26,7 @@
 				        <input type="hidden" name="productNo" th:value="${qna.productNo}">
 				        <input type="hidden" name="title" th:value="${qna.title}">
 				        <input type="hidden" name="contents" th:value="${qna.contents}">
+				        <input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}">
 				    </form>
 				</div>
 		
@@ -80,10 +81,9 @@
     <hr>
 	
 		<!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
-		<h5>답변, 추가 문의사항 작성하기</h5>
 		
-		<div class="blind write_tr">
-		  <div>
+		  <div class= "admin">
+			<h5>답변, 추가 문의사항 작성하기</h5>
 		    <c:set var="groupNo" value="${param.groupNo}" />
 		    <form method="post" th:action="@{/user/qnadetail/addReply.do}"enctype="multipart/form-data">
 		      <div class="input-group mb-3">
@@ -102,7 +102,6 @@
 		      </div>
 		    </form>
 		  </div>
-		</div>
 
 
     <hr>
@@ -158,6 +157,15 @@
         });
       };
        
+      const fnState = () => {
+		var state =  $('#state').val();
+		if(state ==1)
+		{
+			$('.admin').show();
+		}else{
+			$('.admin').hide();
+		}
+	  };
       
 
       $(document).ready(function () {
@@ -165,6 +173,7 @@
         fnAddReplyResult();
         fnAddReply();
         fnDownload();
+        fnState();
       });
     </script>
 
