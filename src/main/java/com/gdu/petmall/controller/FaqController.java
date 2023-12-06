@@ -1,5 +1,6 @@
 package com.gdu.petmall.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,18 +26,26 @@ public class FaqController {
   @GetMapping(value="/faq/list.do")
   public String faqList(HttpServletRequest request, Model model) {
     faqService.getFaqList(request, model);
+    model.addAttribute("categoryList", faqService.getloadCategoryList());
+    model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList());
+    System.out.println("사용자:" + model);
     return "/faq/list";
   }
  
   @GetMapping(value="/faq/write.do")
   public String faqWrite(HttpServletRequest request, Model model) {
     faqService.adminList(request, model);
+    model.addAttribute("categoryList", faqService.getloadCategoryList());
+    model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList());
+    System.out.println("관리자:" + model);
     return "/faq/write";
   }
+ 
   
   @PostMapping(value="/faq/add.do")
   public String add(HttpServletRequest request, RedirectAttributes redirectAttributes) {
     int addResult = faqService.addFaq(request);
+    System.out.println("addResult" + addResult);
     redirectAttributes.addFlashAttribute("addResult", addResult);
     return "redirect:/faq/write.do";
   }

@@ -14,7 +14,8 @@ public interface FaqService {
   public int addFaq(HttpServletRequest request);
   public int removeFaq(int faqNo);
   public Map<String, Object> modifyList(HttpServletRequest request);
-  
+  public Map<String, Object> getloadCategoryList();
+  public Map<String, Object> getloadFaqCategoryList();
   
   
 }
