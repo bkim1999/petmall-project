@@ -52,4 +52,7 @@ public interface QnaMapper {
     
     // 댓글 갱신 flag
     public int updateQna(int qnaNo);
+    
+    public List<QnaDto> confirmAnswer(int checkFlag);
+
 }
