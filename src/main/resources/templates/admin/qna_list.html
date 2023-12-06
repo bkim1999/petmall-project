@@ -11,13 +11,14 @@
     font-size: 30px;
     line-height: 50px;
     justify-content: space-between;
-    padding-left: 60px;
-    padding-right: 60px;
+    padding-left: 310px;
+    padding-right: 250px;
     margin-bottom: 30px;
     margin-top: 30px;
+    position: relative;
   }
-  .answerWrap {
-    color: #E0C891;
+  .nav_qna_list{
+    text-align: center;
   }
   
 </style>
@@ -27,8 +28,8 @@
   <div th:replace="~{/layout/header::header}"></div>
 
   
-  <div>
-    <h1>Q&A 페이지에 오신것을 환영합니다.</h1>
+  <div class="nav_qna_list">
+    <h1>Q&A 관리</h1>
     <hr>
     <a th:href="@{/admin/admin.go}">
       <input type="button" class="btn btn-light" value="관리자페이지돌아가기">
@@ -42,7 +43,7 @@
       <input type="button" class="btn btn-light getAllList" th:value="|전체 문의글수 : ${qnaTotalCount}|">
     </div>
      <div value="1">
-      <input type="button" class="btn btn-light" th:value="|답변 완료된 문의글 수 : ${qnaAnswerCount}|">
+      <input type="button" class="btn btn-light getAnswerList" th:value="|답변 완료된 문의글 수 : ${qnaAnswerCount}|">
      </div>
     <div value="0">
       <input type="button" class="btn btn-light" th:value="|미답변된 문의글 수 : ${qnaNonAnswerCount}|">
@@ -84,7 +85,12 @@
        <th:block th:if="${qna.title == 6}">
          <td value="6">[기타] 기타문의</td>
        </th:block>
-       <td th:text="${qna.contents}"></td>
+       <th:block th:if="${qna.contents == null}">
+        <td>(내용 없음)</td>
+       </th:block>
+       <th:block th:if="${qna.contents != null}">
+        <td th:text="${qna.contents}"></td>
+       </th:block>
        <td th:text="${qna.createdAt}"></td>
        <td th:text="${qna.userDto.name}"></td>
        <th:block th:if="${qna.checkFlag == 1}">
@@ -150,7 +156,12 @@
           if(qnaList.title === 6){
             str +='<td value="6">[기타] 기타문의</td>';
           }
-          str += '<td>'+qnaList.contents+'</td>';
+          if(qnaList.contents === null){
+            str +='<td>(내용 없음)</td>'
+          }
+          if(qnaList.contents !== null) {
+            str += '<td>'+qnaList.contents+'</td>';
+          }
           str += '<td>'+qnaList.createdAt+'</td>';
           str += '<td>'+qnaList.userDto.name+'</td>';
           if(qnaList.checkFlag === 1){
@@ -176,6 +187,26 @@
       })
     })
   }
+  
+  function getAnswerList() {
+    $(document).on('click', '.getAnswerList', function(ev){
+      $('#qna_list').empty();
+      $.ajax({
+        // 요청
+        type : 'get',
+        url: '/admin/adminanswer.ajaxALL?qnaNo='+$(this).parent().val(),
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $.each(resData.qnaList, (i, answer) => {
+            let str = '';
+          })
+        }
+      })
+     
+    })
+  }
+  
   
   getAllList();
   fnAnswer();
