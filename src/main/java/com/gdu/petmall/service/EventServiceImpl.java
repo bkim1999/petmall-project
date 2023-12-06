@@ -2,13 +2,14 @@ package com.gdu.petmall.service;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,8 +64,16 @@ public class EventServiceImpl implements EventService {
     }
   
   @Override
-  public EventDto loaddetailEventList(int eventNo) {
-    return eventMapper.getEventDetailList(eventNo);
+  public void loaddetailEventList(int eventNo, Model model) {
+    
+    EventDto event = eventMapper.getEventDetailList(eventNo);
+    
+    List<EventImageDto> eventImagelist = eventMapper.geteventImageList(eventNo);
+    
+    model.addAttribute("event",event);
+    model.addAttribute("eventImagelist",eventImagelist);
+    
+    
   }
   
   @Override
@@ -137,11 +146,16 @@ public class EventServiceImpl implements EventService {
     
     String title = multipartRequest.getParameter("title");
     String contents = multipartRequest.getParameter("contents");
-    String startAt = multipartRequest.getParameter("startAt");    
-    String endAt = multipartRequest.getParameter("endAt");    
+    String startAt = multipartRequest.getParameter("startAt").replaceAll("-", "/");    
+    String endAt = multipartRequest.getParameter("endAt").replaceAll("-", "/");    
     int discountPercent = Integer.parseInt(multipartRequest.getParameter("discountPercent"));
     int discountPrice = Integer.parseInt(multipartRequest.getParameter("discountPrice"));
     String contextPath = request.getContextPath();
+    int state = Integer.parseInt(multipartRequest.getParameter("state"));
+    
+    
+    List<MultipartFile> event_images = multipartRequest.getFiles("event_images");
+    
     
     List<MultipartFile> files = multipartRequest.getFiles("files");
     
@@ -153,12 +167,11 @@ public class EventServiceImpl implements EventService {
       attachCount = 0;
     }
     
-    
+      
       for(MultipartFile multipartFile : files) {
       
       if(multipartFile != null && !multipartFile.isEmpty()) {
-        LocalDate today = LocalDate.now();
-        String imagePath = "/event/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
+        String imagePath = "/event/" + endAt;
         File dir = new File(imagePath);
         if(!dir.exists()) {
           dir.mkdirs();
@@ -184,7 +197,6 @@ public class EventServiceImpl implements EventService {
         }
         
         
-        
         String evntTHumnailUrl = contextPath+imagePath+"/s_"+filesystemName;
         
         EventDto eventDto = EventDto.builder()
@@ -195,20 +207,71 @@ public class EventServiceImpl implements EventService {
                                     .eventThumnailUrl(evntTHumnailUrl)
                                     .startAt(startAt)
                                     .endAt(endAt)
+                                    .state(state)
                                     .build();
         
-        eventMapper.insertEventWrite(eventDto);
-        
-        
-        EventImageDto eventImageDto = EventImageDto.builder()
-                                                   .path(evntTHumnailUrl)
-                                                   .originalFilename(originalFilename)
-                                                   .FilesystemName(filesystemName)
-                                                   .build();
-        
-      } // if
+       eventMapper.insertEventWrite(eventDto);
+       
+       int serveEventNo =eventDto.getEventNo();
+       
+       EventImageDto eventSdto = EventImageDto.builder()
+                                              .eventNo(serveEventNo)
+                                              .FilesystemName(filesystemName)
+                                              .originalFilename(originalFilename)
+                                              .path(evntTHumnailUrl)
+                                              .build();
+       
+       
+       eventMapper.insertEventImage(eventSdto);
+       
       
-    } // for
+      for(MultipartFile event_multipartFile : event_images) {
+        
+        if(event_multipartFile != null && ! event_multipartFile.isEmpty()) {
+          String event_imagePath = "/event/" + endAt;
+          File event_dir = new File(event_imagePath);
+          if(!event_dir.exists()) {
+            event_dir.mkdirs();
+          }
+          
+          String event_originalFilename = event_multipartFile.getOriginalFilename();
+          String event_filesystemName = myFileUtils.getFilesystemName(event_originalFilename);
+          File event_file = new File(event_dir, event_filesystemName);
+          
+          event_multipartFile.transferTo(event_file);
+          
+          String event_contentType = Files.probeContentType(event_file.toPath());
+          
+          int event_hasThumbnail = (event_contentType != null && event_contentType.startsWith("image")) ? 1 : 0 ;
+          
+          if(event_hasThumbnail == 1) {
+            File event_thumbnail = new File(event_dir, "c_" + event_filesystemName); // small 이미지를 의미하는 s_을 덧붙임.
+            //섬네일레이터(디펜던시)의 활용!
+            Thumbnails.of(event_file)
+            .size(800, 235)      // 가로 1621px, 세로 235px
+            .toFile(event_thumbnail);  
+            
+          }
+          String event_path = contextPath+event_imagePath+"/c_"+event_filesystemName;
+          
+          EventImageDto eventImageDto = EventImageDto.builder()
+                                                     .eventNo(serveEventNo)
+                                                     .path(event_path)
+                                                     .originalFilename(event_originalFilename)
+                                                     .FilesystemName(event_filesystemName)
+                                                     .build();
+          
+          eventMapper.insertEventImage(eventImageDto);
+          
+            }
+          }
+          
+          
+          
+        } //if
+        
+      } //for
+        
     
 
     
@@ -267,9 +330,187 @@ public class EventServiceImpl implements EventService {
     return Map.of("PriceResult",PriceResult);
    }    
       
+  @Transactional
+  @Override
+  public void updateDetailEvent(MultipartHttpServletRequest multipartRequest, Model model) throws Exception {
+    
+    String title = multipartRequest.getParameter("title");
+    String contents = multipartRequest.getParameter("contents");
+    String startAt = multipartRequest.getParameter("startAt").replaceAll("-", "/");    
+    String endAt = multipartRequest.getParameter("endAt").replaceAll("-", "/");       
+    int discountPercent = Integer.parseInt(multipartRequest.getParameter("discountPercent"));
+    int discountPrice = Integer.parseInt(multipartRequest.getParameter("discountPrice"));
+    String contextPath = multipartRequest.getContextPath();
+    int eventNo = Integer.parseInt(multipartRequest.getParameter("eventNo"));
+    int state = Integer.parseInt(multipartRequest.getParameter("state"));
+    
+    System.out.println("*********************"+state+"**************");
+    
+    List<MultipartFile> event_images = multipartRequest.getFiles("event_images");
+    
+    
+    List<MultipartFile> files = multipartRequest.getFiles("files");
+    
+    int attachCount;
+    
+    if(files.get(0).getSize() == 0) {
+      attachCount = 1;
+    } else { 
+      attachCount = 0;
+    }
       
+    eventMapper.deleteEventImage(eventNo);
       
+      for(MultipartFile multipartFile : files) {
       
+      if(multipartFile != null && !multipartFile.isEmpty()) {
+        String imagePath = "/event/" + endAt;
+        File dir = new File(imagePath);
+        if(!dir.exists()) {
+          dir.mkdirs();
+        }
+        
+        String originalFilename = multipartFile.getOriginalFilename();
+        String filesystemName = myFileUtils.getFilesystemName(originalFilename);
+        File file = new File(dir, filesystemName);
+        
+        multipartFile.transferTo(file);
+        
+        String contentType = Files.probeContentType(file.toPath());
+        
+        int hasThumbnail = (contentType != null && contentType.startsWith("image")) ? 1 : 0 ;
+        
+        if(hasThumbnail == 1) {
+          File thumbnail = new File(dir, "res_" + filesystemName); // small 이미지를 의미하는 s_을 덧붙임.
+          //섬네일레이터(디펜던시)의 활용!
+          Thumbnails.of(file)
+                    .size(800, 235)      // 가로 1621px, 세로 235px
+                    .toFile(thumbnail);  
+          
+        }
+        
+        
+        String evntTHumnailUrl = contextPath+imagePath+"/res_"+filesystemName;
+        
+        EventDto eventDto = EventDto.builder()
+                                    .eventNo(eventNo)
+                                    .title(title)
+                                    .contents(contents)
+                                    .discountPercent(discountPercent)
+                                    .discountPrice(discountPrice)
+                                    .eventThumnailUrl(evntTHumnailUrl)
+                                    .startAt(startAt)
+                                    .endAt(endAt)
+                                    .state(state)
+                                    .build();
+        
+        eventMapper.updateDetailEvent(eventDto);
+
+
+        EventImageDto eventSdto = EventImageDto.builder()
+                                    .eventNo(eventNo)
+                                    .FilesystemName(filesystemName)
+                                    .originalFilename(originalFilename)
+                                    .path(evntTHumnailUrl)
+                                    .build();
+
+
+        eventMapper.insertEventImage(eventSdto);
+       
+       
+      
+      for(MultipartFile event_multipartFile : event_images) {
+        
+        if(event_multipartFile != null && ! event_multipartFile.isEmpty()) {
+          String event_imagePath = "/event/" + endAt;
+          File event_dir = new File(event_imagePath);
+          if(!event_dir.exists()) {
+            event_dir.mkdirs();
+          }
+          
+          String event_originalFilename = event_multipartFile.getOriginalFilename();
+          String event_filesystemName = myFileUtils.getFilesystemName(event_originalFilename);
+          File event_file = new File(event_dir, event_filesystemName);
+          
+          event_multipartFile.transferTo(event_file);
+          
+          String event_contentType = Files.probeContentType(event_file.toPath());
+          
+          int event_hasThumbnail = (event_contentType != null && event_contentType.startsWith("image")) ? 1 : 0 ;
+          
+          if(event_hasThumbnail == 1) {
+            File event_thumbnail = new File(event_dir, "rec_" + event_filesystemName); // small 이미지를 의미하는 s_을 덧붙임.
+            //섬네일레이터(디펜던시)의 활용!
+            Thumbnails.of(event_file)
+            .size(800, 235)      // 가로 1621px, 세로 235px
+            .toFile(event_thumbnail);  
+            
+          }
+          String event_path = contextPath+event_imagePath+"/rec_"+event_filesystemName;
+          
+          EventImageDto eventImageDto = EventImageDto.builder()
+                                                     .eventNo(eventNo)
+                                                     .path(event_path)
+                                                     .originalFilename(event_originalFilename)
+                                                     .FilesystemName(event_filesystemName)
+                                                     .build();
+          
+           eventMapper.insertEventImage(eventImageDto);
+          
+          }
+         }
+          
+        } //if
+        
+      } //for
+    
+  }
+  
+  // 불필요한 이미지 객체 삭제를 위한 메소드 (myfileutils로 옮겨야함) 테스트 진행중       date = date.minusDays(1);
+  public String getEventImagePathYesterday() {
+    LocalDate date = LocalDate.now();
+    date = date.minusDays(1);
+    return "/event/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(date);
+  }
+  
+  
+  @Override
+  public void eventImageBatch() {
+    // 1. 어제 작성된 블로그의 이미지 목록 (DB)
+    List<EventImageDto> eventImageList = eventMapper.getEventImageInYesterday();
+    
+    
+    // 2. List<EventImageDto> -> List<Path> (path는 경로+파일명으로 구성)
+    List<Path> eventImagePathList = eventImageList.stream()
+        .map(eventImageDto -> new File(eventImageDto.getPath()).toPath())
+        .collect(Collectors.toList());
+    
+    // 3. 어제 저장된 블로그 이미지 목록 (디렉토리)
+    File dir = new File(getEventImagePathYesterday());
+    
+    // 4. 삭제할 File 객체들
+    File[] targets = dir.listFiles(file -> eventImagePathList.contains(file.toPath()));
+    
+    // 5. 삭제
+    if(targets != null && targets.length !=0) {
+      for(File target : targets) {
+        target.delete();
+      }
+    }
+    
+  }
+  
+  @Override
+  public void eventAutoEnd() {
+    eventMapper.autoEnd();
+  }
+  
+  @Override
+  public void eventAutoStart() {
+    eventMapper.autoStart();
+  }
+  
+  
       
       
 }

@@ -38,7 +38,6 @@
     object-fit: cover;
     max-width: 1200px;
     max-height: 300px;
-    
   }
   .img2 {
     border-radius: 10px;
@@ -48,7 +47,7 @@
     height:100%;
     object-fit: cover;
     max-width: 1200px;
-    max-height: 500px;
+    max-height: 300px;
   }
   .second_top {
     background-color: white;
@@ -98,6 +97,18 @@
     background-color: rgb(183,175,163);
     width: 100%;
   }
+  
+  .copyimg1 {
+    background-color: rgba(0, 0, 0, 0.15);
+    background-image: url(../../static/image/dance_cat.png);
+    font-size: 50px;
+    text-align: center;
+    color: red;
+    line-height: 270px;
+    object-fit: cover;
+    max-width: 1200px;
+    max-height: 300px;
+}
 </style>
 
 <body>
@@ -136,10 +147,26 @@
     <th:block th:each="event,vs:${eventList}">
      <div class="Middle">
        <th:block th:if="${session.user != null}">
-         <a th:href="@{/event/increase.do(eventNo=${event.eventNo})}"><img class="img1" th:src="${event.eventThumnailUrl}" ></a>
+         <a th:href="@{/event/increase.do(eventNo=${event.eventNo})}">
+          <th:block th:if="${event.state == 1}">
+           <img class="img1" th:src="${event.eventThumnailUrl}">
+          </th:block>
+         </a>
+          <th:block th:if="${event.state == 0}">
+           <img class="img1" style="display: none;" th:src="${event.eventThumnailUrl}">
+           <div class="copyimg1">이벤트 종료</div>
+          </th:block>
        </th:block>
        <th:block th:if="${session.user == null}">
-         <a th:href="@{/event/detail.do(eventNo=${event.eventNo})}"><img class="img2" th:src="${event.eventThumnailUrl}"></a>
+         <a th:href="@{/event/detail.do(eventNo=${event.eventNo})}">
+          <th:block th:if="${event.state == 1}">
+           <img class="img1" th:src="${event.eventThumnailUrl}">
+          </th:block>
+         </a>
+          <th:block th:if="${event.state == 0}">
+           <img class="img1" style="display: none;" th:src="${event.eventThumnailUrl}">
+           <div class="copyimg1">이벤트 종료</div>
+          </th:block>
        </th:block>
      </div>
     </th:block>

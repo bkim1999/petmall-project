@@ -57,6 +57,20 @@
     margin: 100px 0;
     text-align:center;
   }
+  
+  .product_sale_price {
+    font-size: 28px;
+    color: black;
+  }
+  .product_price {
+    font-size: 23px;
+    text-decoration: line-through;
+  }
+  .discount_percent {
+    font-size: 28px;
+    color: red;
+  }
+  
 </style>
 <body>
   <div th:replace="~{layout/header :: header}"></div>
@@ -139,7 +153,7 @@
             },
       // 응답
       dataType: 'json',
-      success: (resData) => {  // resData = {"": [], "totalPage": 10}
+      success: (resData) => {  // resData = {"productList": [], "totalPage": 10, "event": 이벤트정보}
       
         // 상품 목록이 없을 경우: 반환된 메세지 알림
         if(resData.productList === null){
@@ -164,9 +178,17 @@
           str += '  </div>';
           str += '  <div class="card-body">';
           str += '  <h4 class="card-title">' + product.productName + '</h4>';
-          str += '  <h6 class="card-subtitle mb-2 text-muted">' + product.productTitle + '</h6>';
-          str += '  <p class="card-text">' + product.productPrice + '원</p>';
-          str += '  <p class="card-text">' + product.reviewCount + '개의 리뷰</p>';
+          str += '  <h6 class="card-subtitle text-muted">' + product.productTitle + '</h6>';
+          str += '  <div class="price_info" class="d-flex">';
+          str += '    <span class="product_sale_price"><strong>' + (Math.floor(product.productPrice * (100 - resData.event.discountPercent) / 100)) + '</strong>원</span>';
+          str += '    <span class="product_price"><strong>' + product.productPrice + '</strong>원</span>';
+          str += '    <span class="discount_percent"><strong>' + resData.event.discountPercent + '</strong>%</span>';
+          str += '  </div>';
+          if(product.reviewCount === 0){
+            str += '  <p class="card-text">아직 리뷰가 없습니다.</p>';
+          } else {
+            str += '  <p class="card-text">' + '★'.repeat(product.productRating) + '☆'.repeat(5 - product.productRating) + '  ' + product.reviewCount + '개의 리뷰</p>';
+          }
           str += '  </div>';
           str += '</div>';     	
           $('#product_list').append(str);
@@ -218,24 +240,33 @@
 
   const fnAddProductResult = () => {
     let addProductResult = /*[[${addProductResult}]]*/ null;  // '', true, false
-    console.log(addProductResult)
     if(addProductResult !== null){
       if(addProductResult === true){
-        alert('성공적으로 업로드 되었습니다.');
+        alert('성공적으로 등록되었습니다.');
       } else {
-        alert('업로드가 실패하였습니다.');
+        alert('상품등록에 실패하였습니다.');
       }
     }
   }
   
   const fnEditProductResult = () => {
     let editProductResult = /*[[${editProductResult}]]*/ null;  // '', true, false
-    console.log(editProductResult)
     if(editProductResult !== null){
       if(editProductResult === true){
         alert('성공적으로 수정되었습니다.');
       } else {
-        alert('상품수정이 실패하였습니다.');
+        alert('상품수정애 실패하였습니다.');
+      }
+    }
+  }
+  
+  const fnRemoveProductResult = () => {
+    let removeProductResult = /*[[${removeProductResult}]]*/ null;  // '', true, false
+    if(removeProductResult !== null){
+      if(removeProductResult === true){
+        alert('성공적으로 삭제되었습니다.');
+      } else {
+        alert('상품삭제에 실패하였습니다.');
       }
     }
   }

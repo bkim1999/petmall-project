@@ -162,9 +162,9 @@
         </div>
       </div>
       <div id="price_info" class="d-flex p-2">
-        <span id="product_sale_price"><strong th:text="${product.productPrice}"></strong>원</span>
+        <span id="product_sale_price"><strong th:text="${product.productPrice * (100 - event.discountPercent) / 100}"></strong>원</span>
         <span id="product_price" class="p-1"><strong th:text="${product.productPrice}"></strong>원</span>
-        <span id="discount_percent" class="ms-auto"><strong th:text="${product.productPrice}"></strong>%</span>
+        <span id="discount_percent" class="ms-auto"><strong th:text="${event.discountPercent}"></strong>%</span>
       </div>
       <div class="p-2 d-flex justify-content-between align-items-center">
         <span style="width: 20%;">옵션</span>
@@ -201,7 +201,11 @@
     <h2>리뷰</h2>
     <div id="product_rating">
       <th:block th:if="${product.productRating != 0}">
-        이 상품의 평점: <span id="average_rating" th:text="${product.productRating}"></span>
+        이 상품의 평점: 
+        <span id="average_rating">
+          <th:block th:each="num:${#numbers.sequence(1, product.productRating)}">★</th:block><th:block th:each="num:${#numbers.sequence(1, 5 - product.productRating)}">☆</th:block>
+          <span th:text="${product.productRating}"></span>
+        </span>
       </th:block>
       <th:block th:if="${product.productRating == 0}">
         <span>아직 평점이 없습니다.</span>
@@ -240,6 +244,7 @@
         $(this).val("0");
         return;
       }
+      let discountPercent = /*[[${event.discountPercent}]]*/ 0
       let productPrice = /*[[${product.productPrice}]]*/ 0;
       let optionName = $("#option_list option:selected").text();
       let addPrice = $("#option_list option:selected").data('add-price');
@@ -254,8 +259,8 @@
       str += '    <button type="button" class="btn btn-light plus_count">+</button>';
       str += '    <button type="button" class="btn btn-light btn_delete_option">X</button>';
       str += '  </div>'
-      str += '  <input type="hidden" class="option_price" value="' + (productPrice + addPrice) + '">';
-      str += '  <div class="calculated_price_wrapper"><span class="calculated_price">' + (productPrice + addPrice) + '</span>원</td>';
+      str += '  <input type="hidden" class="option_price" value="' + Math.floor(productPrice * (100 - discountPercent) / 100 + addPrice) + '">';
+      str += '  <div class="calculated_price_wrapper"><span class="calculated_price">' + Math.floor(productPrice * (100 - discountPercent) / 100 + addPrice) + '</span>원</td>';
       str += '</div>';
       $('#selected_option_list').append(str);
       $(this).val("0");
@@ -357,9 +362,7 @@
         $.each(resData.reviewList, (i, review) => {
           let str = '<div class="review" data-review-no="' + review.reviewNo + '">';
           str += '<h4>';
-          for(let i = 0; i < review.reviewRating; i++){
-            str += '⭐';
-          }
+          str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '</h4>';
           str += '<div>' + review.userDto.name + '</div>'
           str += '<div class="review_thumbnail">';

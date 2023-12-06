@@ -192,19 +192,12 @@
         </ul>
         <a class="qbtn" id="navf_up" href="#nav_floor">
           <img th:src="@{/image/ev_up_button1.png}">
-          <p class="over" style="display: none;">
-            <img th:src="@{/image/ev_hover_button.png}">
-          </p>
         </a>
         <a class="qbtn" id="navf_down" href="#nav_floor">
           <img th:src="@{/image/ev_down_button1.png}">
-          <p class="over" style="display: none;">
-            <img th:src="@{/image/ev_hover_button.png}">
-          </p>
         </a>
         <script>
         $(window).scroll(() => {
-          console.log($(window).scrollTop());
           if($(window).scrollTop() <= 55 && $(window).scrollTop() == 0) {
             $('.basic_3F').show();
             $('.hover_3F').hide();
@@ -286,7 +279,7 @@
           $(document).on('click', '#navf_down', function(ev){
           var navfloor; 
           if ($(window).scrollTop() <= 55){
-            navfloor=2;
+            navfloor=3;
             location.href='#nav_floor'+navfloor+'';
           } else if ($(window).scrollTop() >55 && $(window).scrollTop() <811){
             navfloor=2;

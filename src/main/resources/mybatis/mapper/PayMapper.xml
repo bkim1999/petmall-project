@@ -35,7 +35,6 @@
    <update id="updatePay" parameterType="OrderDto">
 	   UPDATE ORDER_T
 	     SET ORDER_STATE =1
-	    WHERE USER_NO = #{userNo}
    </update>
 
 </mapper>
