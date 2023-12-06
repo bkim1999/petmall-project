@@ -39,11 +39,11 @@
                   <option th:value="${product.categoryNo}" th:text="${product.categoryName}"></option>
                 </th:block>
               </th:block>
-              
               <th:block th:each="faq : ${faqCategoryList.getfaqCategoryList}">
                 <th:block th:if="${faq.faqCategoryNo != 0}">
                   <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
                 </th:block>
+               </th:block> 
             </select>
         <div class="invalid-feedback"></div>
       </div>
