@@ -13,5 +13,6 @@ public interface ReviewService {
   public Map<String, Object> loadProductReviewList(HttpServletRequest request);
   public Map<String, Object> loadUserReviewList(HttpServletRequest request);
   public Map<String, Object> loadProductOrderList(HttpServletRequest request);
+  public Map<String, Object> loadNotReviewedList(HttpServletRequest request);
   public boolean addReview(int productNo, ReviewDto review, MultipartHttpServletRequest multipartRequest) throws Exception;
 }

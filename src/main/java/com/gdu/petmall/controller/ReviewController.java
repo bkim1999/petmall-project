@@ -55,9 +55,9 @@ public class ReviewController {
   }
   
   @ResponseBody
-  @GetMapping(value="/getProductOrderList.do", produces="application/json")
-  public Map<String, Object> loadProductOrderLlist(HttpServletRequest request){
-    return reviewService.loadProductOrderList(request);
+  @GetMapping(value="/getNotReviewedList.do", produces="application/json")
+  public Map<String, Object> loadNotReviewedList(HttpServletRequest request){
+    return reviewService.loadNotReviewedList(request);
   }
   
   @PostMapping(value="/addReview.do")

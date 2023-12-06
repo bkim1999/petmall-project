@@ -20,4 +20,5 @@ public class ReviewDto {
   private ProductOptionDto productOptionDto;    // 리뷰목록보기용 DB엔 optionNo만 있음
   private ProductDto productDto;                // 리뷰목록보기용 DB엔 없음
   private ProductImageDto reviewImageDto;       // 리뷰목록보기용 DB엔 없음
+  private String orderDate;                     // 리뷰작성용 DB엔 없음
 }
