@@ -30,25 +30,30 @@
     <div class="main_wrap">
       <div class="form-group">
         <form id="add_frm" method="post" th:action="@{/faq/add.do}">
-          <label for="category_select" class="form-label mt-4">카테고리 선택</label>
-          <select class="form-select not-empty" id="categoryNo" name="categoryNo">
-            <option value="">--선택 안함--</option>
-            <th:block th:each="category : ${categoryList}">
-            <option th:if="${category.categoryNo != 0}" th:value="${category.categoryNo}" th:text="${category.categoryName}"></option>
-            </th:block>
-          </select>
-          <label for="categore" class="form-label mt-4"></label>
-          <input type="text" class="form-control not-empty" name="category" id="category">
-          <div class="invalid-feedback"></div>
+          <div class="form-group">
+            <label for="category_select" class="form-label mt-4">카테고리 선택</label>
+            <select class="form-select" id="categoryNo" name="categoryNo" th:value="categoryNo">
+              <option value="">--선택 안함--</option>
+              <th:block th:each="product : ${categoryList.getCategoryList}">
+                <th:block th:if="${product.categoryNo != 0}">
+                  <option th:value="${product.categoryNo}" th:text="${product.categoryName}"></option>
+                </th:block>
+              </th:block>
+              
+              <th:block th:each="faq : ${faqCategoryList.getfaqCategoryList}">
+                <th:block th:if="${faq.faqCategoryNo != 0}">
+                  <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
+                </th:block>
+            </select>
+        <div class="invalid-feedback"></div>
       </div>
-      
       <div class="form-group">
-        <label for="faqTitle" class="form-label mt-4">자주묻는질문</label>
+        <label for="faqTitle" class="form-label mt-4">제목</label>
         <input type="text" class="form-control not-empty" name="faqTitle" id="faqTitle">  
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
-        <label for="faqContents" class="form-label mt-4">답변내용</label>
+        <label for="faqContents" class="form-label mt-4">내용</label>
         <input type="text" class="form-control not-empty" name="faqContents" id="faqContents">
         <div class="invalid-feedback"></div>
       </div>
@@ -74,7 +79,7 @@
             <th:block th:each="a,vs:${adminList}">
               <tr class="list">
                 <td th:text="${beginNo - vs.index}"></td>
-                <td><input type="text" name="category" th:value="${a.category}" size="4"></input></td>
+                <td><input type="text" name="faqName" th:value="${a.faqName}" size="4"></input></td>
                 <td><input type="text" name="faqTitle" th:value="${a.faqTitle}"></input></td>
                 <td><input type="text" name="faqContents" th:value="${a.faqContents}" ></span></td>
                 <td><span th:each="n:${#numbers.sequence(1, a.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span>
@@ -114,8 +119,9 @@
           })
         })
       };
-   
-   fnDelete();
+      
+    
+    fnDelete();
     
    </script>
 

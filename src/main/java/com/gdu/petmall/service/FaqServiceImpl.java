@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+
 import com.gdu.petmall.dao.FaqMapper;
+import com.gdu.petmall.dto.CategoryDto;
+import com.gdu.petmall.dto.FaqCategoryDto;
 import com.gdu.petmall.dto.FaqDto;
 import com.gdu.petmall.util.MyPageUtils;
 
@@ -23,6 +26,19 @@ public class FaqServiceImpl implements FaqService {
   
   private final FaqMapper faqMapper;
   private final MyPageUtils myPageUtils;
+  
+  @Override
+  public Map<String, Object> getloadCategoryList() {
+    List<CategoryDto> getCategoryList = faqMapper.getCategoryList(); 
+    return Map.of("getCategoryList", getCategoryList);
+  }
+  
+  @Override
+  public Map<String, Object> getloadFaqCategoryList() {
+    List<FaqCategoryDto> getFaqCategoryList = faqMapper.getFaqCategoryList();
+    return Map.of("getFaqCategoryList", getFaqCategoryList);
+  }
+  
   
   
   @Transactional(readOnly=true)
@@ -102,13 +118,15 @@ public class FaqServiceImpl implements FaqService {
   
   public int addFaq(HttpServletRequest request) {
     
-    String category = request.getParameter("category");
+    int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
+    String faqName = request.getParameter("faqName");
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     
     
     FaqDto faq = FaqDto.builder()
-                    .category(category)
+                    .categoryDto(CategoryDto.builder().categoryNo(categoryNo).build())
+                    .faqName(faqName)
                     .faqTitle(faqTitle)
                     .faqContents(faqContents)
                     .build();
@@ -121,21 +139,18 @@ public class FaqServiceImpl implements FaqService {
   public int removeFaq(int faqNo) {
     return faqMapper.deleteFaq(faqNo);
     
-    
-    
-   
   }
   
   @Override
   public Map<String, Object> modifyList(HttpServletRequest request) {
     
-    String category = request.getParameter("category");
+    String faqName = request.getParameter("faqName");
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     int faqNo = Integer.parseInt(request.getParameter("faqNo"));
     
     FaqDto faq = FaqDto.builder()
-                       .category(category)
+                       .faqName(faqName)
                        .faqTitle(faqTitle)
                        .faqContents(faqContents)
                        .faqNo(faqNo)
