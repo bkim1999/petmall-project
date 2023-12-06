@@ -158,23 +158,28 @@ import lombok.RequiredArgsConstructor;
            int userNo = getLoggedInUserNo(request);
            int depth = Integer.parseInt(request.getParameter("depth"));
            int groupNo = Integer.parseInt(request.getParameter("groupNo"));
-
+           int qnaNo = Integer.parseInt(request.getParameter("qnaNo"));
            String contents = request.getParameter("contents");
 
            qnaMapper.getQna(groupNo);
+           
 
            int replyDepth = depth + 1;
-
+           
            QnaDto reply = QnaDto.builder()
                    .contents(contents)
                    .depth(replyDepth)
+                   .qnaNo(qnaNo)
                    .userDto(UserDto.builder()
                            .userNo(userNo)
                            .build())
                    .groupNo(groupNo)  
                    .build();
            int addReplyResult = qnaMapper.insertReply(reply);
+           int updateQna  = qnaMapper.updateQna(qnaNo);
+           
            return addReplyResult;
+           
        }
        
        // 첨부파일 다운로드

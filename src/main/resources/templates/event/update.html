@@ -39,20 +39,24 @@
   <div th:replace="~{/layout/header::header}"></div>
 
   <div class="event_add_wrap">
-  <h1 style="color: #fff;">EVENT 추가하기</h1>
+  <h1 style="color: #fff;">EVENT 수정하기</h1>
   <hr>
   
   <div>
-    <form id="frm_event_write" action="/event/addevent.do" method="post" enctype="multipart/form-data">
+    <form id="frm_event_update" action="/event/update.do" method="post" enctype="multipart/form-data">
       <div>
         <label for="title">제목</label>
-        <input type="text" name="title" id="title">
+        <input type="text" name="title" id="title" th:value="${event.title}">
       </div>
       
       <hr>
+      <div>
+        <input type="hidden" name="eventNo" th:value="${event.eventNo}">
+        <input type="hidden" name="hit" th:value="${event.hit}">
+      </div>
       
       <div class="form_wrap">
-        <textarea name="contents" id="contents" class="form-control"></textarea>
+        <textarea name="contents" id="contents" class="form-control" th:value="${event.contents}"></textarea>
       </div>
       
       <hr>
@@ -82,21 +86,21 @@
       
       <div>
         <label id="discountPercent">할인율</label>
-        <input type="text" class="discountPercent" name="discountPercent" id="discountPercent" value="0">
+        <input type="text" class="discountPercent" name="discountPercent" id="discountPercent" th:value="${event.discountPercent}">
       </div>
       
       <hr>
       
       <div>
         <label id="discountPrice">할인가</label>
-        <input type="text" class="discountPrice" name="discountPrice" id="discountPrice" value="0">
+        <input type="text" class="discountPrice" name="discountPrice" id="discountPrice" th:value="${event.discountPrice}">
       </div>
       
       <hr>
       
       <div>
-        <input type="hidden" name="state" class="makeState" >
-        <input type="button" value="작성완료" class="btn btn-danger eventadd">
+        <input type="hidden" name="state" class="updateMakeState">
+        <input type="button" value="수정완료" class="btn btn-danger event_update">
       </div>
       
       <hr>
@@ -111,20 +115,21 @@
 <script th:inline="javascript">
   
   
-  function makingstate() {
+   function updatemakingstate() {
       let today = new Date();
       let year = today.getFullYear(); // 년도
       let month = today.getMonth() + 1;  // 월
       let date = String(today.getDate()).padStart(2,"0");  // 날짜
       let full = year+'-'+month+'-'+date;
       let withoutfull = (full).replaceAll('-','');
+      let startDate = $('.startAt').val().replaceAll('-','');
       
-      if($('.startAt').val().replaceAll('-','') - withoutfull > 0){
-        $('.makeState').val(2);
-      } else {
-        $('.makeState').val(1);
-      }
-  }
+      if( startDate - withoutfull > 0){
+          $('.updateMakeState').val(2);
+        } else {
+          $('.updateMakeState').val(1);
+        }
+     }
   
   var titleValue = $('#title').val();
   
@@ -201,20 +206,45 @@
         return $('.startAt').val(full);
       }
       
-      if(endDate-startDate < 0) {
+      if(endDate - startDate < 0) {
         alert('종료일이 시작일보다 느릴수없습니다. 시작일을 현재날짜로 설정합니다.');
         return $('.startAt').val(full);
       }
       
     })
   }
-  StartDatechecking();
-  endDatechecking();
+
+  
+  function percentChecking() {
+    $(document).on('keyup', '.discountPercent', function(ev){
+      let Check = /^[0-9]{1,100}$/g;
+      let value = $(this).val();
+      if(!Check.test(value)){
+        alert('할인율은 숫자만 입력가능합니다.');
+        $(this).val('');
+        return;
+      } 
+    })
+  }
+  function priceChecking() {
+    $(document).on('keyup', '.discountPrice', function(ev){
+      let Check = /^[0-9]{1,100}$/g;
+      let value = $(this).val();
+      if(!Check.test(value)){
+        alert('할인가는 숫자만 입력가능합니다.');
+        $(this).val('');
+        return;
+      } 
+    })
+  }
   
   
-  function addevent(){
-    $(document).on('click', '.eventadd', function(ev) {
+  function updateevent(){
+    $(document).on('click', '.event_update', function(ev) {
       
+      updatemakingstate();
+      console.log($('.startAt').val());
+      console.log($('.startAt').val().replaceAll('-',''));
       
       if($('#title').val() == '') {
         alert('제목 입력은 필수 입니다.');
@@ -240,7 +270,7 @@
         return;
       }
       
-     if($('.discountPercent').val() > 100) {
+      if($('.discountPercent').val() > 100) {
         alert('할인율은 100%를 초과될 수 없습니다.');
         $('.discountPercent').focus().val('');
         return;
@@ -252,10 +282,10 @@
         $('.discountPrice').val(0);
       }
       
-      makingstate();
-      $('#frm_event_write').submit();
+
+
       
-      
+      $('#frm_event_update').submit();
       
     })
   }
@@ -300,34 +330,14 @@ const fnCkeditor = () => {
   }
   
   
-  function percentChecking() {
-    $(document).on('keyup', '.discountPercent', function(ev){
-      let Check = /^[0-9]{1,100}$/g;
-      let value = $(this).val();
-      if(!Check.test(value)){
-        alert('할인율은 숫자만 입력가능합니다.');
-        $(this).val('');
-        return;
-      } 
-    })
-  }
   
-  function priceChecking() {
-    $(document).on('keyup', '.discountPrice', function(ev){
-      let Check = /^[0-9]{1,100}$/g;
-      let value = $(this).val();
-      if(!Check.test(value)){
-        alert('할인가는 숫자만 입력가능합니다.');
-        $(this).val('');
-        return;
-      } 
-    })
-  }
   
+  fnCkeditor();
+  updateevent();
   priceChecking();
   percentChecking();
-  fnCkeditor();
-  addevent();
+  StartDatechecking();
+  endDatechecking();
 
 </script>  
   
