@@ -36,16 +36,21 @@ public class AdminController {
     return "admin/product_list";
   }
   
+  @GetMapping("/user_list.go")
+  public String userDetailList(Model model) {
+    return "admin/user_list";
+  }
+  
   @ResponseBody
-  @GetMapping("/admin.ajaxALL")
+  @GetMapping(value="/admin.ajaxALL", produces="application/json")
   public Map<String, Object> getAjaxAlllist() {
     return adminService.getAjaxAlllist();
   }
   
   @ResponseBody
-  @GetMapping("/admin.adminanswer.ajaxALL")
-  public Map<String, Object> getAjaxAlllist(HttpServletRequest request) {
-    return adminService.getAjaxAnswerList();
+  @GetMapping(value="/adminanswer.ajaxALL", produces="application/json")
+  public Map<String, Object> getAjaxAnswerList(HttpServletRequest request) {
+    return adminService.getAjaxAnswerList(request);
   }
   
   @ResponseBody

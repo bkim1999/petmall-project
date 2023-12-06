@@ -12,8 +12,10 @@ import org.springframework.ui.Model;
 import com.gdu.petmall.dao.EventMapper;
 import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dao.QnaMapper;
+import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.EventDto;
 import com.gdu.petmall.dto.QnaDto;
+import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.util.MyPageUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class AdminServiceImpl implements AdminService {
   private final MyPageUtils myPageUtils;
   private final QnaMapper qnaMapper;
   private final EventMapper eventMapper;
+  private final UserMapper userMapper;
   
   @Override
   public void getQna(HttpServletRequest request, Model model) {
@@ -67,6 +70,15 @@ public class AdminServiceImpl implements AdminService {
     List<QnaDto> qnaAnswerList = qnaMapper.confirmAnswer(checkFlag);
     
     return Map.of("qnaAnswerList",qnaAnswerList);
+  }
+  
+  @Override
+  public Map<String, Object> getUser(Model model) {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    
+    return null;
   }
     
   

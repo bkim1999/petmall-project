@@ -11,6 +11,9 @@
     .navbar navbar-expand-lg bg-light{
       border-right: 1px solid gray;
     }
+    .navbar-collapse {
+      background-color: #E0C891;
+    }
   </style>
 <body>
   
@@ -43,17 +46,12 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/partner_list.go}">파트너십 제안 관리
-            <span class="visually-hidden">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link active" th:href="@{/main.do}">총 주문현황 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/main.do}">유저 현황 관리
+          <a class="nav-link active" th:href="@{/admin/user_list.go}">유저 현황 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
