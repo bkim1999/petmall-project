@@ -22,4 +22,5 @@ public class QnaDto {
     private int depth;
     private int groupNo;
     private int userNo;
+    private UserDto adminAuthorState;
 }
