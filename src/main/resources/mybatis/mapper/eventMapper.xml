@@ -168,7 +168,7 @@
   <update id="autoStart">
      UPDATE EVENT_T
         SET STATE = 1
-      WHERE END_AT = TO_CHAR(SYSDATE,'YYYY/MM/DD')
+      WHERE START_AT = TO_CHAR(SYSDATE,'YYYY/MM/DD')
   </update>
   
   

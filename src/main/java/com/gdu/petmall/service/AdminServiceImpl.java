@@ -50,6 +50,14 @@ public class AdminServiceImpl implements AdminService {
     
     return Map.of("eventList",eventList);
   }
+  
+  @Override
+  public Map<String, Object> getAjaxAlllist() {
+    
+    List<QnaDto> qnaList = qnaMapper.getAllQnalist();
+    
+    return Map.of("qnaList",qnaList);
+  }
     
   
 }
