@@ -115,8 +115,7 @@
 	        DEPTH,
 	        GROUP_NO,
 	        CHECK_FLAG
-	    ) 
-	    SELECT
+	    ) VALUES (
 	        #{userDto.userNo},
 	        #{qnaNo}, 
 	        #{contents},
@@ -125,8 +124,6 @@
 	        #{depth},
 	        #{groupNo},
 	        1
-	    FROM USER_T
-	    WHERE ADMIN_AUTHOR_STATE = 1
 	    )
 	</insert>
 

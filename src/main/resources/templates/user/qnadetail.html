@@ -26,9 +26,11 @@
 				        <input type="hidden" name="productNo" th:value="${qna.productNo}">
 				        <input type="hidden" name="title" th:value="${qna.title}">
 				        <input type="hidden" name="contents" th:value="${qna.contents}">
-				        <input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}">
+						<input type="text" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
 				    </form>
 				</div>
+				
+				<input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
 		
 				  
 		        <h3 class="title mt-4" th:text="${qna.title}"></h3>
@@ -37,7 +39,6 @@
 		        <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
 		        <div>문의 내용: <span th:text="${qna.contents}"></span></div>
 		        
-		    </div>
 		
 	<!-- 스크립트 구문을 통해 해당 숫자에 따른 문자열 반환시킴 -->
 	<script th:inline="javascript">
@@ -82,6 +83,7 @@
 	
 		<!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
 		
+		<div class="blind write_tr">
 		  <div class= "admin">
 			<h5>답변, 추가 문의사항 작성하기</h5>
 		    <c:set var="groupNo" value="${param.groupNo}" />
@@ -102,6 +104,8 @@
 		      </div>
 		    </form>
 		  </div>
+		 </div>
+
 
 
     <hr>
