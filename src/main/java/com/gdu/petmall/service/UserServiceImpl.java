@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.mail.Session;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -66,12 +68,30 @@ public void login(HttpServletRequest request, HttpServletResponse response) thro
 	 
   String email = mySecurityUtils.preventXSS(request.getParameter("email"));
   String pw = mySecurityUtils.getSHA256(request.getParameter("pw")); 
+  String isAutoLoginActive=request.getParameter("auto_login");
   
   Map<String, Object> map = Map.of("email", email
                                  , "pw", pw);
 	
   
   HttpSession session = request.getSession();
+
+  
+  /*자동로그인 체크됐는지 확인*/
+  if(isAutoLoginActive!=null)
+  {
+    //쿠키에 값 저장
+    Cookie userLoginCookie=new Cookie("userLoginCookie",session.getId());
+    userLoginCookie.setMaxAge(5);  // 쿠키의 유효 시간 설정 (초 단위)
+    userLoginCookie.setPath("/");  // 쿠키의 경로 설정
+
+    
+    // HttpServletResponse에 쿠키 추가
+    response.addCookie(userLoginCookie);
+    
+
+  }
+
   
   
   //휴면 회원인지 확인

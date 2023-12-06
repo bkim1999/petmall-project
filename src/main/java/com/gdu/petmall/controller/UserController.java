@@ -316,7 +316,6 @@ public class UserController {
   userService.removeProfileImage(request);
   }
   
-  //쿠키
-  
+
   
 }
