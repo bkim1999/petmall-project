@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/header::head('My Order')}"></head>
+
+<style>
+  /*주문자 정보*/
+   .info_text{color: rgb(132, 116, 98); font-weight: bolder; font-size: x-large; margin-left: 90px; padding-top: 30px;}
+  .text_em{ line-height: 5px; color: rgb(0, 0, 0); font-size: xx-large;}
+
+   /*주문내역 보드*/
+   .order_list{ margin:20px auto; text-align: center;}
+   
+   /*상품후기 작성하기*/
+
+</style>
+
+<body>
+  <div th:replace="~{layout/header::header}"></div>
+  
+    <!-- 마이페이지 네비게이션  -->
+  <h1>My Order</h1>
+  <div th:replace="~{user/mypage_nav::mypage_nav}"></div>
+
+<input type="hidden" id="userNo" th:value="${session.user.userNo}">
+<div>
+  
+  <div class="main_wrap"></div>
+     <div class="my_order_wrap">
+      <div class="info_text"> <span class="text_em" th:text="${session.user.name}"></span> 님의 주문조회</div>
+      <hr/>
+       <div class="order_list">
+         <table class="table myOrder_table" border="1">
+           <thead>
+               <td>주문번호</td>
+               <td>주문날짜</td>
+               <td colspan="2">상품정보</td>
+               <td>결제금액</td>
+           </thead>
+           <tbody>
+             <tr>
+				<tr th:each="pay, vs : ${myPayList}" th:if="${pay.orderState == 1}">
+				    <td th:text="${pay.yourOrder}"></td>
+				    <td th:text="${pay.orderDate}"></td>
+				    <td>상품썸네일</td>
+				    <td>상품명 x 상품수량</td>
+				    <td th:text="${pay.totalPrice}"></td>
+				</tr>
+             <tr class="review"><td colspan="5">상품후기 작성하러가기 <i class="fa-solid fa-reply fa-flip-both" style="color: #d1cabd;"></i></td></tr>
+           </tbody>
+         </table>
+         
+       </div>
+     </div>
+    
+  </div>
+
+ <div th:replace="~{layout/footer :: footer}"></div>
+
+
+</body>  
+</html>

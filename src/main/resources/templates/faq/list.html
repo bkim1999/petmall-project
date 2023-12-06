@@ -11,16 +11,26 @@
   }
   
   .main_wrap {
-    
+     
   }
   
   .input-group {
-   padding-left: 880px;
+   padding-left: 840px;
   }
   
   .table-light {
   
   }
+  
+  .text-center {
+    padding-right: 800px;
+  }
+  
+  #wrap_box {
+    padding-left: 550px; 
+  
+  }
+  
   
   #all_box {
     width:100px;
@@ -30,7 +40,11 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
-    font-size: 15px;
+    margin-right : auto;
+    padding-top: 38px;
+   
+   
+    
   }
   
   #pay_box {
@@ -41,6 +55,9 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
   }
   #delivery_box {
     width:100px;
@@ -50,6 +67,9 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
   }
   #cancell_box {
     width:100px;
@@ -59,6 +79,9 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
   }
   #exchange_box {
     width:100px;
@@ -68,6 +91,9 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
   }
   
   #etc_box {
@@ -78,11 +104,35 @@
     margin: 19px;
     box-sizing: border-box;
     text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
   }
   
+  #category_box {
+    width:100px;
+    height: 100px;
+    border: 1px solid grey;
+    float: left;
+    margin: 19px;
+    box-sizing: border-box;
+    text-align: center;
+    margin-right : auto;
+    padding-top: 38px;
+    box-sizing: border-box;
+  }
   .blind_text {
     display: none;
+    font-size: 12px;
+    
   }
+  
+  .table_wrap {
+    padding-left: 100px;
+    padding-right: 100px;
+   
+  }
+  
   
 </style>
 
@@ -97,29 +147,43 @@
     <div class="wrap wrap_9">
     
       <div class="text-center">
-        <form method="get" >
-          <div class="input-group">
-            <input type="text" name="query" class="inputText" placeholder="검색어 입력" size="8">
-            <button type="submit" class="btn_search">검색</button>
+        <form method="get" th:action="@{/faq/search.do}">
+          <div class="input-group mb-3">
+            <input type="hidden" name="column" class="form-control" th:value="FAQ_TITLE">
+            <input type="hidden" name="column" class="form-control" th:value="CATEGORE">
+            <input type="text" name="query" class="form-control" placeholder="검색어 입력">
+            <button type="submit" class="btn btn-outline-primary btn-sm">검색</button>
           </div>
         </form>
       </div>
       
-      <div>
+      <div id="wrap_box">
         <div id="all_box" onclick="">전체</div>
         <div id="pay_box" onclick="">주문/결제</div>
         <div id="delivery_box">배송</div>
         <div id="cancell_box">배송전/취소변경</div>
         <div id="exchange_box">배송후/교환반품</div>
         <div id="etc_box">기타</div>
-        
-        <div id="box">전체</div>
-      </div>
+        <div>
+          <select id="categoryNo" name="categoryNo" th:value="categoryNo"> >카테고리
+            <option th:value="'전체'">전체</option>
+            <option th:value="'주문/결제'">주문/결제</option>
+            <option th:value="'배송'">배송</option>
+            <option th:value="'배송전/취소변경'">배송전/취소변경</option>
+            <option th:value="'배송후/교환반품'">배송후/교환반품</option>
+            <option th:value="'기타'">기타</option>
+            <th:block th:each="a : ${ccategoryList.getCategoryList}">
+              <th:block th:if="${a.categoryNo != 0}">
+                <option th:value="${a.categoryNo}" th:text="${a.categoryName}"></option>
+              </th:block>
+            </th:block>
+          </select>
+          
       
       
       
-      <div>
-        <table class="table">
+      <div class="table_wrap">
+        <table class="table" border="1">
           <thead class="table-li">
             <tr>
               <td>번호</td>
@@ -132,10 +196,14 @@
             <th:block th:each="faq,vs:${faqList}">
               <tr class="list">
                 <td th:text="${beginNo - vs.index}"></td>
-                <td><span th:text="${faq.categore}"></span></td>
+                <td><span th:text="${faq.faqName}"></span></td>
                 <td><span class="click_title" th:text="${faq.faqTitle}"></span></td>
-                <td><span class="blind_text" th:text="${faq.faqContents}"></span></td>
                 <td><span th:each="n:${#numbers.sequence(1, faq.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  <td><span class="blind_text" th:text="${faq.faqContents}"></span></td>
+                </td>
               </tr>
             </th:block>
           </tbody>
@@ -154,15 +222,22 @@
   const fnBlind = () => {
     $(document).ready(function () {
         $('.click_title').on('click', function () {
-            var blind = $(this).closest('tr').find('.blind_text');
+            var blind = $(this).closest('tr').next().find('.blind_text');
             if (blind.css('display') === 'none') {
                 blind.css('display', 'block');
+                
             } else {
                 blind.css('display', 'none');
             }
         });
     });
   }
+  
+  
+  
+  
+  
+  
   
   fnBlind();
 </script>

@@ -40,4 +40,5 @@ public interface QnaService {
   
   // 답변 한번에 모아보기 
   public void loadCommentlist(HttpServletRequest request, Model model); 
+  
 }

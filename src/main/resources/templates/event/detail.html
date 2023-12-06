@@ -8,32 +8,73 @@
   div {
     text-align: center;
   }
+  #slideshow{
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .visually-hidden{
+    color: black;
+    background-color: black;
+  }
+  .detail_total_wrap{
+    background-color: rgb(183,175,163);
+    color: #fff;
+  }
+  .event_contents {
+    margin-bottom: 0;
+  }
+  p {
+    background-color:rgb(183,175,163);
+    margin-bottom: 0;
+  }
  </style>
   
 <body>  
   
   <div th:replace="~{/layout/header::header}"></div>
-
-  <h1>EVENT</h1>
+  
+  
+  <div class="detail_total_wrap">
+  <h1 style="color: #fff;">EVENT</h1>
+  <input type="button" value="다른이벤트 보로가기" id="other_event" class="btn btn-danger">
   <hr>
   <div th:text="${event.title}"></div>
   <div th:text="|${event.startAt} ~ ${event.endAt}|"></div>
   <hr>
     <div th:text="|조회수 ${event.hit}|"></div>
   <hr>
-  <div th:utext="${event.contents}"></div>
-    <div th:text="${event.eventImageDto.path}"></div>
-    <th:block th:if="${event.eventImageDto.path != null}">
-      <img th:src="${event.eventImageDto.path}" width = "500px" height = "300px">   
-    </th:block>
-    <th:block th:if="${event.eventImageDto.path == null}">
-     <div>싫어</div>
-    </th:block>
-       
-   <div>
-    <input type="button" value="다른이벤트 보로가기" id="other_event">
+
+   <div  class="d-flex justify-content-center mt-5">
+      <div id="slideshow" class="carousel slide me-5 d-flex align-items-center" data-bs-ride="carousel" >
+        <div class="carousel-inner">
+          <div class="carousel-item active" th:if="${#lists.isEmpty(eventImagelist)}">
+            <img class="d-block w-100" alt="아직 사진이 없습니다.">
+          </div>
+          <th:block th:if="${not #lists.isEmpty(eventImagelist)}">
+            <th:block th:each="image, imageStat : ${eventImagelist}">
+              <div class="carousel-item">
+                <img class="d-block" th:src="${image.path}">
+              </div>
+            </th:block>
+          </th:block>
+      </div>
+   <button class="carousel-control-prev" type="button" data-bs-target="#slideshow" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+   </button>
+   <button class="carousel-control-next" type="button" data-bs-target="#slideshow" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+   </button>
    </div>
-   
+  </div>
+  
+  <div th:utext="${event.contents}" class="event_contents"></div>
+    
+  </div>
    
    <script th:inline="javascript">
    function fnOtherEvent(){
@@ -41,7 +82,14 @@
 	   location.href = '/event/list.do';
 	   })
    }
+   
+   $(document).ready(function(){
+    $('.carousel-item').first().addClass('active');
+   });
+   
+   
    fnOtherEvent();
+   
    </script>
    
    <div th:replace="~{/layout/footer::footer}"></div>

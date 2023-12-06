@@ -24,8 +24,8 @@
    </resultMap> 
  
   <select id="getEventList" parameterType="Map" resultMap="EventMap">
-   SELECT A.EVENT_NO, A.EVENT_THUMNAIL_URL, A.TITLE, A.CONTENTS
-     FROM (SELECT ROW_NUMBER() OVER(ORDER BY EVENT_NO DESC) AS RN, EVENT_NO,EVENT_THUMNAIL_URL,TITLE,CONTENTS
+   SELECT A.EVENT_NO, A.EVENT_THUMNAIL_URL, A.TITLE, A.CONTENTS, A.STATE
+     FROM (SELECT ROW_NUMBER() OVER(ORDER BY STATE DESC, EVENT_NO DESC) AS RN, EVENT_NO,EVENT_THUMNAIL_URL,TITLE,STATE,CONTENTS
              FROM EVENT_T) A
     WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
@@ -42,10 +42,16 @@
    </select>
   
   <select id="getEventDetailList" parameterType="int"  resultMap="EventMap">
-    SELECT E.EVENT_NO,E.EVENT_THUMNAIL_URL,E.TITLE,E.CONTENTS,E.HIT,E.START_AT,E.END_AT, I.PATH
+    SELECT E.EVENT_NO,E.EVENT_THUMNAIL_URL,E.TITLE,E.CONTENTS,E.STATE,E.HIT,E.START_AT,E.END_AT, E.DISCOUNT_PERCENT, E.DISCOUNT_PRICE, I.PATH
       FROM EVENT_T E LEFT OUTER JOIN EVENT_IMAGE_T I
         ON E.EVENT_NO = I.EVENT_NO
      WHERE E.EVENT_NO = #{eventNo}
+  </select>
+  
+  <select id="geteventImageList" parameterType="int" resultType="eventImageDto">
+    SELECT PATH
+      FROM EVENT_IMAGE_T
+     WHERE EVENT_NO = #{eventNo}
   </select>
   
   <update id="updateHit" parameterType="int">
@@ -75,7 +81,7 @@
         , #{title}
         , #{contents}
         , 0
-        , 1
+        , #{state}
         , #{eventThumnailUrl}
         , #{discountPercent}
         , #{discountPrice}
@@ -92,9 +98,9 @@
     , FILESYSTEM_NAME
     ) VALUES (
       #{eventNo}
-      #{path}
-      #{originalFilename}
-      #{filesystemName}
+    , #{path}
+    , #{originalFilename}
+    , #{filesystemName}
     )
   </insert>
   
@@ -122,5 +128,48 @@
      WHERE EVENT_NO = #{eventNo}
   </update>
  
+ 
+  <update id="updateDetailEvent" parameterType="eventDto">
+    UPDATE EVENT_T
+       SET TITLE = #{title}
+        ,  CONTENTS = #{contents}
+        ,  HIT = #{hit}
+        ,  EVENT_THUMNAIL_URL = #{eventThumnailUrl}
+        ,  DISCOUNT_PERCENT = #{discountPercent}
+        ,  DISCOUNT_PRICE = #{discountPrice}
+        ,  START_AT = #{startAt}
+        ,  END_AT = #{endAt}
+        ,  STATE = #{state}
+     WHERE EVENT_NO = #{eventNo}
+  </update>
+  
+  
+  <delete id="deleteEventImage" parameterType="int">
+    DELETE 
+      FROM EVENT_IMAGE_T
+     WHERE EVENT_NO = #{eventNo}
+  </delete>
+  
+  <select id="getEventImageInYesterday" resultType="eventImageDto">
+     SELECT E.EVENT_NO, E.EVENT_THUMNAIL_URL, E.STATE, I.FILESYSTEM_NAME,E.END_AT, I.PATH 
+       FROM EVENT_T E LEFT OUTER JOIN EVENT_IMAGE_T I
+         ON E.EVENT_NO = I.EVENT_NO
+      WHERE E.STATE = 0
+        AND I.PATH LIKE '/event/' || TO_CHAR(SYSDATE -1,'YYYY/MM/DD') ||'%'
+        AND E.END_AT = TO_CHAR(SYSDATE -1, 'YYYY/MM/DD')
+  </select>
+  
+  <update id="autoEnd">
+     UPDATE EVENT_T
+        SET STATE = 0
+      WHERE END_AT = TO_CHAR(SYSDATE -1,'YYYY/MM/DD')
+  </update>
+  
+  <update id="autoStart">
+     UPDATE EVENT_T
+        SET STATE = 1
+      WHERE END_AT = TO_CHAR(SYSDATE,'YYYY/MM/DD')
+  </update>
+  
   
 </mapper>

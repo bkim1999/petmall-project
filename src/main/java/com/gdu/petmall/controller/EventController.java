@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.gdu.petmall.dto.EventDto;
 import com.gdu.petmall.service.EventService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,8 +33,7 @@ public class EventController {
   
   @GetMapping("/detail.do")
   public String loadeventdetail(@RequestParam(value="eventNo", required = false , defaultValue = "0") int eventNo, Model model) {
-    EventDto event = eventService.loaddetailEventList(eventNo);
-    model.addAttribute("event",event);
+    eventService.loaddetailEventList(eventNo, model);
     return "event/detail";
   }
   
@@ -88,5 +86,18 @@ public class EventController {
     return eventService.changePrice(request);
   }
   
+  @GetMapping("/update.go")
+  public String loadupdate(@RequestParam(value="eventNo", required = false , defaultValue = "0") int eventNo, Model model) {
+      eventService.loaddetailEventList(eventNo, model);
+      return "event/update";
+   }
+  
+  @PostMapping("/update.do")
+  public String Reupdate(MultipartHttpServletRequest multipartrequest, Model model) throws Exception {
+    eventService.updateDetailEvent(multipartrequest, model);
+    int eventNo = Integer.parseInt(multipartrequest.getParameter("eventNo"));
+    return "redirect:/event/detail.do?eventNo="+eventNo;
+  }
+
   
 }

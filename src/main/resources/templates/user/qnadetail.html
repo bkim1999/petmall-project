@@ -6,11 +6,17 @@
 <body>
 
   <div th:replace="~{/layout/header::header}"></div>
-
+<style>
+.center-text {
+    text-align: center; /* 요소 안의 텍스트를 가운데 정렬합니다. */
+    margin: 0 auto; 
+    }
+</style>
   <div class="main_wrap">
-
-    <h1>문의글 상세보기</h1>
-    
+	  
+	<div class="center-text">
+	    <h1>Q&A</h1>
+	</div>
     <hr>
 
 		    <!-- Qna글 상세보기 -->
@@ -20,25 +26,20 @@
 				        <input type="hidden" name="productNo" th:value="${qna.productNo}">
 				        <input type="hidden" name="title" th:value="${qna.title}">
 				        <input type="hidden" name="contents" th:value="${qna.contents}">
+						<input type="text" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
 				    </form>
 				</div>
+				
+				<input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
 		
-		      <div>
-		        <h1 class="title mt-4" th:text="${qna.title}"></h1>
+				  
+		        <h3 class="title mt-4" th:text="${qna.title}"></h3>
 		        <c:set var="groupNo" value="${param.groupNo}" />
 		        <div>작성일: <span th:text="${qna.createdAt}"></span></div>
 		        <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
 		        <div>문의 내용: <span th:text="${qna.contents}"></span></div>
-		        <div>그룹번호: <span th:text="${groupNo}"></span></div>
-		      </div>
-		    </div>
+		        
 		
-		    <hr>
-    
-
-
-  
-
 	<!-- 스크립트 구문을 통해 해당 숫자에 따른 문자열 반환시킴 -->
 	<script th:inline="javascript">
 	  function updateDisplayedTitle() {
@@ -61,11 +62,10 @@
 	  updateDisplayedTitle(); // Update the displayed title initially
 	</script>
 
-    <hr>
 
 	<!-- 첨부파일 다운로드 관련 코드 -->
     <hr class="my-3">
-    <h5>첨부 다운로드</h5>
+    <h5>첨부 파일 다운로드</h5>
     <div>
       <th:block th:if="${#lists.isEmpty(qattachList)}">
         <div>첨부 없음</div>
@@ -81,20 +81,13 @@
 
     <hr>
 	
-	<!-- 상세보기 게시글 삭제하기-->
-    <div>
-      <h3>게시글 삭제하기</h3>
-      <button type="button" id="btn_remove" class="btn btn-danger btn-sm">삭제</button>
-    </div>
-
-    <hr>
 		<!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
-		<h5>답변 작성하기</h5>
 		
 		<div class="blind write_tr">
-		  <div>
+		  <div class= "admin">
+			<h5>답변, 추가 문의사항 작성하기</h5>
 		    <c:set var="groupNo" value="${param.groupNo}" />
-		    <form method="post" th:action="@{/user/qnadetail/addReply.do}" id="reply_form">
+		    <form method="post" th:action="@{/user/qnadetail/addReply.do}"enctype="multipart/form-data">
 		      <div class="input-group mb-3">
 		        <label class="input-group-text" id="inputGroup-sizing-default">작성자</label>
 		        <input type="text" name="email" th:value="${session.user.email}" readonly class="form-control">
@@ -104,36 +97,32 @@
 		        <c:set var="groupNo" value="${param.groupNo}" />
 		        <label for="contents" class="input-group-text">내용</label>
 		        <textarea name="contents" id="contents" class="form-control" aria-label="With textarea"></textarea>
-		        <hr>
 		        <input type="hidden" name="groupNo" th:value="${groupNo}">
 		        <input type="hidden" name="depth" th:value="${qna.depth}">
 		        <input type="hidden" name="parentNo" th:value="${qna.qnaNo}">
-		        <button type="submit" class="btn btn-primary btn-sm">댓글달기</button>
+		        <button type="submit" name="qnaNo" th:value="${qna.qnaNo}" class="btn btn-primary btn-sm">댓글달기</button>
 		      </div>
 		    </form>
 		  </div>
-		</div>
+		 </div>
+
 
 
     <hr>
 	
-	<h1>답변</h1>
+	<h3>게시글 답변 및 내용</h3>
 	<div th:if="${commentList}">
 	    <div th:each="com : ${commentList}">
 	        <div>
 	            <div>작성자 이메일: <span th:text="${com.userDto.email}"></span></div>
 	            <div>이름: <span th:text="${com.userDto.name}"></span></div>
-	            <div>질문 번호: <span th:text="${com.qnaNo}"></span></div>
-	            <div>유저번호: <span th:text="${com.userDto.userNo}"></span></div>
-	            <div>상태: <span th:text="${com.status}"></span></div>
 	            <div>내용: <span th:text="${com.contents}"></span></div>
-	            <div>답글여부: <span th:text="${com.depth}"></span></div>
 	        </div>
 	    </div>
 	</div>
 
-
     <hr>
+      <button type="button" id="btn_remove" class="btn btn-light btn_write">글 전체 내용삭제</button>
 	
 	<!-- 스크립트 기능으로 댓글 추가알림-->
     <script th:inline="javascript">
@@ -172,6 +161,15 @@
         });
       };
        
+      const fnState = () => {
+		var state =  $('#state').val();
+		if(state ==1)
+		{
+			$('.admin').show();
+		}else{
+			$('.admin').hide();
+		}
+	  };
       
 
       $(document).ready(function () {
@@ -179,6 +177,7 @@
         fnAddReplyResult();
         fnAddReply();
         fnDownload();
+        fnState();
       });
     </script>
 

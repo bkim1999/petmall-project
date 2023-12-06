@@ -5,14 +5,14 @@
 <body>
   <div th:replace="~{/layout/header::header}"></div>
   <div class="main_wrap">
-    <div class="wrap wrap_6">
-      <h1>문의글 Q&A 작성하는곳</h1>
-    </div>
+	<div class="wrap wrap_6" style="text-align: center;">
+		<h1>Q&A</h1>
+	</div>
     <form id="frm_qna_add" method="post" th:action="@{/qna/add.do}" enctype="multipart/form-data">
-		<div class="mt-3">
-		  <label for="productNo" class="form-label">제품번호</label>
-		  <input type="text" name="productNo" id="productNo" class="form-control" required>
-		</div>
+	<div class="mt-3">
+	  <label for="productNo" class="form-label">제품번호</label>
+	  <input type="text" name="productNo" id="productNo" class="form-control" pattern="[0-9]+" title="숫자만 입력하세요 (0-9)" required>
+	</div>
 	    
 		<div class="mt-3">
 		  <label for="title" class="form-label">제목</label>
@@ -38,14 +38,14 @@
 	    			    
 		<hr>
 		
-		<div>추가한 첨부파일</div>
+		<div>추가한 첨부파일 정보 확인</div>
 		<div class="attached_list mt-2" id="attached_list"></div>
 		<div class="text-center mt-5">
 		  <a th:href="@{/qna/list.do}" class="mr-2">
-		    <button class="btn btn-secondary" type="button">작성취소</button>
+		    <button class="btn btn-light btn_write" type="button">작성취소</button>
 		  </a>
 		  <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-		  <button type="submit" class="btn btn-primary">작성완료</button>
+		  <button type="submit" class="btn btn-dark">작성완료</button>
 		</div>
 
 	    

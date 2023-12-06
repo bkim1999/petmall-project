@@ -1,37 +1,64 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header::head('QNA 게시판')}"></head>
+<style>
+/* Center aligning the content */
+.main-content {
+    width: 850px;
+    margin: 0 auto;
+}
+
+/* Additional styles for form elements */
+.form-control {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+}
+
+/* Adjustments for specific inputs */
+#postcode,
+#roadAddress,
+#jibunAddress,
+#detailAddress,
+#extraAddress {
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+}
+</style>
 <body>
 
  <div th:replace="~{/layout/header::header}"></div>
  
- <div class="wrap wrap 9"><h1>주문 상세 정보 입력 </h1></div>
-
-    <h3>주문자 정보</h3>
-    
-<div th:if="${session.user != null}">
-    <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
-    <div>구매자 이름: <span th:text="${session.user.name}"></span></div>
-    <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
-    <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
-</div>
-    
-    <form id="frm_detail" method="post" th:action="@{/order/add.do}" enctype="multipart/form-data">
-    <h3>받는분 정보</h3>
-    
-    <div>
-      <label for="reName">받는분 이름</label>
-      <input type="text" name="reName" id="reName">
-      <span id="re_name"></span>
-    </div>
-    
-    <div>
-      <label for="reTell">휴대전화</label>
-      <input type="text" name="reTell" id="reTell">
-      <span id="re_tell"></span>
-    </div>
-        
-    <div>받는분 정보</div>
+ <div class="main-content">
+	<h2>주문 상세 정보 입력 및 확인 </h2>
+	<hr>
+        <h3>구매자 정보</h3>
+        <div th:if="${session.user != null}">
+            <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
+            <div>구매자 이름: <span th:text="${session.user.name}"></span></div>
+            <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
+            <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
+        </div>
+    	<hr>
+        <form id="frm_detail" method="post" th:action="@{/order/add.do}" enctype="multipart/form-data">
+        <h3>받는분 정보</h3>
+        <div class="larger-input">
+            <label for="name">받는분 이름</label>
+            <input type="text" name="reName" id="reName" class="form-control larger-input">
+            <span id="re_name"></span>
+        </div>
+        <div class="larger-input">
+            <label for="reTell">휴대전화</label>
+            <input type="text" name="reTell" id="reTell" class="form-control larger-input">
+            <span id="re_tell"></span>
+        </div>
     
 <!--/* 주소 */-->
 <div>
@@ -110,18 +137,17 @@
 
 </div>
 
-    <div>
+    <div class="larger-input">
         <label for="reText">메모</label>
-        <input type="text" name="reText" id="reText">
+        <input type="text" name="reText" id="reText" class="form-control larger-input">
         <span id="re_text"></span>
-    </div>    
-    
-    <div>
+    </div>
+    <div class="larger-input">
         <label for="totalPrice">총금액</label>
-        <input type="text" name="totalPrice" id="totalPrice">
+        <input type="text" name="totalPrice" id="totalPrice" class="form-control larger-input">
         <span id="total_price"></span>
     </div>
-    
+    <hr>
     <input type="hidden" name="yourOrder" id="yourOrder">
     <input type="hidden" name="userNo" th:value="${session.user.userNo}">
     <button type="submit" id="btn_answer">주문하기</button>
@@ -152,7 +178,7 @@
   createyourOrder();
   
 </script> 
- 
+ </div>
   <div th:replace="~{/layout/footer::footer}"></div>
   
 </body>
