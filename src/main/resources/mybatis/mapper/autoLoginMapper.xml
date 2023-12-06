@@ -9,7 +9,6 @@
 
 
 
-	<!--자동로그인사용자 토큰정보 삽입-->
 	<insert id="saveAutoLoginToken" parameterType="AutoLoginDto">
 		INSERT INTO AUTO_LOGIN_T (
 		TOKEN,
@@ -27,7 +26,6 @@
 	</insert>
 
 
-	<!--자동로그인 정보 조회-->
 	<select id="getAutoLoginTokenInfo" parameterType="String" resultType="AutoLoginDto">
 		SELECT EMAIL,PW,USER_NO,TOKEN,LAST_ACCESS
 		FROM AUTO_LOGIN_T
@@ -35,7 +33,6 @@
 	</select>
 	
 	
-	<!--자동로그인 해제-->
 	<delete id="deleteAutoLoginToken">
 		DELETE FROM AUTO_LOGIN_T 
 		WHERE EMAIL=#{email}

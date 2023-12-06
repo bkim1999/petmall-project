@@ -35,11 +35,11 @@ public class RequiredLoginInterceptor implements HandlerInterceptor {
       out.flush();
       out.close();
       
-      return false;  // 가로챈 컨트롤러 요청이 동작하지 않는다.
+      return false;  
       
     }
     
-    return true;     // 가로챈 컨트롤러 요청이 동작한다.
+    return true;     
     
   }
   

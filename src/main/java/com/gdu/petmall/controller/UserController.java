@@ -32,7 +32,7 @@ public class UserController {
   private final UserService userService;
 
   
-  //로그인 폼으로 이동
+  //로그인
   @GetMapping(value = "/login.form")
   public String loginForm(HttpServletRequest request, Model model) throws Exception{
     
@@ -67,7 +67,7 @@ public class UserController {
   
   
   
- // 회원가입 방식 선택 폼으로 이동
+ // 회원가입 방식 선택 
   @GetMapping(value = "/join_option.form")
   public String joinOption(HttpServletRequest request, Model model)throws Exception {
     
