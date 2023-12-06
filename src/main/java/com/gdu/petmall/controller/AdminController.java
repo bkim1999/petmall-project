@@ -43,6 +43,12 @@ public class AdminController {
   }
   
   @ResponseBody
+  @GetMapping("/admin.adminanswer.ajaxALL")
+  public Map<String, Object> getAjaxAlllist(HttpServletRequest request) {
+    return adminService.getAjaxAnswerList();
+  }
+  
+  @ResponseBody
   @GetMapping(value="/getlist.do", produces="application/json")
   public Map<String, Object> productDetailList(HttpServletRequest request) {
     return productService.loadProductList(request);

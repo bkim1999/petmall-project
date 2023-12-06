@@ -11,4 +11,5 @@ public interface AdminService {
   public void getQna(HttpServletRequest request, Model model);
   public Map<String, Object> getEvent();
   public Map<String, Object> getAjaxAlllist();
+  public Map<String, Object> getAjaxAnswerList(HttpServletRequest request);
 }

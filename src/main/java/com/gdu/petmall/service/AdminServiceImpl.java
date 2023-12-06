@@ -58,6 +58,16 @@ public class AdminServiceImpl implements AdminService {
     
     return Map.of("qnaList",qnaList);
   }
+  
+  @Override
+  public Map<String, Object> getAjaxAnswerList(HttpServletRequest request) {
+    
+    int checkFlag = Integer.parseInt(request.getParameter("checkFlag"));
+    
+    List<QnaDto> qnaAnswerList = qnaMapper.confirmAnswer(checkFlag);
+    
+    return Map.of("qnaAnswerList",qnaAnswerList);
+  }
     
   
 }
