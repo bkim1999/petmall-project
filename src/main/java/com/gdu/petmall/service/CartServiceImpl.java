@@ -56,12 +56,14 @@ public class CartServiceImpl implements CartService {
   @Override
   public void getList(HttpServletRequest request, Model model) {
     
+	int finalTotalCount=Integer.parseInt(request.getParameter("finalTotalCount"));
     HttpSession session = request.getSession();
     UserDto user = (UserDto)session.getAttribute("user");
     int userNo = user.getUserNo();
     
     List<CartDto> cartList = cartMapper.getCartList(userNo);
     
+    model.addAttribute("finalTotalCount", finalTotalCount);
     model.addAttribute("cartList", cartList);
     
   }

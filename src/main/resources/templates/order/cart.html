@@ -100,7 +100,7 @@
                 <input type="hidden" name="userNo"   class="" th:value="${c.userDto.userNo}">
                 <input type="hidden" name="productNo"class="productNo" th:value="${c.productDto.productNo}"size="3" >
                 <input type="hidden" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
-                <button type="submit"name=""         class="btn_remove btn btn-danger">삭제</button>
+                <button type="submit"name="total" id="total"        class="btn_remove btn btn-danger">삭제</button>
               </td>
             </tr>  
           </th:block>
@@ -194,6 +194,9 @@
       $(".delivery_price").text(deliveryPrice);   
       // 최종 가격(총 가격 + 배송비)
       $(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());
+      
+      var str = '<input type="hidden" id="finalTotalPrice" name="finalTotalPrice" value="'+finalTotalPrice+'">';
+      $('#frm_order').append(str);
     }
    });
 
