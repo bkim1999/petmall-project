@@ -37,8 +37,8 @@
  <div th:replace="~{/layout/header::header}"></div>
  
  <div class="main-content">
-	<h2>주문 상세 정보 입력 및 확인 </h2>
-	<hr>
+   <h2>주문 상세 정보 입력 및 확인 </h2>
+   <hr>
         <h3>구매자 정보</h3>
         <div th:if="${session.user != null}">
             <div>구매자 회원번호: <span th:text="${session.user.userNo}"></span></div>
@@ -46,7 +46,7 @@
             <div>구매자 휴대전화: <span th:text="${session.user.mobile}"></span></div>
             <div>구매자 이메일: <span th:text="${session.user.email}"></span></div>
         </div>
-    	<hr>
+       <hr>
         <form id="frm_detail" method="post" th:action="@{/order/add.do}" enctype="multipart/form-data">
         <h3>받는분 정보</h3>
         <div class="larger-input">
@@ -142,10 +142,11 @@
         <input type="text" name="reText" id="reText" class="form-control larger-input">
         <span id="re_text"></span>
     </div>
+    
     <div class="larger-input">
         <label for="totalPrice">총금액</label>
-        <input type="text" name="totalPrice" id="totalPrice" class="form-control larger-input">
-        <span id="total_price"></span>
+        <input type="text" readonly name="totalPrice" id="totalPrice" class="form-control larger-input" th:value="${totalPrice}">
+        <span id="total_price" ></span>
     </div>
     <hr>
     <input type="hidden" name="yourOrder" id="yourOrder">

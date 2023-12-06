@@ -36,7 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
   private final MyFileUtils myFileUtils;
   
   
-  public Map<String, Object> loadReviewList(HttpServletRequest request) {
+  public Map<String, Object> loadProductReviewList(HttpServletRequest request) {
     int productNo = Integer.parseInt(request.getParameter("productNo"));
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
@@ -45,7 +45,7 @@ public class ReviewServiceImpl implements ReviewService {
     myPageUtils.setPaging(page, reviewCount, display);
     
     opt = Optional.ofNullable(request.getParameter("order"));
-    String order = opt.orElse("REVIEW_CREATED_AT");
+    String order = opt.orElse("REVIEW_MODIFIED_AT");
     
     
     Map<String, Object> map = Map.of("productNo", productNo
@@ -54,7 +54,28 @@ public class ReviewServiceImpl implements ReviewService {
                                    , "end", myPageUtils.getEnd());
     
     List<ReviewDto> reviewList = reviewMapper.getProductReviewList(map);
-    System.out.println("dddd  " + reviewList);
+    return Map.of("reviewList", reviewList
+                , "paging", myPageUtils.getAjaxPaging());
+  }
+  
+  @Override
+  public Map<String, Object> loadUserReviewList(HttpServletRequest request) {
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int reviewCount = reviewMapper.getUserReviewCount(userNo);
+    int display = 10;
+    myPageUtils.setPaging(page, reviewCount, display);
+    opt = Optional.ofNullable(request.getParameter("order"));
+    String order = opt.orElse("REVIEW_MODIFIED_AT");
+    
+    Map<String, Object> map = Map.of("userNo", userNo
+                                   , "order", order
+                                   , "begin", myPageUtils.getBegin()
+                                   , "end", myPageUtils.getEnd());
+    
+    List<ReviewDto> reviewList = reviewMapper.getUserReviewList(map);
+
     return Map.of("reviewList", reviewList
                 , "paging", myPageUtils.getAjaxPaging());
   }
@@ -116,7 +137,28 @@ public class ReviewServiceImpl implements ReviewService {
     
     return (addReviewResult == 1) && (reviewImages.size() == attachCount);
       
+  }
+  
+  @Override
+  public Map<String, Object> loadNotReviewedList(HttpServletRequest request) {
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int notReviewedCount = reviewMapper.getNotReviewedCount(userNo);
+    int display = 10;
+    myPageUtils.setPaging(page, notReviewedCount, display);
+    opt = Optional.ofNullable(request.getParameter("order"));
+    String order = opt.orElse("ORDER_DATE");
     
+    Map<String, Object> map = Map.of("userNo", userNo
+                                   , "order", order
+                                   , "begin", myPageUtils.getBegin()
+                                   , "end", myPageUtils.getEnd());
+    
+    List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
+    System.out.println("here!!!: " + notReviewedList);
+    return Map.of("notReviewedList", notReviewedList
+                , "paging", myPageUtils.getAjaxPaging());
   }
   
   

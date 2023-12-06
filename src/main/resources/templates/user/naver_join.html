@@ -17,6 +17,11 @@ div{margin-bottom:10px ;}
 .service_agree{margin-left:5px;}
 #btn_join{width:850px;}
 
+.btn-primary{ background-color:rgb(200, 176, 128); border:1px solid #E0C891;  font-weight:600; color: white;}
+.btn-primary:hover{border:1px solid rgb(234, 217, 179); background-color: rgb(169, 147, 99); color: antiquewhite;}
+.n_logo{width: 60px; height: 60px; margin-right: 10px; opacity: 0.9;}
+.title{height: 50px;}
+ 
 label{line-height:50px;}
 
 
@@ -30,7 +35,8 @@ label{line-height:50px;}
 
 
   <form id="frm_naver_join" method="post" th:action="@{/user/naver/join.do}">
-     <h1 class="title">네이버 간편가입</h1>
+    <h1 class="title"><img th:src="@{/image/btnW_아이콘사각.png}" class="n_logo">네이버 간편가입</h1>
+     
 <!--이메일-->    
     <div>
       <label for="email" >이메일</label>

@@ -6,6 +6,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.gdu.petmall.dao.AutoLoginMapper;
+import com.gdu.petmall.dao.UserMapper;
+import com.gdu.petmall.interceptor.AutoLoginInterceptor;
+import com.gdu.petmall.interceptor.RequiredLoginInterceptor;
+import com.gdu.petmall.interceptor.ShouldNotLoginInterceptor;
+
 import lombok.RequiredArgsConstructor;
 
 @EnableWebMvc
@@ -13,9 +19,28 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
   
-  @Override
+	
+  private final RequiredLoginInterceptor requiredLoginInterceptor;
+  private final ShouldNotLoginInterceptor shouldNotLoginInterceptor;
+  private final AutoLoginMapper autoLoginMapper;
+  private final UserMapper userMapper;
+
+@Override
   public void addInterceptors(InterceptorRegistry registry) {
-    
+	
+	
+	  registry.addInterceptor(new AutoLoginInterceptor( autoLoginMapper,userMapper))
+      .addPathPatterns("/**") 
+      .excludePathPatterns(); 
+	  
+	  
+	 
+	  registry.addInterceptor(new ShouldNotLoginInterceptor())
+	  .addPathPatterns("/user/join.form","/login.form","/user/join_option.form","/user/find_id.form","/user/change_pw.form");
+	  
+	 
+	 registry.addInterceptor(new RequiredLoginInterceptor())
+	 .addPathPatterns("/mypage");
   }
   
   @Override

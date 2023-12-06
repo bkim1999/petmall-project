@@ -9,7 +9,7 @@ import com.gdu.petmall.dto.UserDto;
 @Mapper
 public interface ProfileMapper {
 
-	public int insertProfile(ProfileDto profile);// 프로필 첨부
-	public ProfileDto getProfileImage(ProfileDto profile ); // 첨부한 이미지 가져옴
-	public int deleteOld(ProfileDto profile);//삭제
+	public int insertProfile(ProfileDto profile);
+	public ProfileDto getProfileImage(ProfileDto profile );
+	public int deleteOld(ProfileDto profile);
 }
