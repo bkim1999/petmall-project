@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header :: head('내 리뷰')}"></head>
+<style>
+  
+</style>
+<body>
+  <div th:replace="~{layout/header :: header}"></div>
+  <div>
+    <div>
+      <button type="button" id="btn_my_review">내 리뷰</button>
+      <button type="button" id="btn_not_reviewed">아직 작성하지 않은 리뷰</button>
+    </div>
+    <div id="review_list"></div>
+  </div>
+  <div th:replace="~{layout/footer :: footer}"></div>
+</body>
+<script th:inline="javascript">
+
+  const fnClickButton = () => {
+    $(document).on('click', '#btn_my_review', function(){
+      fnGetReviewList();
+    });
+    $(document).on('click', '#btn_not_reviewed', function(){
+      fnGetNotReviewList();
+    });
+  }
+
+  var page = 1;
+  var order = 'REVIEW_MODIFIED_AT';
+  var userNo = /*[[${session.user.userNo}]]*/ 0;
+  const fnGetReviewList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '/review/getMyReviewList.do',
+      data: {'userNo' : userNo
+           , 'page' : page
+           , 'order' : order
+            },
+      // 응답
+      dataType: 'json',
+      success: (resData) => {  // resData = {"reviewList": [], "paging": ""}
+        $('#review_list').empty();
+        $.each(resData.reviewList, function(i, review){
+          let str = '<h1>내 리뷰 목록</h1>';
+          str += '<div class="review" data-review-no="' + review.reviewNo + '">';
+          str += '<h4>';
+          str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
+          str += '</h4>';
+          str += '<div>' + review.reviewModifiedAt + '</div>';
+          str += '<div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
+          str += '<div class="d-flex mt-3">'
+          str += '  <div class="w-100">'
+          str += '    <h5 class="review_title">' + review.reviewTitle + '</h5>'
+          str += '    <div class="review_contents">' + review.reviewContents + '</div>';
+          str += '  </div>'
+          str += '  <div class="review_thumbnail">';
+          if(review.reviewImageDto !== null){
+            str += '    <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '    <image src="기본이미지">';
+          }
+          str += '  </div>';
+          str += '</div>';
+          $('#review_list').append(str);
+        });
+        $('#review_list').append(resData.paging);
+      }
+    })
+  }
+  
+  const fnGetNotReviewList = () => {
+    $.ajax({
+      // 요청
+      type: 'get',
+      url: '/review/getNotReviewedList.do',
+      data: {'userNo' : userNo
+           , 'page' : page
+           , 'order' : order
+            },
+      // 응답
+      dataType: 'json',
+      success: (resData) => {  // resData = {"notReviewedList": [], "paging": ""}
+          console.log(resData);
+        $.each(resData.notReviewedList, function(i, notReviewed){
+          $('#review_list').empty();
+          let str = '<h1>작성 가능한 리뷰</h1>';
+          str += '<div class="review d-flex mt-3" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
+          str += '  <div class="thumbnail">';
+          if(notReviewed.reviewImageDto !== null){
+            str += '    <image src="/' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '    <image src="기본이미지">';
+          }
+          str += '  </div>';
+          str += '  <div>';
+          str += '    <div>구매일: ' + notReviewed.orderDate + '</div>';
+          str += '    <div>' + notReviewed.productDto.productName + '</div>';
+          str += '    <div>옵션: ' + notReviewed.productOptionDto.optionName + '</div>';
+          str += '  </div>'
+          str += '  <div>'
+          str += '    <form method="post" action="/review/addReview.form">';
+          str += '    <button type="button" id="btn_add_review">리뷰 작성</button>';
+          str += '  </div>'
+          str += '</div>';
+          $('#review_list').append(str);
+        });
+        $('#review_list').append(resData.paging);
+      }
+    })
+  }
+  
+  fnClickButton();
+  fnGetReviewList();
+
+</script>

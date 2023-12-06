@@ -58,6 +58,17 @@
 }
 .span_center{text-align:center; margin-bottom: 20px; }
 .span_center a{color: rgb(192, 192, 192);}
+
+
+
+/*자동로그인*/
+input[type="checkbox"]{visibility: hidden;}
+.color{
+  color:rgb(240, 218, 62);
+}
+.auto_login{margin-bottom: 20px;}
+.auto_login{margin-left: 10px;}
+.auto_login_label{font-weight: 500;}
 </style>
 
 <body>
@@ -79,8 +90,13 @@
 <!-- 로그인 폼  (post)-->
 <form method="post" th:action="@{/user/login.do}" id="frm_login" >
 
-
-
+<!--자동로그인-->
+ <div class="auto_login">
+    <label for="auto_login" class="auto_login_label">자동로그인<i id="icon" class="fa-regular fa-star"></i></i>
+    <input type="checkbox" id="auto_login" name="auto_login"></label>
+ </div>
+ 
+<!--기본 로그인 폼-->
 <div><input type="text"   id="email"  name="email"  placeholder="ID(Email)" class="form-control"></div>
 <div><input type="password"  id="pw" name="pw"  placeholder="PASSWORD" class="form-control"></div>
 
@@ -92,7 +108,7 @@
       
   </div>
   
-  
+<!--간편가입-->
 <div class="simple_login_wrap">
     <!-- 네이버 로그인 페이지 이동  -->
 <div class="btn_naver btn_margin"><a th:href="${naverLoginURL}"><img th:src="@{/image/btnG_완성형.png}"></a></div>
@@ -114,6 +130,36 @@
 
 </div>
 </div>
+
+<!--스크립트영역-->
+<script th:inline="javascript">
+  
+  const fnAutoLoginCheck=()=>{
+    
+    $('#auto_login').click(()=>{
+       const isChecked = $('#auto_login').is(':checked');
+       if(isChecked==true)
+       {
+          {
+         $('#icon').attr('class','fa-solid fa-star color');
+         $('.auto_login_label').css('font-weight','800');
+         $('.auto_login_label').css('color','black');
+       }
+       }
+       else
+       {
+         $('#icon').attr('class','fa-regular fa-star');
+         $('.auto_login_label').css('font-weight','');
+         $('.auto_login_label').css('color','#9A9093');
+       }
+      })
+  }
+  
+  
+ <!--함수 호출부--> 
+fnAutoLoginCheck();
+</script>
+
  <div th:replace="~{layout/footer :: footer}"></div>
 
 

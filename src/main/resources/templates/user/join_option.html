@@ -12,15 +12,19 @@
 /*중앙정렬*/
 .join_opt_wrap{margin:0 auto; width:290px;}
 .btn_margin{width:290px;}
+.other_join{display: flex;}
 
 /*네이버 가입버튼*/
-.btn_naver{margin-top:40px;}
-.btn_naver img{width:290px; height:70px;}
+.btn_naver img{width:140px; height:40px;}
 .join_opt_wrap{margin:0 auto;}
 
+/*카카오 가입 버튼*/
+.btn_kakao img{width:140px; height:40px;}
+
 /*일반가입 버튼*/
-.btn-primary{width:290px; height:70px;}
 .txt_line{height:30px; line-height:55px; font-size:large; color: white;}
+.btn-primary{width:290px; height:70px;margin-top:40px; background-color:rgb(200, 176, 128); border:1px solid #E0C891; letter-spacing:2px; font-weight:600; color: white;}
+.btn-primary:hover{border:1px solid rgb(234, 217, 179); background-color: rgb(169, 147, 99); color: antiquewhite;}
 
 /*버튼간 간격*/
 .btn_margin{margin-bottom:10px;}
@@ -31,18 +35,19 @@
 
 
 
+<!--일반가입-->
+<a  class="btn btn-primary btn_margin"  th:href="@{/user/join.form}"><span class="txt_line">가입하기</span></a>
 
+<div class="other_join">
 <!--네이버가입-->
 <div class="btn_naver btn_margin"><a th:href="${naverLoginURL}" ><img th:src="@{/image/btnG_완성형.png}" width="200px" ></a></div>
 
 <!--카카오가입-->
-<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_large_narrow.png}" width="290px" ></a></div>
-
-<!--일반가입-->
-<a  class="btn btn-primary btn_margin"  th:href="@{/user/join.form}"><span class="txt_line">가입하기</span></a>
+<div class="btn_kakao btn_margin"><a th:href="${kakaoLoginURL}" ><img th:src="@{/image/kakao_login_large_narrow.png}" width="160px" ></a></div>
 
 </div>
 
+</div>
 
 
  <div th:replace="~{layout/footer :: footer}"></div>

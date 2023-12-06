@@ -7,6 +7,7 @@
 /*중앙 정렬*/
 .join_wrap{width:850px; margin:0 auto;}
 
+
 /*라디오 정렬*/
 .test_radio_label{ margin-right:20px; margin-left:10px;}
 .gender_radio{margin-right:10px; margin-left:10px;}
@@ -23,6 +24,11 @@
 .agree_div{height:40px; margin-top:10px;}
 .service_agree{margin-left:5px;}
 #btn_join{width:850px;}
+.btn_join{margin-bottom:20px;}
+
+.btn-primary{ background-color:rgb(200, 176, 128); border:1px solid #E0C891;  font-weight:600; color: white;}
+.btn-primary:hover{border:1px solid rgb(234, 217, 179); background-color: rgb(169, 147, 99); color: antiquewhite;}
+
 
 /*메시지 조정*/
 .msg{color: silver; padding-bottom: 10px; }
@@ -48,13 +54,13 @@
 <form  method="post"  th:action="@{/user/join.do}" id="frm_join">
 
 
-<!--개발용 라디오 버튼 admin_author_state( 추후에 삭제해야함)  -->
-<div>권한</div>
+<div style="visibility: hidden;">
+<div >권한</div>
 <div  class="form-check">
 <label for="user"  class="form-check-label test_radio_label"><input type="radio" id="user" name="admin_author_state" value="0" checked  class="form-check-input">사용자</label>
 <label for="admin" class="form-check-label test_radio_label"><input type="radio"id="admin" name="admin_author_state" value="1"  class="form-check-input">관리자</label>
 </div>
-
+</div>
 
 <!--/* 이름 */-->
 
@@ -225,7 +231,7 @@
 
 
 <!-- 버튼  -->
-<div>
+<div class="btn_join">
 <button class="btn btn-lg btn-primary " id="btn_join">회원가입하기(만14세이상)</button>
 </div>
 

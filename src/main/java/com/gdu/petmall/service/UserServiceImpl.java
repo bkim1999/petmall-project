@@ -8,12 +8,12 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,8 +27,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gdu.petmall.dao.AutoLoginMapper;
 import com.gdu.petmall.dao.ProfileMapper;
 import com.gdu.petmall.dao.UserMapper;
+import com.gdu.petmall.dto.AutoLoginDto;
 import com.gdu.petmall.dto.InactiveUserDto;
 import com.gdu.petmall.dto.ProfileDto;
 import com.gdu.petmall.dto.UserDto;
@@ -37,57 +39,74 @@ import com.gdu.petmall.util.MyJavaMailUtils;
 import com.gdu.petmall.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 
 
 @Transactional
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	
-	private final UserMapper userMapper;
-	private final ProfileMapper profileMapper;
-	private final MySecurityUtils mySecurityUtils;
-	private final MyJavaMailUtils myJavaMailUtils;
-	private final MyFileUtils myFileUtils;
 
 	
-	/*네이버 api 클라이언트정보*/
+	private final UserMapper userMapper;
+	private final MySecurityUtils mySecurityUtils;
+	private final MyJavaMailUtils myJavaMailUtils;
+	private final ProfileMapper profileMapper;
+	private final MyFileUtils myFileUtils;
+	private final AutoLoginMapper autoLoginMapper;
+
+	//네이버
   private final String client_id = "OsFLRfpdkM0BZr7yfZrr";
   private final String client_secret = "eiyecu8MwC";
-  
-  /*카카오 api 클라이언트정보*/
+  //카카오
   private final String kakao_api_key="c3db793b2723f0cd2a96e05470dbdc6f";
   private final String kakao_secret_key="i1Bd2PWwfhLAgkJ93YkXdYaf2v5UZc60";
 	
-/*로그인*/
 @Override
 public void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	 
+ 
+	
   String email = mySecurityUtils.preventXSS(request.getParameter("email"));
   String pw = mySecurityUtils.getSHA256(request.getParameter("pw")); 
+  String isAutoLoginActive=request.getParameter("auto_login");
   
   Map<String, Object> map = Map.of("email", email
                                  , "pw", pw);
 	
   
   HttpSession session = request.getSession();
-  
-  
-  //휴면 회원인지 확인
+
   InactiveUserDto inactiveUser = userMapper.getInactiveUser(map);
   if(inactiveUser != null) {
     session.setAttribute("inactiveUser", inactiveUser);
     response.sendRedirect(request.getContextPath() + "/user/active.form"); // 계정 활성페이지로 보내
   }
   
-  
-  //로그인 하기
   UserDto user = userMapper.getUser(map);
   
   
+  if(isAutoLoginActive!=null)
+  {
+	   Cookie userCookie=new Cookie("userCookie", session.getId());
+	   
+	   	userCookie.setPath("/");
+	    userCookie.setMaxAge(60*60*24*15); 
+	    response.addCookie(userCookie);
+	    int userNo=user.getUserNo();
+	      
+	    AutoLoginDto autoLoginDto=AutoLoginDto.builder()
+	    									 .email(email)
+	    									 .pw(pw)
+	    									 .token(userCookie.getValue())
+	    									 .userNo(userNo)
+	    									 .build();
+ 
+	    autoLoginMapper.saveAutoLoginToken(autoLoginDto);      
+  }
+ 
   
-  if(user != null) {				// 세션에 유저가 없으면
+  
+  if(user != null) {				
     request.getSession().setAttribute("user", user);
     userMapper.insertAccess(email);
     response.sendRedirect(request.getParameter("referer"));
@@ -103,25 +122,22 @@ public void login(HttpServletRequest request, HttpServletResponse response) thro
     
   }
 }
-	
 
 
-
-
-// 회원정보 가져와
 @Override
 public UserDto getUser(String email) {
   return userMapper.getUser(Map.of("email", email));
 }
 
 
-/*로그아웃*/
 @Override
 public void logout(HttpServletRequest request, HttpServletResponse response) {
 
 HttpSession session=request.getSession();
-session.invalidate();// 세션 초기화
-
+UserDto user = (UserDto) session.getAttribute("user");
+autoLoginMapper.deleteAutoLoginToken(user.getEmail());
+deleteCookie(response);
+session.invalidate();
 try {
 	response.sendRedirect(request.getContextPath()+"/main.do");
 	
@@ -131,11 +147,13 @@ e.printStackTrace();
 
 }
 
+public void deleteCookie(HttpServletResponse response){
+    Cookie dropCookie = new Cookie("userCookie", null); 
+    dropCookie.setPath("/");
+    dropCookie.setMaxAge(0); 
+    response.addCookie(dropCookie); 
+}
 
-
-
-
-/*이메일 체크*/
 @Transactional(readOnly=true)
 @Override
 public ResponseEntity<Map<String, Object>> checkEmail(String email) {
@@ -150,15 +168,9 @@ public ResponseEntity<Map<String, Object>> checkEmail(String email) {
   
 }
 
-
-/*인증코드 전송*/
 @Override
 public ResponseEntity<Map<String, Object>> sendCode(String email) {
-  
-  // RandomString 생성(6자리, 문자 사용, 숫자 사용)
   String code = mySecurityUtils.getRandomString(8, true, true);
-  
-  // 메일 전송
   myJavaMailUtils.sendJavaMail(email
                              , "petmall 인증 코드"
                              , "<div>인증코드는 <strong>" + code + "</strong>입니다.</div>");
@@ -168,9 +180,6 @@ public ResponseEntity<Map<String, Object>> sendCode(String email) {
 }
 
 
-
-
-/*회원가입*/
 @Override
 public void join(HttpServletRequest request, HttpServletResponse response) {
 
@@ -189,12 +198,7 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
   String detailAddress = mySecurityUtils.preventXSS(request.getParameter("detailAddress"));
   
   
-
   
-  
-  
-  
- // 이벤트 수신 동의 체크 안돼있으면 null 전달됨. null 처리 해야함
   String event = request.getParameter("event");
   Optional<String> opt = Optional.ofNullable(event);
    event = opt.orElse("off"); 
@@ -217,7 +221,6 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
       .adminAuthorState(adminAuthorState)
       .build();
   
-  // 이메일이 db에 존재하는지 확인하기.
   if(userMapper.getEmailResult(email)!=0||userMapper.getEmailResultInactive(email)!=0)
   {
     
@@ -269,8 +272,6 @@ public void join(HttpServletRequest request, HttpServletResponse response) {
 }
 
 
-
-/*회원탈퇴*/
 @Override
 public void leave(HttpServletRequest request, HttpServletResponse response) {
 
@@ -322,7 +323,6 @@ public void leave(HttpServletRequest request, HttpServletResponse response) {
 }
 	
 
-/*회원정보수정*/
 @Override
 public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
 	  String email = mySecurityUtils.preventXSS(request.getParameter("email"));
@@ -343,7 +343,6 @@ public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
 	  
 	  
 	  
-	 // 이벤트 수신 동의 체크 안돼있으면 null 전달됨. null 처리 해야함
 	  String event = request.getParameter("event");
 	  Optional<String> opt = Optional.ofNullable(event);
 	   event = opt.orElse("off"); 
@@ -389,7 +388,6 @@ public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
 
 
 
-/*포인트*/
 @Override
 public void getPoint(HttpServletRequest request, Model model) {
 
@@ -404,7 +402,6 @@ public void getPoint(HttpServletRequest request, Model model) {
 }
 
 
-/*아이디 찾기*/
 @Override
 public ResponseEntity<Map<String, Object>> findId(HttpServletRequest request) {
 	
@@ -413,7 +410,6 @@ public ResponseEntity<Map<String, Object>> findId(HttpServletRequest request) {
 	
 	String email= userMapper.getEmail(Map.of("name",name,"mobile",mobile));
 	
-	// 아이디가 검색되었을때
 	if(email!=null)
 	{
 		return new ResponseEntity<>(Map.of("email", email), HttpStatus.OK);
@@ -426,7 +422,6 @@ public ResponseEntity<Map<String, Object>> findId(HttpServletRequest request) {
 }
 
 
-/*일치하는 이메일 조회(비번 변경용)*/
 @Override
 public ResponseEntity<Map<String, Object>> changePw(HttpServletRequest request) {
 	
@@ -435,8 +430,6 @@ public ResponseEntity<Map<String, Object>> changePw(HttpServletRequest request) 
 	
 	
 	
-	// 일치하는 이메일이 있으면 비번 변경폼 보여주고 
-	//email을 modfyPw로 전달해야함 
 	if(userMapper.getEmailforPw(Map.of("email",email))==1) {
 		
 		return new ResponseEntity<>(Map.of("result", 1), HttpStatus.OK);
@@ -447,7 +440,6 @@ public ResponseEntity<Map<String, Object>> changePw(HttpServletRequest request) 
 
 }
 
-/*비번 변경 적용*/
 @Override
 public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
 
@@ -489,8 +481,6 @@ public void modifyPw(HttpServletRequest request, HttpServletResponse response) {
 
 }
 
-/* **************************네이버 api 관련 *********************** */
-/*네이버 간편 가입*/
 @Override
 public void naverJoin(HttpServletRequest request, HttpServletResponse response) {
   
@@ -511,7 +501,6 @@ public void naverJoin(HttpServletRequest request, HttpServletResponse response) 
   
   
   
-  // 이메일이 db에 존재하는지 확인하기.
   if(userMapper.getEmailResult(email)==1||userMapper.getEmailResultInactive(email)==1)
   {
     
@@ -558,8 +547,6 @@ public void naverJoin(HttpServletRequest request, HttpServletResponse response) 
  } 
 }
 
-
-/*네이버 로그인 연동 url  생성*/
 @Override
 public String getNaverLoginURL(HttpServletRequest request) throws Exception {
   
@@ -579,14 +566,13 @@ public String getNaverLoginURL(HttpServletRequest request) throws Exception {
 	
 }
 
-/*네이버 로그인 접근  토큰 발급 요청*/
 @Override
 public String getNaverLoginAccessToken(HttpServletRequest request) throws Exception {
   String code = request.getParameter("code");
   String state = request.getParameter("state");
   
   String apiURL = "https://nid.naver.com/oauth2.0/token";
-  String grant_type = "authorization_code";  // access_token 발급 받을 때 사용하는 값(갱신이나 삭제시에는 다른 값을 사용함)
+  String grant_type = "authorization_code";  
   
   StringBuilder sb = new StringBuilder();
   sb.append(apiURL);
@@ -596,12 +582,10 @@ public String getNaverLoginAccessToken(HttpServletRequest request) throws Except
   sb.append("&code=").append(code);
   sb.append("&state=").append(state);
   
-  // 요청
   URL url = new URL(sb.toString());
   HttpURLConnection con = (HttpURLConnection)url.openConnection();
-  con.setRequestMethod("GET");  // 반드시 대문자로 작성
+  con.setRequestMethod("GET");  
   
-  // 응답
   BufferedReader reader = null;
   int responseCode = con.getResponseCode();
   if(responseCode == 200) {
@@ -621,18 +605,15 @@ public String getNaverLoginAccessToken(HttpServletRequest request) throws Except
 
 }
 
-/*네이버 로그인 후속작업*/
 @Override
 public UserDto getNaverProfile(String accessToken) throws Exception {
   
-  // 요청
   String apiURL = "https://openapi.naver.com/v1/nid/me";
   URL url = new URL(apiURL);
   HttpURLConnection con = (HttpURLConnection)url.openConnection();
   con.setRequestMethod("GET");
   con.setRequestProperty("Authorization", "Bearer " + accessToken);
   
-  // 응답
   BufferedReader reader = null;
   int responseCode = con.getResponseCode();
   if(responseCode == 200) {
@@ -647,7 +628,6 @@ public UserDto getNaverProfile(String accessToken) throws Exception {
     responseBody.append(line);
   }
   
-  // 응답 결과(프로필을 JSON으로 응답) -> UserDto 객체
   JSONObject obj = new JSONObject(responseBody.toString());
   JSONObject response = obj.getJSONObject("response");
   UserDto user = UserDto.builder()
@@ -660,7 +640,6 @@ public UserDto getNaverProfile(String accessToken) throws Exception {
   return user;
 }
 
-/*네이버 로그인 */
 @Override
 public void naverLogin(HttpServletRequest request, HttpServletResponse response, UserDto naverProfile)throws Exception {
   String email = naverProfile.getEmail();
@@ -680,13 +659,10 @@ public void naverLogin(HttpServletRequest request, HttpServletResponse response,
     out.close();
   }
 }
-/* ***************************************************************** */
 
 
 
 
-/* ***************************카카오 api 관련****************************** */
-/*카카오 간편 가입*/
 @Override
 public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) {
   String email = request.getParameter("email");
@@ -705,7 +681,6 @@ public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) 
                   .agree(event != null ? 1 : 0)
                   .build();
 
-  // 이메일이 db에 존재하는지 확인하기.
   if(userMapper.getEmailResult(email)!=0||userMapper.getEmailResultInactive(email)!=0)
   {
     
@@ -755,7 +730,6 @@ public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) 
 }
 
 
-/*카카오 로그인 연동 url  생성*/
 @Override
 public String getKakaoLoginURL(HttpServletRequest request) throws Exception {
 
@@ -779,7 +753,6 @@ public String getKakaoLoginURL(HttpServletRequest request) throws Exception {
 
 }
 
-/*카카오 로그인 접근  토큰 발급 요청*/
 @Override
 public String getKakaoLoginAccessToken(HttpServletRequest request) throws Exception {
 
@@ -788,7 +761,7 @@ public String getKakaoLoginAccessToken(HttpServletRequest request) throws Except
   String state = request.getParameter("state");
   
   String apiURL = "https://kauth.kakao.com/oauth/token";
-  String grant_type = "authorization_code";  // access_token 발급 받을 때 사용하는 값(갱신이나 삭제시에는 다른 값을 사용함)
+  String grant_type = "authorization_code";  
   
   StringBuilder sb = new StringBuilder();
   sb.append(apiURL);
@@ -798,12 +771,10 @@ public String getKakaoLoginAccessToken(HttpServletRequest request) throws Except
   sb.append("&code=").append(code);
   sb.append("&state=").append(state);
   
-  // 요청
   URL url = new URL(sb.toString());
   HttpURLConnection con = (HttpURLConnection)url.openConnection();
-  con.setRequestMethod("GET");  // 반드시 대문자로 작성
+  con.setRequestMethod("GET");  
   
-  // 응답
   BufferedReader reader = null;
   int responseCode = con.getResponseCode();
   if(responseCode == 200) {
@@ -822,18 +793,15 @@ public String getKakaoLoginAccessToken(HttpServletRequest request) throws Except
 
   return obj.getString("access_token");
 }
-/*카카오 로그인 후속작업*/
 @Override
 public UserDto getKakaoProfile(String accessToken) throws Exception {
   
-  // 요청
   String apiURL = " https://kapi.kakao.com/v2/user/me";
   URL url = new URL(apiURL);
   HttpURLConnection con = (HttpURLConnection)url.openConnection();
   con.setRequestMethod("GET");
   con.setRequestProperty("Authorization", "Bearer " + accessToken);
-  
-  // 응답
+
   BufferedReader reader = null;
   int responseCode = con.getResponseCode();
   if(responseCode == 200) {
@@ -848,7 +816,6 @@ public UserDto getKakaoProfile(String accessToken) throws Exception {
     responseBody.append(line);
   }
   
-  // 응답 결과(프로필을 JSON으로 응답) -> UserDto 객체
   JSONObject obj = new JSONObject(responseBody.toString());
 
 
@@ -889,10 +856,6 @@ public void kakaoLogin(HttpServletRequest request, HttpServletResponse response,
 
 
 
-/* ******************************************************************* ** */ 
-
-
-/*회원 휴면 처리*/
 @Override
 public void inactiveUserBatch() {
 	
@@ -900,7 +863,6 @@ public void inactiveUserBatch() {
   userMapper.deleteUserForInactive();
 }
 
-/*휴면 복원*/
 @Override
 public void active(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 	
@@ -936,9 +898,6 @@ public void active(HttpSession session, HttpServletRequest request, HttpServletR
 
 
 
-/* ************************************** 프로필 이미지 ****************************/
-
-/*프로필 이미지 첨부*/
 @Override
 public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequest) throws Exception {
   
@@ -946,13 +905,11 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
 	int editResult=1;
 	int attachCount;
 	
-	// ajax로 전달한 formData 정보
 	 List<MultipartFile> files = multipartRequest.getFiles("files");
 	 int userNo=Integer.parseInt(multipartRequest.getParameter("userNo"));
 	 
 	 
 	 
-	//업로드된 파일이 있는지 없는지 확인
 	    if(files.get(0).getSize() == 0) {
 	        attachCount = 1;
 	      } else {
@@ -961,21 +918,18 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
 	    
 	    MultipartFile multipartFile = files.get(0); 
 	    
-	//파일이 존재하는지
 	    if(multipartFile != null && !multipartFile.isEmpty()) {
 	    	
-	        String path ="/user/myProfile"; // 파일 저장할 경로
+	        String path ="/user/myProfile"; 
 	        File dir = new File(path);
 	        if(!dir.exists()) {
 	          dir.mkdirs();
-	        }//if2
+	        }
 	        
-	//  파일 생성
-        String originalFilename = multipartFile.getOriginalFilename(); //원본이름
-        String filesystemName = myFileUtils.getFilesystemName(originalFilename);//저장이름
-        File file = new File(dir, filesystemName);   // 파일생성(저장경로,파일명)
+        String originalFilename = multipartFile.getOriginalFilename(); 
+        String filesystemName = myFileUtils.getFilesystemName(originalFilename);
+        File file = new File(dir, filesystemName);   
    
-    // 서버에 생성된 파일 저장
         multipartFile.transferTo(file);
 	    
 	
@@ -993,13 +947,12 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
         profileMapper.deleteOld(profile);
         editResult=profileMapper.insertProfile(profile);  
 
-	    }//if1
+	    }
 
   return Map.of("editResult",editResult);
 }
 
 
-/*프로필 이미지 가져오기*/
 @Override
 	public Map<String, Object> getProfileImage(HttpServletRequest request) {
 		
@@ -1017,13 +970,11 @@ public Map<String, Object> editProfile(MultipartHttpServletRequest multipartRequ
 	}	
 
 
-/*프로필 이미지 삭제하기*/
 @Override
 public void removeProfileImage(HttpServletRequest request) {
 
   int userNo=Integer.parseInt(request.getParameter("userNo"));
-  
-  // 삭제시 대체할 정보
+
   ProfileDto profile=ProfileDto.builder()
       .path("null")
       .originalFilename("null")
@@ -1033,11 +984,9 @@ public void removeProfileImage(HttpServletRequest request) {
               .build())
       .build();
   
-  // 삭제하기
   profileMapper.deleteOld(profile);
   
   
-  //삽입하기
   profileMapper.insertProfile(profile);
 }
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.gdu.petmall.dao.AutoLoginMapper">
+   
+
+
+
+
+	<insert id="saveAutoLoginToken" parameterType="AutoLoginDto">
+		INSERT INTO AUTO_LOGIN_T (
+		TOKEN,
+		LAST_ACCESS,
+		EMAIL,
+		PW,
+		USER_NO
+		)VALUES(
+		#{token},
+		TO_CHAR(SYSDATE,'YYYY-MM-DD_HH24:MI:SS'),
+		#{email},
+		#{pw},
+		#{userNo}
+		)
+	</insert>
+
+
+	<select id="getAutoLoginTokenInfo" parameterType="String" resultType="AutoLoginDto">
+		SELECT EMAIL,PW,USER_NO,TOKEN,LAST_ACCESS
+		FROM AUTO_LOGIN_T
+		WHERE TOKEN=#{token}
+	</select>
+	
+	
+	<delete id="deleteAutoLoginToken">
+		DELETE FROM AUTO_LOGIN_T 
+		WHERE EMAIL=#{email}
+	</delete>
+	
+	
+
+
+</mapper>
