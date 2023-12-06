@@ -36,10 +36,8 @@ public class UserController {
   @GetMapping(value = "/login.form")
   public String loginForm(HttpServletRequest request, Model model) throws Exception{
     
-    // 이전 주소 저장되는 요청 Header  값
     String referer = request.getHeader("referer");
     
-    // 이전 페이지가 아닌 메인으로 되돌릴 url 
     String[] exceptUrl = {"/join.form","/join_option.form","find_id.form","change_pw.form"};
     String ret="";
     
@@ -48,7 +46,6 @@ public class UserController {
       
           for(String url:exceptUrl) {
           
-      // 강제로 메인으로 되돌릴 url
               if(referer.contains(url)) {
               ret =request.getContextPath()+"/main.do";
               }
@@ -56,20 +53,13 @@ public class UserController {
           }
 
       }else {
-     // 이전 페이지 값이 없어서 메인으로 되돌림
       ret=request.getContextPath()+"/main.do";
       }
     
-    // ret 값이 들어있지 않으면 referer, ret에 값이 있으면 ret 저장
     model.addAttribute("referer", ret.isEmpty() ? referer : ret);
     
- //model.addAttribute("referer", referer == null ? request.getContextPath() + "/main.do" : referer);
     
-    //네이버 간편 로그인 방식 선택시
     model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
-    
-    
-    //카카오 간편 로그인 방식 선택시
     model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL  (request));
     
     return"user/login";
@@ -82,16 +72,13 @@ public class UserController {
   public String joinOption(HttpServletRequest request, Model model)throws Exception {
     
     
-  // 네이버 간편 가입 (가입되어있다면 로그인)   
    model.addAttribute("naverLoginURL", userService.getNaverLoginURL(request));
-   
-   // 카카오 간편 가입 (가입되어있다면 로그인)  
    model.addAttribute("kakaoLoginURL",userService.getKakaoLoginURL(request));
   
     return"user/join_option";
   }
   
- //회원가입폼 으로 이동
+ //회원가입폼 
   @GetMapping("/join.form")
   public String joinForm() {
     
@@ -99,21 +86,21 @@ public class UserController {
   }
   
   
-  //마이페이지로 이동
+  //마이페이지
   @GetMapping(value = "/mypage")
   public String myPage() {
     
     return"user/mypage";
   }
   
-  //회원정보 수정폼으로 이동
+  //회원정보 수정
   @GetMapping("/mypage/profile.form")
   public String mypageForm() {
     return "user/profile";
   }
   
   
-  //포인트 확인 페이지로 이동
+  //포인트 확인
   @PostMapping(value ={"/point","/mypage/point"})
   public String myPoint(HttpServletRequest request,Model model ) { 
     userService.getPoint(request,model); 
@@ -130,7 +117,7 @@ public class UserController {
   }
   
   
-  //비번 찾기 폼
+  //비번 찾기
   @GetMapping(value = "/change_pw.form")
   public String findPwForm() {
     
@@ -138,14 +125,13 @@ public class UserController {
   }
   
   
-  //복원폼
+  //복원
   @GetMapping("/active.form")
   public String activeForm() {
     return "user/active";
   }
   
 
- /* ******************************************************* */ 
   
   // 로그인 
   @PostMapping(value = "/login.do")
@@ -167,22 +153,18 @@ public class UserController {
   }
   
   
-  /* * ****************네이버 간편 가입******************* ** */
-  
-  // 네이버 간편 가입 1--- ( 네이버 로그인 연동 url 생성 ) 
+  //네이버 간편가입
   @PostMapping("/naver/join.do")
   public void naverJoin(HttpServletRequest request, HttpServletResponse response) {
     userService.naverJoin(request, response);
   }
   
- // 네이버 간편 가입 2---( 토큰 발급 요청 )
   @GetMapping("/naver/getAccessToken.do")
   public String getAccessToken(HttpServletRequest request) throws Exception {
   String accessToken = userService.getNaverLoginAccessToken(request);
   return "redirect:/user/naver/getProfile.do?accessToken=" + accessToken;
   }
   
-  //네이버 간편가입 3 ---( 네이버 로그인 / 네이버 로그인 후속작업)
   @GetMapping("/naver/getProfile.do")
   public String getProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
     UserDto naverProfile = userService.getNaverProfile(request.getParameter("accessToken"));
@@ -195,24 +177,20 @@ public class UserController {
       return "redirect:/main.do";
     }
   }
-  /* * *************************************************** ** */ 
 
   
- /* * ****************카카오 간편 가입******************* ** */
+ 
   
-  
-  // 카카오 간편가입 1 ---- (카카오 로그인 연동 url 생성)
+ //카카오 간편가입 
   @PostMapping("/kakao/join.do")
   public void kakaoJoin(HttpServletRequest request, HttpServletResponse response) {
     userService.kakaoJoin(request, response);
   }
-  // 카카오 간편가입2 ----(토큰 발급 요청)
   @GetMapping("/kakao/getAccessToken.do")
   public String getKakaoAccessToken(HttpServletRequest request) throws Exception {
   String accessToken = userService.getKakaoLoginAccessToken(request);
   return "redirect:/user/kakao/getProfile.do?accessToken=" + accessToken;
   }
-  // 카카오 간편가입3 ---(카카오 로그인 / 카카오 로그인 후속작업)
   @GetMapping("/kakao/getProfile.do")
   public String getKakaoProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
     UserDto kakaoProfile = userService.getKakaoProfile(request.getParameter("accessToken"));
@@ -226,7 +204,6 @@ public class UserController {
     }
   }
 
-  /* * *************************************************** ** */ 
   
   //회원탈퇴
   @PostMapping("/mypage/leave.do")
@@ -251,13 +228,6 @@ public class UserController {
   @PostMapping(value="/mypage/modify.do", produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Map<String, Object>> modify(HttpServletRequest request) {
     return userService.modify(request);
-  }
-  
-  
-  //포인트 증감차감 테스트(추후에 삭제해야함) 
-  @PostMapping(value = "/point.do")
-  public void pointTest(HttpServletRequest request) {
- 
   }
   
   
@@ -289,9 +259,6 @@ public class UserController {
     userService.active(session, request, response);
   }
   
-  
-  
-  /* **********************  프로필 이미지 첨부  ************************** */
   
   //프로필 이미지 첨부 
   @ResponseBody
