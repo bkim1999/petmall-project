@@ -19,7 +19,31 @@
     WHERE lOWER(EMAIL)= LOWER(#{email})
     
   </select>
-  
+ 
+ <!--회원 전체 조회--> 
+  <select id="getUserList" parameterType="Map" resultType="UserDto">
+  SELECT  USER_NO,EMAIL,PW,NAME,GENDER,MOBILE,POSTCODE,ROAD_ADDRESS,JIBUN_ADDRESS,DETAIL_ADDRESS,AGREE,JOIN_STATE,PW_MODIFIED_AT,JOINED_AT,ADMIN_AUTHOR_STATE,POINT
+  FROM USER_T 
+   <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+      <if test="name != null">AND NAME = #{name}</if>
+      <if test="gender != null">AND GENDER = #{gender}</if>
+      <if test="mobile != null">AND MOBILE = #{mobile}</if>
+      <if test="postcode != null">AND POSTCODE = #{postcode}</if>
+      <if test="roadAddress != null">AND ROAD_ADDRESS = #{roadAddress}</if>
+      <if test="jibunAddress != null">AND JIBUN_ADDRESS = #{jibunAddress}</if>
+      <if test="detailAddress != null">AND DETAIL_ADDRESS = #{detailAddress}</if>
+      <if test="agree != null">AND AGREE = #{agree}</if>
+      <if test="joinState != null">AND JOIN_STATE = #{joinState}</if>
+      <if test="pwModifiedAt != null">AND PW_MODIFIED_AT = #{pwModifiedAt}</if>
+      <if test="joinedAt != null">AND JOINED_AT = #{joinedAt}</if>
+      <if test="adminAuthorState != null">AND ADMIN_AUTHOR_STATE = #{adminAuthorState}</if>
+      <if test="point != null">AND POINT = #{point}</if>
+    </where>
+  </select>
+
 <!-- 회원 조회  -->
   
   <select id="getUser"  parameterType="Map" resultType="UserDto">

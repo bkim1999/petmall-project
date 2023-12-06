@@ -29,44 +29,42 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		/*1. 세션에 사용자가 있는지 확인*/
 		
 		HttpSession session=request.getSession();
 		UserDto user = (UserDto) session.getAttribute("user");
-		String sessionId=session.getId();
 		Cookie cookies[] = request.getCookies();
 		String userCookie="";
 		
 		if(cookies!=null) {
 			for(Cookie c : cookies) {
-	            String name = c.getName(); // 쿠키 이름 가져오기
-	            String value = c.getValue(); // 쿠키 값 가져오기
+	            String name = c.getName(); 
+	            String value = c.getValue();
 	            
 	            if (name.equals("userCookie")) {
 	                userCookie=value;
 	            
 	            }
 
-			}//for
+			}
 			
 			
-		}//if
+		}
 		
 		if(user!=null)
 		{
-			//로그인 상태
+			
 		}
-		else {//로그아웃상태
+		else {
 			
 			
-			//세션에 쿠키값이 존재한다면
+			
 			if(userCookie!=null)
 			{
-			/*db 조회*/
+			
              AutoLoginDto autoLoginDto= autoLoginMapper.getAutoLoginTokenInfo(userCookie);
              		
              
-              //db조회 결과값이 null이 아니면 로그인 처리
+              
              	if(autoLoginDto != null)
              	{
              		
@@ -85,9 +83,6 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
              		
              		
              	}
-             	else {
-             		//자동로그인 안돼서 메인으로 리다이렉트
-				}
 
 			}
       

@@ -5,7 +5,7 @@
 
 <style>
  /*중앙정렬*/
-#frm_naver_join{width: 700px; margin:0 auto;}
+#frm_kakao_join{width: 600px; margin:0 auto;}
 .form-control{width: 700px;}
 div{margin-bottom:10px ;}
   
@@ -16,6 +16,12 @@ div{margin-bottom:10px ;}
 .agree_div{height:40px; margin-top:10px;}
 .service_agree{margin-left:5px;}
 #btn_join{width:850px;}
+
+
+.btn-primary{ background-color:rgb(200, 176, 128); border:1px solid #E0C891;  font-weight:600; color: white;}
+.btn-primary:hover{border:1px solid rgb(234, 217, 179); background-color: rgb(169, 147, 99); color: antiquewhite;}
+.k_logo{width: 50px; height: 50px; margin-right: 10px; opacity: 0.8;}
+.title{height: 50px;}
 
 label{line-height:50px;}
 
@@ -30,7 +36,7 @@ label{line-height:50px;}
 
 
   <form id="frm_kakao_join" method="post" th:action="@{/user/kakao/join.do}">
-     <h1 class="title">카카오 간편가입</h1>
+     <h1 class="title"><img th:src="@{/image/kakaotalk_sharing_btn_medium.png}" class="k_logo">카카오 간편가입</h1>
 <!--이메일-->    
     <div>
       <label for="email" >이메일</label>
