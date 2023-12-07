@@ -60,7 +60,8 @@
   </select>
   
   <select id="getUserReviewList" parameterType="Map" resultMap="ReviewMap">
-    SELECT A.REVIEW_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.PRODUCT_NO, A.PRODUCT_NAME, A.OPTION_NO, A.OPTION_NAME, RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
+    SELECT A.REVIEW_NO, A.REVIEW_TITLE, A.REVIEW_CONTENTS, A.REVIEW_RATING, A.REVIEW_CREATED_AT, A.REVIEW_MODIFIED_AT, A.PRODUCT_NO, A.PRODUCT_NAME, A.OPTION_NO, A.OPTION_NAME
+         , RI.PATH, RI.POSITION, RI.FILESYSTEM_NAME
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY ${order} DESC) AS RN, R.REVIEW_NO, R.REVIEW_TITLE, R.REVIEW_CONTENTS, R.REVIEW_RATING, R.REVIEW_CREATED_AT, R.REVIEW_MODIFIED_AT
                  , O.OPTION_NO, O.OPTION_NAME
                  , P.PRODUCT_NO, P.PRODUCT_NAME
@@ -100,9 +101,10 @@
   
   <update id="updateProductRating" parameterType="int">
      UPDATE PRODUCT_T
-       SET PRODUCT_RATING = (SELECT AVG(REVIEW_RATING) 
+        SET PRODUCT_RATING = (SELECT AVG(REVIEW_RATING) 
                                FROM REVIEW_T 
                               WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>))
+      WHERE PRODUCT_NO = #{productNo}
   </update>
   
   <insert id="insertProductReview" parameterType="ReviewDto">
@@ -135,6 +137,15 @@
     DELETE FROM REVIEW_T
      WHERE REVIEW_NO = #{reviewNo}
   </delete>
+  
+  <update id="updateProductReview" parameterType="ReviewDto">
+    UPDATE REVIEW_T 
+       SET REVIEW_TITLE = #{reviewTitle}
+         , REVIEW_CONTENTS = #{reviewContents}
+         , REVIEW_RATING = #{reviewRating}
+         , REVIEW_MODIFIED_AT = TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+     WHERE REVIEW_NO = #{reviewNo}
+  </update>
   
   <sql id = "getProductOptionNo">
     SELECT OPTION_NO 
