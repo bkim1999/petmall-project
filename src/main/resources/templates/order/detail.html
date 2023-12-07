@@ -168,8 +168,7 @@
     
 
 	<div class="larger-input" th:each="optionNo, iterStat: ${param.optionNo}">
-	    <label for="optionNo">옵션값 저장용</label>
-	    <input type="text" readonly th:id="${'optionNo' + iterStat.index}" 
+	    <input type="hidden" readonly th:id="${'optionNo' + iterStat.index}" 
 	           th:name="'optionNo[' + iterStat.index + ']'" 
 	           th:value="${optionNo}" 
 	           class="form-control larger-input">
