@@ -129,10 +129,14 @@
     
    <div> 
     <form id="frm_order" th:action="@{/order/detail.do}" method="get">
-      <th:block th:each="order:${cartList}"> 
+      <th:block th:each="order:${cartList}">
       <input type="hidden" name="optionNo" th:value="${order.productOptionDto.optionNo}">
       <input type="hidden" name="userNo"   th:value="${order.userDto.userNo}">
       <input type="hidden" name="count"    th:value="${order.count}">
+      <input type="hidden" name="productName" th:value="${order.productDto.productName}">
+      <input type="hidden" name="productPrice" th:value="${order.productDto.productPrice}">
+      <input type="hidden" name="eventDiscount" th:value="${order.eventDto.discountPercent}">
+      <input tyoe="hidden" name="totalPrice">
       </th:block>
         <button type="submit" id="order_btn" class="btn btn-warning btn btn-primary btn-lg">구매</button>
         <a th:href="@{/product/list.do}">
@@ -148,54 +152,52 @@
    
    
    $(document).ready(function(){
-       setTotalInfo();
-      
-   $('.cart_checkbox').on('change', function(){
-      setTotalInfo($('.cart_info_td'));
-   });
-   
-   function setTotalInfo(){
-      
-      var totalPrice = 0;                                        // 상품 가격
-      var totalCount = 0;                                        // 총 갯수
-      var totalKind = 0;                                         // 총 종류
-      var totalPoint = 0;                                        // 총 마일리지
-      var deliveryPrice = 0;                                     // 배송비
-      var finalTotalPrice = 0;  
-      
-    
+  setTotalInfo();
+
+  $('.cart_checkbox').on('change', function(){
+    setTotalInfo();
+  });
+
+  function setTotalInfo(){
+    var totalPrice = 0;
+    var totalCount = 0;
+    var totalKind = 0;
+    var totalPoint = 0;
+    var deliveryPrice = 0;
+    var finalTotalPrice = 0;
+
     $('.cart_info_td').each(function(index, e){
-         if($(e).find('.cart_checkbox').is(':checked') === true){
-           totalPrice += parseInt($(e).find('.finaltotalprice').val());
-           console.log(JSON.stringify(totalPrice));
-           totalCount += parseInt($(e).find('.totalCount').val());
-           console.log(JSON.stringify(totalCount));
-           totalKind += 1;
-         }
-           
-      });
-      
-      if(totalPrice >= 30000){
-         deliveryPrice = 0;
-      } else if(totalPrice == 0){
-         deliveryPrice = 0;
-      } else {
-         deliveryPrice = 3000;   
+      if($(e).find('.cart_checkbox').is(':checked') === true){
+        totalPrice += parseInt($(e).find('.finaltotalprice').val());
+        totalCount += parseInt($(e).find('.totalCount').val());
+        totalKind += 1;
       }
-      
-      finalTotalPrice = totalPrice + deliveryPrice;
-      // 총가격
-      $('.totalPrice_span').text(totalPrice.toLocaleString());
-      // 총 갯수
-      $(".totalCount_span").text(totalCount);
-      // 총 종류
-      $(".totalKind_span").text(totalKind);
-      // 배송비
-      $(".delivery_price").text(deliveryPrice);   
-      // 최종 가격(총 가격 + 배송비)
-      $(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());
+    });
+
+    if(totalPrice >= 30000){
+      deliveryPrice = 0;
+    } else if(totalPrice == 0){
+      deliveryPrice = 0;
+    } else {
+      deliveryPrice = 3000;   
     }
-   });
+
+    finalTotalPrice = totalPrice + deliveryPrice;
+
+    // 총가격
+    $('.totalPrice_span').text(totalPrice.toLocaleString());
+    // 총 갯수
+    $(".totalCount_span").text(totalCount);
+    // 총 종류
+    $(".totalKind_span").text(totalKind);
+    // 배송비
+    $(".delivery_price").text(deliveryPrice);   
+    // 최종 가격(총 가격 + 배송비)
+    $(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());
+    $('input[name="totalPrice"]').val(finalTotalPrice);
+  }
+});
+
 
 </script>
 

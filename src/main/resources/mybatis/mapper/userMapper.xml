@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.gdu.petmall.dao.UserMapper">
-	
+  
    
  <!--가입하려는 사용자의 email이 db에 존재하는가 -->
   <select id="getEmailResult" parameterType="String" resultType="int">
@@ -19,7 +19,33 @@
     WHERE lOWER(EMAIL)= LOWER(#{email})
     
   </select>
-  
+ 
+ <!-- ( 관리자 ) 회원 전체 조회--> 
+  <select id="getUserList" parameterType="Map" resultType="UserDto">
+  SELECT  USER_NO,EMAIL,PW,NAME,GENDER,MOBILE,POSTCODE,ROAD_ADDRESS,JIBUN_ADDRESS,DETAIL_ADDRESS,AGREE,JOIN_STATE,PW_MODIFIED_AT,JOINED_AT,ADMIN_AUTHOR_STATE,POINT
+  FROM USER_T 
+   <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+      <if test="name != null">AND NAME = #{name}</if>
+      <if test="gender != null">AND GENDER = #{gender}</if>
+      <if test="mobile != null">AND MOBILE = #{mobile}</if>
+      <if test="postcode != null">AND POSTCODE = #{postcode}</if>
+      <if test="roadAddress != null">AND ROAD_ADDRESS = #{roadAddress}</if>
+      <if test="jibunAddress != null">AND JIBUN_ADDRESS = #{jibunAddress}</if>
+      <if test="detailAddress != null">AND DETAIL_ADDRESS = #{detailAddress}</if>
+      <if test="agree != null">AND AGREE = #{agree}</if>
+      <if test="joinState != null">AND JOIN_STATE = #{joinState}</if>
+      <if test="pwModifiedAt != null">AND PW_MODIFIED_AT = #{pwModifiedAt}</if>
+      <if test="joinedAt != null">AND JOINED_AT = #{joinedAt}</if>
+      <if test="adminAuthorState != null">AND ADMIN_AUTHOR_STATE = #{adminAuthorState}</if>
+      <if test="point != null">AND POINT = #{point}</if>
+    </where>
+    ORDER BY USER_NO DESC
+  </select>
+
+
 <!-- 회원 조회  -->
   
   <select id="getUser"  parameterType="Map" resultType="UserDto">
@@ -277,18 +303,21 @@ INSERT INTO INACTIVE_USER_T(
  WHERE EMAIL =  #{email}
  </delete>
  
+<!--( 관리자 )회원정보 수정 -->
+   <update id="changeUserInfo" parameterType="UserDto">
+    UPDATE USER_T
+    <set>
+      <if test="pw != null">PW = #{pw}</if>
+      <if test="agree != null">AGREE = #{agree}</if>
+      <if test="adminAuthorState != null"> ADMIN_AUTHOR_STATE = #{adminAuthorState}</if>
+    </set>
+    <where>
+      <if test="userNo != null">USER_NO = #{userNo}</if>
+      <if test="email != null">AND EMAIL = #{email}</if>
+    </where>
+  </update>
 
  
- 
- 
- 
-    <!-- 포인트 증감 
-   <update id="updatePoint" parameterType="UserDto" >
-    UPDATE USER_T
-       SET POINT = #{point}
-     WHERE USER_NO = #{userNo}
-  </update>   
-    -->   
 </mapper>
 
  

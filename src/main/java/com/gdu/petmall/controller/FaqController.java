@@ -27,7 +27,6 @@ public class FaqController {
   public String faqList(HttpServletRequest request, Model model) {
     faqService.getFaqList(request, model);
     model.addAttribute("categoryList", faqService.getloadCategoryList());
-    model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList());
     System.out.println("사용자:" + model);
     return "/faq/list";
   }
@@ -35,8 +34,8 @@ public class FaqController {
   @GetMapping(value="/faq/write.do")
   public String faqWrite(HttpServletRequest request, Model model) {
     faqService.adminList(request, model);
-    model.addAttribute("categoryList", faqService.getloadCategoryList());
     model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList());
+    model.addAttribute("categoryList", faqService.getloadCategoryList());
     System.out.println("관리자:" + model);
     return "/faq/write";
   }
@@ -49,6 +48,7 @@ public class FaqController {
     redirectAttributes.addFlashAttribute("addResult", addResult);
     return "redirect:/faq/write.do";
   }
+  
   
   @GetMapping(value="/faq/search.do")
   public String search(HttpServletRequest request, Model model) {

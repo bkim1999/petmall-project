@@ -39,8 +39,6 @@ public class FaqServiceImpl implements FaqService {
     return Map.of("getFaqCategoryList", getFaqCategoryList);
   }
   
-  
-  
   @Transactional(readOnly=true)
   @Override
   public void getFaqList(HttpServletRequest request, Model model) {
@@ -118,21 +116,20 @@ public class FaqServiceImpl implements FaqService {
   
   public int addFaq(HttpServletRequest request) {
     
+    int faqCategoryNo = Integer.parseInt(request.getParameter("faqCategoryNo"));
     int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
-    String faqName = request.getParameter("faqName");
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     
     
     FaqDto faq = FaqDto.builder()
+                    .faqCategoryDto(FaqCategoryDto.builder().faqCategoryNo(faqCategoryNo).build())
                     .categoryDto(CategoryDto.builder().categoryNo(categoryNo).build())
-                    .faqName(faqName)
                     .faqTitle(faqTitle)
                     .faqContents(faqContents)
                     .build();
     
     return faqMapper.insertFaq(faq);
-    
   }
   
   @Override

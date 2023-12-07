@@ -20,5 +20,5 @@ public class FaqDto {
   private int groupNo;
   private int groupOrder;
   private CategoryDto categoryDto;
-  
+  private FaqCategoryDto faqCategoryDto;
 }

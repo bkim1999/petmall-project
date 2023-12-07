@@ -32,18 +32,18 @@
         <form id="add_frm" method="post" th:action="@{/faq/add.do}">
           <div class="form-group">
             <label for="category_select" class="form-label mt-4">카테고리 선택</label>
-            <select class="form-select" id="categoryNo" name="categoryNo" th:value="categoryNo">
+            <select class="form-select" id="combinedSelect">
               <option value="">--선택 안함--</option>
+              <th:block th:each="faq : ${faqCategoryList.getFaqCategoryList}">
+                <th:block th:if="${faq.faqCategoryNo != 0}">
+                  <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
+                </th:block>
+              </th:block> 
               <th:block th:each="product : ${categoryList.getCategoryList}">
                 <th:block th:if="${product.categoryNo != 0}">
                   <option th:value="${product.categoryNo}" th:text="${product.categoryName}"></option>
                 </th:block>
               </th:block>
-              <th:block th:each="faq : ${faqCategoryList.getfaqCategoryList}">
-                <th:block th:if="${faq.faqCategoryNo != 0}">
-                  <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
-                </th:block>
-               </th:block> 
             </select>
         <div class="invalid-feedback"></div>
       </div>
@@ -58,10 +58,12 @@
         <div class="invalid-feedback"></div>
       </div>
       <div class="text-center mt-3">
-      <a><button class="btn btn-secondary" type="button">작성취소</button></a>
+         <button class="btn btn-secondary" type="button">작성취소</button>
+         <input type="hidden" id="faqCategoryNo" name="faqCategoryNo" value="faqCategoryNo">
+         <input type="hidden" id="categoryNo" name="categoryNo" value="categoryNo">
          <button type="submit" class="btn btn-primary">작성완료</button>
       </div>
-     </form>
+    </form>
    </div>
    
       <div class="table_wrap">
@@ -101,6 +103,36 @@
       </div>
    
    
+   <script th:inline="javascript">
+    
+    const fnSelectCategory = () => {
+      var combinedSelect = document.getElementById("combinedSelect");
+      var faqCategoryNo = document.getElementById("faqCategoryNo");
+      var categoryNo = document.getElementById("categoryNo");
+
+     combinedSelect.addEventListener("change", function() {
+        var selectCtegory = combinedSelect.value;
+        console.log(selectCtegory)
+        if (selectCtegory) {
+            if (selectCtegory.startsWith("faq")) {
+                faqCategoryNo.value = selectCtegory.substring(3);
+                categoryNo.value = "0"; 
+            } else {
+                categoryNo.value = selectCtegory;
+                faqCategoryNo.value = "0"; 
+            }
+        } else {
+            faqCategoryNo.value = "0";
+            categoryNo.value = "0";
+        }
+     });  
+    }
+    
+     fnSelectCategory();
+   
+   </script>
+   
+   
    
    <script>
    
@@ -119,9 +151,8 @@
           })
         })
       };
-      
-    
     fnDelete();
+    
     
    </script>
 
