@@ -43,13 +43,13 @@
    <div id="orderDetails">
    <h2>주문 상세 정보 입력 및 확인 </h2>
    <hr>
-        <p>상품 옵션 번호: <span th:text="${param.optionNo}"></span></p>
-        <p>사용자 번호: <span th:text="${param.userNo}"></span></p>
-        <p>수량: <span th:text="${param.count}"></span></p>
+   
         <p>상품 이름: <span th:text="${param.productName}"></span></p>
+        <p>상품 옵션 번호: <span th:text="${param.optionNo}"></span></p>
+        <p>수량: <span th:text="${param.count}"></span></p>
         <p>상품 가격: <span th:text="${param.productPrice}"></span></p>
-        <p>이벤트 할인: <span th:text="${param.eventDiscount}"></span></p>
-        <p>총 가격: <span th:text="${param.totalPrice}"></span></p>
+        <p>이벤트 할인: <span th:text="${param.eventDiscount[0]}"></span></p>
+        <p>총 금액: <span th:text="${param.totalPrice[0]}"></span></p>
     </div>
    <hr>
         <h3>구매자 정보</h3>
@@ -158,13 +158,23 @@
     
     <div class="larger-input">
         <label for="totalPrice">총금액</label>
-        <input type="text" readonly name="totalPrice" id="totalPrice" class="form-control larger-input" th:value="${param.totalPrice}">
+        <input type="text" readonly name="totalPrice" id="totalPrice" class="form-control larger-input" th:value="${param.totalPrice[0]}">
         <span id="total_price" ></span>
     </div>
     <hr>
     <input type="hidden" name="yourOrder" id="yourOrder">
     <input type="hidden" name="userNo" th:value="${session.user.userNo}">
     <button type="submit" id="btn_answer">주문하기</button>
+    
+
+	<div class="larger-input" th:each="optionNo, iterStat: ${param.optionNo}">
+	    <label for="optionNo">옵션값 저장용</label>
+	    <input type="text" readonly th:id="${'optionNo' + iterStat.index}" 
+	           th:name="'optionNo[' + iterStat.index + ']'" 
+	           th:value="${optionNo}" 
+	           class="form-control larger-input">
+	</div>	
+    
 </form>
 
 <script th:inline="javascript">
@@ -181,13 +191,26 @@
       }
       return yourOrder;
    }
-   function fnAnswer() {
-       $(document).on('click', '#btn_answer', function(ev) {
-           
-           $('#yourOrder').val(createyourOrder());
-           $('form').attr('method', 'post').submit();
-       });
-   }
+    function fnAnswer() {
+        $(document).on('click', '#btn_answer', function(ev) {
+            // Retrieve optionNo values
+            var optionNos = [];
+            $('input[name^="optionNo"]').each(function() {
+                optionNos.push($(this).val());
+            });
+
+            // Set optionNo values to the form
+            $('#yourOrder').val(createyourOrder());
+            $('input[name="yourOrder"]').val(createyourOrder()); // If needed
+            $('input[name="optionNo"]').remove(); // Remove existing optionNo inputs
+            optionNos.forEach(function(optionNo) {
+                $('#frm_detail').append('<input type="hidden" name="optionNo" value="' + optionNo + '">');
+            });
+
+            // Submit the form
+            $('form').attr('method', 'post').submit();
+        });
+    }
   fnAnswer();
   createyourOrder();
   
