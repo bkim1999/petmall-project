@@ -41,4 +41,7 @@ public interface UserMapper {
   public int insertKakaoUser(UserDto user);
   
   
+  //관리자 
+  public int changeUserInfo(UserDto userDto);
+  
 }
