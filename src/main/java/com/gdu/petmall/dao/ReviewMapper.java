@@ -20,5 +20,5 @@ public interface ReviewMapper {
   public List<ReviewDto> getNotReviewedList(Map<String, Object> map);
   public int insertProductReview(ReviewDto review);
   public int deleteProductReview(int reviewNo);
-  
+  public int updateProductReview(ReviewDto review);
 }

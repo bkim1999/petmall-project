@@ -119,6 +119,17 @@ public class ProductServiceImpl implements ProductService {
   }
   
   @Override
+  public ProductImageDto loadProductThumbnail(int productNo) {
+    List<ProductImageDto> imageList = productMapper.getProductImageList(Map.of("productNo", productNo
+                                                                             , "position", "preview"));
+    if(imageList.size() == 0) {
+      return null;
+    }
+    
+    return imageList.get(0);
+  }
+  
+  @Override
   public Map<String, Object> imageUpload(MultipartHttpServletRequest multipartRequest) {
     
     // 이미지가 저장될 경로
