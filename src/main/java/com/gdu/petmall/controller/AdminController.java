@@ -36,9 +36,16 @@ public class AdminController {
     return "admin/product_list";
   }
   
+  
   @GetMapping("/user_list.go")
-  public String userDetailList(Model model) {
+  public String userList() {
     return "admin/user_list";
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/user_list.do", produces="application/json")
+  public Map<String, Object> userDetailList() {
+    return adminService.getUser();
   }
   
   @ResponseBody
@@ -71,7 +78,7 @@ public class AdminController {
   }
   
   @ResponseBody
-  @GetMapping("/event_list.do")
+  @GetMapping(value="/event_list.do", produces="application/json")
   public Map<String, Object> eventDetailList() {
     return adminService.getEvent();
   }
@@ -82,5 +89,10 @@ public class AdminController {
     return "admin/partner_list";
   }
   
+  @ResponseBody
+  @GetMapping(value="/pw_init.do", produces = "application/json")
+  public Map<String, Object> pwInit(HttpServletRequest request) {
+    return adminService.pwInit(request);
+  }
 
 }

@@ -17,6 +17,7 @@ import com.gdu.petmall.dto.EventDto;
 import com.gdu.petmall.dto.QnaDto;
 import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.util.MyPageUtils;
+import com.gdu.petmall.util.MySecurityUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
   private final QnaMapper qnaMapper;
   private final EventMapper eventMapper;
   private final UserMapper userMapper;
+  private final MySecurityUtils mySecurityUtils;
   
   @Override
   public void getQna(HttpServletRequest request, Model model) {
@@ -73,12 +75,29 @@ public class AdminServiceImpl implements AdminService {
   }
   
   @Override
-  public Map<String, Object> getUser(Model model) {
+  public Map<String, Object> getUser() {
     
     Map<String, Object> map = new HashMap<>();
     
+    List<UserDto> userList = userMapper.getUserList(map);
     
-    return null;
+    return Map.of("userList",userList);
+  }
+  
+  @Override
+  public Map<String, Object> pwInit(HttpServletRequest request) {
+    
+    String email = request.getParameter("email");
+    String pw= mySecurityUtils.getSHA256("1111");
+    
+    UserDto userDto = UserDto.builder()
+                             .email(email)
+                             .pw(pw)
+                             .build();
+    
+    int pwInitResult = userMapper.updatePw(userDto);
+    
+    return Map.of("pwInitResult",pwInitResult);
   }
     
   

@@ -172,4 +172,16 @@
   </update>
   
   
+  <update id="changeUserInfo" parameterType="UserDto">
+    UPDATE USER_T
+    <set>
+      <if test="pw != null">PW = #{pw}</if>
+      <if test="agree != null">AGREE = #{agree}</if>
+    </set>
+    <where>
+      <if test="userNo != null">USER_NO = #{userNo}</if>
+      <if test="email != null">AND EMAIL = #{email}</if>
+    </where>
+  </update>
+  
 </mapper>

@@ -12,5 +12,6 @@ public interface AdminService {
   public Map<String, Object> getEvent();
   public Map<String, Object> getAjaxAlllist();
   public Map<String, Object> getAjaxAnswerList(HttpServletRequest request);
-  public Map<String, Object> getUser(Model model);
+  public Map<String, Object> getUser();
+  public Map<String, Object> pwInit(HttpServletRequest request);
 }
