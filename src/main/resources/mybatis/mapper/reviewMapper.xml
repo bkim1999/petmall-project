@@ -10,6 +10,8 @@
     <result column="REVIEW_TITLE"       property="reviewTitle" />
     <result column="REVIEW_CONTENTS"    property="reviewContents" />
     <result column="REVIEW_RATING"      property="reviewRating" />
+    <result column="REVIEW_CREATED_AT"      property="reviewCreatedAt" />
+    <result column="REVIEW_MODIFIED_AT"      property="reviewModifiedAt" />
     <result column="ORDER_DATE"         property="orderDate" />
     <association javaType="UserDto"  property="userDto">
       <id     column="USER_NO"       property="userNo" />
@@ -112,8 +114,8 @@
          , REVIEW_MODIFIED_AT
          ) VALUES (
            #{reviewNo}
-         , #{userNo}
-         , #{optionNo}
+         , #{userDto.userNo}
+         , #{productOptionDto.optionNo}
          , #{reviewTitle}
          , #{reviewContents}
          , #{reviewRating}

@@ -46,11 +46,13 @@ public class ReviewController {
   }
   
   @GetMapping(value="/addReview.form")
-  public String addReviewForm(int productNo, int optionNo, String productName, String optionName, Model model) {
-    model.addAttribute("optionNo", optionNo);
-    model.addAttribute("productNo", productNo);
-    model.addAttribute("productName", productName);
-    model.addAttribute("optionName", optionName);
+  public String addReviewForm(HttpServletRequest request, Model model) {
+    model.addAttribute("userNo", request.getParameter("userNo"));
+    model.addAttribute("optionNo", request.getParameter("optionNo"));
+    model.addAttribute("productNo", request.getParameter("productNo"));
+    model.addAttribute("productName", request.getParameter("productName"));
+    model.addAttribute("optionName", request.getParameter("optionName"));
+    model.addAttribute("productImagePath", request.getParameter("productImagePath"));
     return "/review/add_review";
   }
   
@@ -61,10 +63,10 @@ public class ReviewController {
   }
   
   @PostMapping(value="/addReview.do")
-  public String addReview(int productNo, ReviewDto review, MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes) throws Exception {
-    boolean addReviewResult = reviewService.addReview(productNo, review, multipartRequest);
+  public String addReview(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes) throws Exception {
+    boolean addReviewResult = reviewService.addReview(multipartRequest);
     redirectAttributes.addFlashAttribute("addReviewResult", addReviewResult);
-    return "redirect:/product/detail.do?productNo=" + productNo;
+    return "redirect:/review/list.do";
   }
   
   

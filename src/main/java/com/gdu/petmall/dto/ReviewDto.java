@@ -13,7 +13,7 @@ public class ReviewDto {
   private int reviewNo;
   private String reviewTitle;
   private String reviewContents;
-  private double reviewRating;
+  private int reviewRating;
   private String reviewCreatedAt;
   private String reviewModifiedAt;
   private UserDto userDto;                      // 리뷰목록보기용 DB엔 userNo만 있음

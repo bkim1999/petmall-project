@@ -2,15 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header :: head('상품 등록')}"></head>
 <style>
-  .ck.ck-editor {
-    max-width: 1000px;
-  }
-  .ck-editor__editable {
-    min-height: 400px;
-  }
-  .ck-content {
-    color: gray;
-  }
   h1 {
     margin: 100px 0 50px 0;
     text-align:center;
@@ -73,19 +64,57 @@
     margin: 0;
     height: 30px;
   }
+  .btn-group {
+    margin: 10px auto;
+    width: 150px;
+  }
+  .star {
+    border: none;
+    background-color: unset;
+    width: 50px;
+    font-size: 30px;
+    padding: 10px;
+    color: gold;
+  }
 </style>
 
 <body>
   <div th:replace="~{layout/header :: header}"></div>
   <div id="wrapper">
-    <form id="frm_add_product" method="post" th:action="@{/product/addProduct.do}" enctype="multipart/form-data">
-      <h1>상품 정보</h1>
+    <div>
+      <div>
+        <img th:if="${procutImagePath != null}" th:src="${productImagePath}">
+        <img th:if="${procutImagePath == null}">
+      </div>
+      <div class="btn-group d-flex justify-content-center">
+        <button class="star">☆</button>
+        <button class="star">☆</button>
+        <button class="star">☆</button>
+        <button class="star">☆</button>
+        <button class="star">☆</button>
+      </div>
+      <div>
+        <div th:text="${productName}"></div>
+        <div th:text="${optionName}"></div>
+      </div>
+    </div>
+    <form id="frm_add_review" method="post" th:action="@{/review/addReview.do}" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="reviewTitle" class="form-label mt-4">리뷰제목</label>
+        <input type="text" class="form-control" name="reviewTitle" id="reviewTitle">
+        <div class="invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="reviewContents" class="form-label mt-4">리뷰내용</label>
+        <textarea class="form-control" name="reviewContents" id="reviewContents"></textarea>
+        <div class="invalid-feedback"></div>
+      </div>
       <div class="form-group mt-3">
         <label for="files" class="form-label mt-4">리뷰사진</label>
-        <div class="preview-area" id="thumbnail_area">
+        <div class="preview-area" id="review_image_area">
           <div class="mb-2">리뷰사진 미리보기</div>
           <div class="preview-list">
-            <input type="file" class="form-control image-input d-none" name="thumbnail" id="thumbnail">
+            <input type="file" class="form-control image-input d-none" name="review_image" id="review_image">
             <div class="add-image-area">
               <img class="preview-image" src="/image/plus_sign.png">
               <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>
@@ -94,37 +123,22 @@
         </div>
         <div class="invalid-feedback"></div>
       </div>
-      
+      <div>
+        <input type="hidden" name="optionNo" th:value="${optionNo}">
+        <input type="hidden" name="productNo" th:value="${productNo}">
+        <input type="hidden" name="userNo" th:value="${userNo}">
+        <input type="hidden" id="reviewRating" name="reviewRating" value="0">
+        <button type="button" id="btn_add_review">리뷰 등록</button>
+      </div>
+    </form>
+  </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 
 </body>
 
 
 <script th:inline="javascript">
-  var editor;
-  const fnCkeditor = () => {
-    ClassicEditor
-      .create(document.getElementById('productContents'), {
-        toolbar: {
-          items: [
-            'undo', 'redo',
-            '|', 'uploadImage'
-          ],
-          shouldNotGroupWhenFull: false
-       },
-       ckfinder: {
-         // 이미지 업로드 경로
-         uploadUrl: '/product/imageUpload.do',
-       }
-     })
-     .then(newEditor => {
-       editor = newEditor;
-     })
-     .catch(err => {
-       console.log(err)
-     });
-  }
-  
+ 
   const fnToggleValid = (input, isInvaild, feedback) => {
     if(isInvaild){
       if(!input.hasClass('is-invalid')){
@@ -180,21 +194,21 @@
     target.before(str);
   }
   
-  const fnAddThumbnail = () => {
-    $(document).on('change', '#thumbnail_area .image-input', function(ev){
-      let target = $('#thumbnail_area .add-image-area');
+  const fnAddReviewImage = () => {
+    $(document).on('change', '#review_image_area .image-input', function(ev){
+      let target = $('#review_image_area .add-image-area');
+      console.log(target);
       fnPreviewImage(-1, URL.createObjectURL($(this)[0].files[0]), target);
       target.remove();
       fnToggleValid($('#thumbnail_area'), false, '');
     });
   }
   
-  const fnDeleteThumbnail = () => {
-    $(document).on('click', '#thumbnail_area .btn_delete_image', function(ev){
+  const fnDeleteReviewImage = () => {
+    $(document).on('click', '#review_image_area .btn_delete_image', function(ev){
       if(!confirm('이 이미지를 삭제하시겠습니까?')){
         return;
       }
-      deleteThumbnail = true;
       let str = '<div class="add-image-area">';
       str += '  <img class="preview-image" src="/image/plus_sign.png">';
       str += '  <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>';
@@ -202,108 +216,73 @@
       $(this).parents('.preview-list').append(str);
       $(this).parent().siblings('.image-input').val('');
       $(this).parent().remove();
-      fnToggleValid($('#thumbnail_area'), true, ' * 썸네일은 필수 입력 항목입니다.');
+      fnToggleValid($('#thumbnail_area'), true, ' * 리뷰사진은 필수 입력 항목입니다.');
     });
   }
   
-  fnAddThumbnail();
-  fnDeleteThumbnail();
+  fnAddReviewImage();
+  fnDeleteReviewImage();
   
   const fnCheckInput = () => {
-    // ckeditor 칸에 이미지 추가 시 이미지가 1개 이상, 10개 이하인지 체크
-    $(document).on('change', $(editor), function() { 
-      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
-      fnToggleValid($('.ck-editor'), isImageCountInvaild, ' * 이미지는 최소 1개, 최대 10개입니다.');
-    });
-    // ckeditor 칸에 이미지 삭제 혹은 문자 입력/삭제 시 문자수가 200자 이하인지 체크
-    $(document).on('keyup', $('.ck-editor__editable'), function() {
-      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
-      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
-      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
-    });
-    $(document).on('keyup', '.not-empty', function(){
-      fnToggleValid($(this), $.trim($(this).val()) === '' || $(this).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
-    });
-    $(document).on('change', 'select', function(){
-      fnToggleValid($(this), $(this).val() === '', ' * 카테고리를 선택해주세요.');
-    });
-    $(document).on('keyup', '.only-number', function(){
-      if(!/^[0-9]+$/.test($(this).val()) || $(this).val().length > 30){
-        fnToggleValid($(this), true, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
-        $(this).val('');
-      }
+    $(document).on('keyup', 'input[type="text"], textarea', function(){
+      fnToggleValid($(this), $(this).val().length > 200, ' * 문자수는 최대 200자입니다.');
     });
   }
   
   const fnCheckRequired = () => {
-    $(document).on('click', '#btn_add_product', function(){
-
-      // ckeditor 글자수/ 이미지수 체크
-      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
-      let isCharCountInvalid = $('.ck-editor__editable').text().length > 200
-      fnToggleValid($('.ck-editor'), isImageCountInvaild || isCharCountInvalid, ' * 이미지는 최소 1개, 최대 10개이며 글자수는 최대 200자입니다.');
-    
-      // 카테고리 체크
-      fnToggleValid($('select'), $('select').val() === '', ' * 카테고리를 선택해주세요.');
-    
-      // 필수항목 글자수 체크
-      $.each($('.not-empty'), (i, input) => {
-        fnToggleValid($(input), $.trim($(input).val()) === '' || $(input).val().length > 200, ' * 문자수는 최소 1자, 최대 200자입니다.');
+    $(document).on('click', '#btn_add_review', function(){
+      
+      // 평점 입력 여부 체크
+      if($('#reviewRating').val() == 0){
+        alert('평점을 입력해주세요.');
+        return;
+      }
+      
+      // 글자수 체크
+      $.each($('input[type="text"], textarea'), (i, input) => {
+        fnToggleValid($(input), $(input).val().length > 200, ' * 문자수는 최대 200자입니다.');
       });
       
-      
-      // 숫자항목 숫자 외 문자 입력과 길이 체크
-      $.each($('.only-number'), (i, input) => {
-        fnToggleValid($(input), !/^[0-9]+$/.test($(input).val()) || $(input).val().length > 30, ' * 최소 1개, 최대 30개의 숫자만 입력할 수 있습니다.');
-      });
-      
-      // 썸네일 이미지가 입력되었는지 체크
-      fnToggleValid($('#thumbnail_area'), $('#thumbnail')[0].files.length === 0, ' * 썸네일은 필수 입력 항목입니다.');
-      
-      fnToggleValid($('#product_images_area'), orderedImageList.length < MIN_IMAGE_COUNT || orderedImageList.length > MAX_IMAGE_COUNT, ' * 상품사진은 최소 1개, 최대 4개입니다.');
-      
-      
-      // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크 
-      var files = Array.from($('#thumbnail').prop('files')).concat(Array.from($('#product_images').prop('files')));
-      for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
-        let filetype = files[i].type;
-        let input = (i === 0) ? $('#thumbnail') : $('#product_images');
-        if(filetype.substring(0, filetype.indexOf('/')) !== 'image') {
-          fnToggleValid(input, true, ' * 이미지 파일만 첨부할 수 있습니다.');
-          break;
+      // 이미지 첨부항목 첨부파일 유형이 이미지인지 체크
+      var files = Array.from($('#review_image').prop('files'));
+      if(files.length !== 0){
+        for(let i = 0; i < files.length; i++){ // 파일유형이 이미지인지 체크
+          let filetype = files[i].type;
+          let input = (i === 0) ? $('#thumbnail') : $('#product_images');
+          if(filetype.substring(0, filetype.indexOf('/')) !== 'image') {
+            fnToggleValid(input, true, ' * 이미지 파일만 첨부할 수 있습니다.');
+            break;
+          }
         }
       }
       
       // 공백/초과인 입력칸이 있을 경우 submit 안함
-      if($(".not-empty, #thumbnail_area, #product_images_area, .only-number").is(".is-invalid")){
+      if($(".not-empty").is(".is-invalid")){
         alert('아직 작성되지 않았거나 잘못된 입력사항이 있습니다.')
         return;
       }
       
-      //
-      let dataTransfer = new DataTransfer();
-      $.each(orderedImageList, function(i, image){
-        if(image.imageCode === undefined){
-          dataTransfer.items.add(image);
-        }
-      });
-      $('#product_images')[0].files = dataTransfer.files;
-
       // 문제 없으면 SUBMIT
       $(this).parents('form').submit();
     });
   }
   
+  const fnSetRating = () => {
+    $(document).on('click', '.star', function(){
+      $(this).prevAll('.star').text('★');
+      $(this).text('★');
+      $(this).nextAll('.star').text('☆');
+      $('#reviewRating').val($(this).prevAll('.star').length + 1);
+    })
+  }
+  
+  
+  fnFileCheck();
+  fnOpenFileSelect();
   
   fnCheckInput();
-  fnCkeditor();
-  fnFileCheck();
-  fnAddOption();
-  fnRemoveOption();
-  
-  fnOpenFileSelect();
-  fnAddImageToList();
-  
   fnCheckRequired();
+  
+  fnSetRating();
   
 </script>
