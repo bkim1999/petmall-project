@@ -489,7 +489,10 @@
   const fnCheckInput = () => {
     // ckeditor 칸에 이미지 추가 시 이미지가 1개 이상, 10개 이하인지 체크
     $(document).on('change', $(editor), function() { 
-      let isImageCountInvaild = $('.ck-editor__editable').find('img').length === 0 || $('.ck-editor__editable').find('figure').length > 10;
+      if($('.ck-editor__editable').find('img').length === 0){
+        return;
+      } 
+      let isImageCountInvaild = $('.ck-editor__editable').find('figure').length > 10;
       fnToggleValid($('.ck-editor'), isImageCountInvaild, ' * 이미지는 최소 1개, 최대 10개입니다.');
     });
     // ckeditor 칸에 이미지 삭제 혹은 문자 입력/삭제 시 문자수가 200자 이하인지 체크

@@ -172,7 +172,7 @@
             <option th:value="'배송전/취소변경'">배송전/취소변경</option>
             <option th:value="'배송후/교환반품'">배송후/교환반품</option>
             <option th:value="'기타'">기타</option>
-            <th:block th:each="a : ${ccategoryList.getCategoryList}">
+            <th:block th:each="a : ${categoryList.getCategoryList}">
               <th:block th:if="${a.categoryNo != 0}">
                 <option th:value="${a.categoryNo}" th:text="${a.categoryName}"></option>
               </th:block>
