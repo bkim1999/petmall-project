@@ -14,4 +14,7 @@ public interface AdminService {
   public Map<String, Object> getAjaxAnswerList(HttpServletRequest request);
   public Map<String, Object> getUser();
   public Map<String, Object> pwInit(HttpServletRequest request);
+  public Map<String, Object> adminTake(HttpServletRequest request);
+  public Map<String, Object> normalTake(HttpServletRequest request);
+  
 }

@@ -94,5 +94,17 @@ public class AdminController {
   public Map<String, Object> pwInit(HttpServletRequest request) {
     return adminService.pwInit(request);
   }
+  
+  @ResponseBody
+  @GetMapping(value="/adminTake.do", produces = "application/json")
+  public Map<String, Object> adminTake(HttpServletRequest request) {
+    return adminService.adminTake(request);
+  }
+  
+  @ResponseBody
+  @GetMapping(value="/normalTake.do", produces = "application/json")
+  public Map<String, Object> normalTake(HttpServletRequest request) {
+    return adminService.normalTake(request);
+  }
 
 }

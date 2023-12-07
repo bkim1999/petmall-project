@@ -109,8 +109,8 @@
           str += '<td>'+user.userNo+'</td>';
           str += '<td>'+user.email+'</td>';
           str += '<td>';
-          str += '<input type="hidden" value="'+user.userNo+'">'  
-          str += '<input type="hidden" value="'+user.email+'">'
+          str += '<input type="hidden" name="userNo"value="'+user.userNo+'">'  
+          str += '<input type="hidden" name="email" value="'+user.email+'">'
           str += '<input type="button" class="btn btn-warning pwinit" value="비밀번호 초기화">';
           str += '</td>';
           str += '<td>'+user.name+'</td>';
@@ -120,9 +120,9 @@
             str += '<td value="0">'
             str += '광고 수신 비동의'
             str += '<br>'
+            str += '<input type="hidden" value="0">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="hidden" value="0">'
             str += '<input type="button" class="btn btn-warning" value="동의로 변경">'
             str += '</td>'
           }
@@ -130,9 +130,9 @@
             str += '<td value="1">'
             str += '광고 수신 동의'
             str += '<br>'
+            str += '<input type="hidden" value="1">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="hidden" value="1">'
             str += '<input type="button" class="btn btn-warning" value="비동의로 변경">'
             str += '</td>'
           }
@@ -146,19 +146,19 @@
           if (user.adminAuthorState === 0) {
             str += '<td value="0">일반 회원'
             str += '<br>'
+            str += '<input type="hidden" value="1">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="hidden" value="1">'
-            str += '<input type="button" class="btn btn-warning" value="관리자권한주기">'
+            str += '<input type="button" class="btn btn-warning adminTake" value="관리자권한주기">'
             str += '</td>'
           }
           if (user.adminAuthorState === 1) {
             str += '<td value="1">관리자'
             str += '<br>'
+            str += '<input type="hidden" value="0">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="hidden" value="0">'
-            str += '<input type="button" class="btn btn-warning" value="일반 권한주기">'
+            str += '<input type="button" class="btn btn-warning normalTake" value="일반 권한주기">'
             str += '</td>'
           }
           str += '<td>'+user.point+'</td>';
@@ -172,9 +172,12 @@
   function fnpwinit() {
     $(document).on('click', '.pwinit', function(ev){
       let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
       $.ajax({
         type: 'get',
-        url : '/admin/pw_init.do?email='+email,
+        url : '/admin/pw_init.do',
+        data : {'email' : email,
+                'userNo' : userNo},
         //응답
         dataType:'json',
         success: (resData) => {
@@ -190,12 +193,75 @@
     })
   }
   
+  
+  function fnadmintake() {
+    $(document).on('click', '.adminTake', function(ev){
+      
+      let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
+      let adminAuthorState = $(this).prev().prev().prev().val();
+      
+      console.log(adminAuthorState);
+      
+      $.ajax({
+        type: 'get',
+        url : '/admin/normalTake.do',
+        data : {'email' : email,
+                'userNo' : userNo,
+                'adminAuthorState' : adminAuthorState },
+        //응답
+        dataType:'json',
+        success: (resData) => {
+          if(resData.normalTakeResult === 1) {
+            alert(email+'님이 일반 권한을 얻었습니다.');
+            fngetAllList();
+          } else {
+            alert('일반 권한 얻기가 실패하였습니다.');
+            return;
+          }
+        }
+      })
+    })
+  }
+  
+  function fnnormaltake() {
+    $(document).on('click', '.normalTake', function(ev){
+      
+      let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
+      let adminAuthorState = $(this).prev().prev().prev().val();
+      
+      console.log(adminAuthorState);
+      
+      $.ajax({
+        type: 'get',
+        url : '/admin/adminTake.do',
+        data : {'email' : email,
+                'userNo' : userNo,
+                'adminAuthorState' : adminAuthorState },
+        //응답
+        dataType:'json',
+        success: (resData) => {
+          if(resData.adminTakeResult === 1) {
+            alert(email+'님이 관리자 권한을 얻었습니다.');
+            fngetAllList();
+          } else {
+            alert('관리자 권한 얻기가 실패하였습니다.');
+            return;
+          }
+        }
+      })
+    })
+  }
+  
 
 
 
   fnAnswer();
   fngetAllList();
   fnpwinit();
+  fnadmintake();
+  
  </script>
    
    <div th:replace="~{/layout/footer::footer}"></div>

@@ -89,15 +89,56 @@ public class AdminServiceImpl implements AdminService {
     
     String email = request.getParameter("email");
     String pw= mySecurityUtils.getSHA256("1111");
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
     
     UserDto userDto = UserDto.builder()
                              .email(email)
+                             .userNo(userNo)
                              .pw(pw)
                              .build();
     
-    int pwInitResult = userMapper.updatePw(userDto);
+    int pwInitResult = userMapper.changeUserInfo(userDto);
+    
     
     return Map.of("pwInitResult",pwInitResult);
+  }
+  
+  @Override
+  public Map<String, Object> adminTake(HttpServletRequest request) {
+    
+    String email = request.getParameter("email");
+    int adminAuthorState= Integer.parseInt(request.getParameter("adminAuthorState"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    UserDto userDto = UserDto.builder()
+                             .email(email)
+                             .userNo(userNo)
+                             .adminAuthorState(adminAuthorState)
+                             .build();
+    
+    int adminTakeResult = userMapper.changeUserInfo(userDto);
+    
+    return Map.of("adminTakeResult",adminTakeResult);
+  }
+  
+  
+  
+  @Override
+  public Map<String, Object> normalTake(HttpServletRequest request) {
+    
+    String email = request.getParameter("email");
+    int adminAuthorState= Integer.parseInt(request.getParameter("adminAuthorState"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    UserDto userDto = UserDto.builder()
+                            .email(email)
+                            .userNo(userNo)
+                            .adminAuthorState(adminAuthorState)
+                            .build();
+
+    int normalTakeResult = userMapper.changeUserInfo(userDto);
+    
+    return Map.of("normalTakeResult",normalTakeResult);
   }
     
   
