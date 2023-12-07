@@ -8,16 +8,17 @@
   <div th:replace="~{layout/header :: header}"></div>
   <div>
     <div>
-      <button type="button" id="btn_my_review">내 리뷰</button>
-      <button type="button" id="btn_not_reviewed">아직 작성하지 않은 리뷰</button>
+      <button type="button" class="btn" id="btn_my_review">내 리뷰</button>
+      <button type="button" class="btn" id="btn_not_reviewed">아직 작성하지 않은 리뷰</button>
     </div>
+    <h1>내 리뷰 목록</h1>
     <div id="review_list"></div>
   </div>
   <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 <script th:inline="javascript">
 
-  const fnClickButton = () => {
+  const fnToggleList = () => {
     $(document).on('click', '#btn_my_review', function(){
       fnGetReviewList();
     });
@@ -36,38 +37,51 @@
       url: '/review/getMyReviewList.do',
       data: {'userNo' : userNo
            , 'page' : page
-           , 'order' : order
+           , 'order' : 'REVIEW_MODIFIED_AT'
             },
       // 응답
       dataType: 'json',
       success: (resData) => {  // resData = {"reviewList": [], "paging": ""}
         $('#review_list').empty();
+        $('#review_list').prev().text('내 리뷰 목록');
         $.each(resData.reviewList, function(i, review){
-          let str = '<h1>내 리뷰 목록</h1>';
-          str += '<div class="review" data-review-no="' + review.reviewNo + '">';
-          str += '<h4>';
+          let str = '';
+          str += '<div class="review d-flex mt-3">';
+          str += '<div>'
+          str += '  <h4>';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
-          str += '</h4>';
-          str += '<div>' + review.reviewModifiedAt + '</div>';
-          str += '<div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
-          str += '<div class="d-flex mt-3">'
-          str += '  <div class="w-100">'
-          str += '    <h5 class="review_title">' + review.reviewTitle + '</h5>'
-          str += '    <div class="review_contents">' + review.reviewContents + '</div>';
-          str += '  </div>'
-          str += '  <div class="review_thumbnail">';
+          str += '  </h4>';
+          str += '  <div>' + review.reviewModifiedAt + '</div>';
+          str += '  <div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
+          if(review.reviewTitle){
+            str += '  <h5 class="review_title">' + review.reviewTitle + '</h5>'
+          }
+          if(review.reviewContents){
+            str += '  <div class="review_contents">' + review.reviewContents + '</div>';
+          }
+          str += '</div>'
+          str += '  <div class="ms-auto review_thumbnail">';
           if(review.reviewImageDto !== null){
-            str += '    <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
-          } else {
-            str += '    <image src="기본이미지">';
+            str += '    <image src="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
           }
           str += '  </div>';
+          str += '<div class="ms-auto">';
+          str += '  <form class="frm_edit_remove_review" method="post">';
+          str += '    <input type="hidden" name="reviewNo" value="' + review.reviewNo + '">';
+          str += '    <input type="hidden" name="productName" value="' + review.productDto.productName + '">';
+          str += '    <input type="hidden" name="optionName" value="' + review.productOptionDto.optionName + '">';
+          str += '    <input type="hidden" name="reviewtitle" value="' + review.reviewTitle + '">';
+          str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
+          str += '    <input type="hidden" name="reviewRating" value="' + review.reviewRating + '">';
+          str += '    <button type="button" class="btn_edit_review">수정</button>';
+          str += '    <button type="button" class="btn_remove_review">삭제</button>';
+          str += '</div>'
           str += '</div>';
           $('#review_list').append(str);
         });
         $('#review_list').append(resData.paging);
       }
-    })
+    });
   }
   
   const fnGetNotReviewList = () => {
@@ -77,15 +91,19 @@
       url: '/review/getNotReviewedList.do',
       data: {'userNo' : userNo
            , 'page' : page
-           , 'order' : order
+           , 'order' : 'ORDER_DATE'
             },
       // 응답
       dataType: 'json',
       success: (resData) => {  // resData = {"notReviewedList": [], "paging": ""}
-          console.log(resData);
+        $('#review_list').empty();
+        $('#review_list').prev().text('작성하지 않은 리뷰');
+        if(resData.notReviewedList.length === 0){
+          $('#review_list').append('<div>작성할 리뷰가 없습니다.</div>');
+          return false;
+        }
         $.each(resData.notReviewedList, function(i, notReviewed){
-          $('#review_list').empty();
-          let str = '<h1>작성 가능한 리뷰</h1>';
+          let str = '';
           str += '<div class="review d-flex mt-3" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
           str += '  <div class="thumbnail">';
           if(notReviewed.reviewImageDto !== null){
@@ -95,13 +113,22 @@
           }
           str += '  </div>';
           str += '  <div>';
-          str += '    <div>구매일: ' + notReviewed.orderDate + '</div>';
+          str += '    <div>구매일자: ' + notReviewed.orderDate + '</div>';
           str += '    <div>' + notReviewed.productDto.productName + '</div>';
           str += '    <div>옵션: ' + notReviewed.productOptionDto.optionName + '</div>';
           str += '  </div>'
           str += '  <div>'
-          str += '    <form method="post" action="/review/addReview.form">';
-          str += '    <button type="button" id="btn_add_review">리뷰 작성</button>';
+          str += '    <form method="get" action="/review/addReview.form">';
+          str += '      <input type="hidden" name="userNo" value="' + userNo + '">';
+          str += '      <input type="hidden" name="productNo" value="' + notReviewed.productDto.productNo + '">';
+          str += '      <input type="hidden" name="productName" value="' + notReviewed.productDto.productName + '">';
+          str += '      <input type="hidden" name="optionNo" value="' + notReviewed.productOptionDto.optionNo + '">';
+          str += '      <input type="hidden" name="optionName" value="' + notReviewed.productOptionDto.optionName + '">';
+          if(notReviewed.reviewImageDto !== null){
+            str += '      <input type="hidden" name="productImagePath" value="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
+          }
+          str += '      <button type="submit" class="btn_add_review_form btn" id="btn_add_review">리뷰 작성</button>';
+          str += '    </form>'
           str += '  </div>'
           str += '</div>';
           $('#review_list').append(str);
@@ -111,7 +138,18 @@
     })
   }
   
-  fnClickButton();
+  function fnRemoveReview(){
+    $(document).on('click', '.btn_remove_review', function(){
+      if(!confirm('이 리뷰를 삭제하시겠습니까?')){
+        return;
+      }
+      $(this).parents('.frm_edit_remove_review').attr('action', '/review/removeReview.do');
+      $(this).parents('.frm_edit_remove_review').submit();
+    })
+  }
+  
+  fnToggleList();
   fnGetReviewList();
+  fnRemoveReview();
 
 </script>

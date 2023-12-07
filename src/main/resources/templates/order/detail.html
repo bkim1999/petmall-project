@@ -36,8 +36,21 @@
 
  <div th:replace="~{/layout/header::header}"></div>
  
+
+ 
  <div class="main-content">
+
+   <div id="orderDetails">
    <h2>주문 상세 정보 입력 및 확인 </h2>
+   <hr>
+        <p>상품 옵션 번호: <span th:text="${param.optionNo}"></span></p>
+        <p>사용자 번호: <span th:text="${param.userNo}"></span></p>
+        <p>수량: <span th:text="${param.count}"></span></p>
+        <p>상품 이름: <span th:text="${param.productName}"></span></p>
+        <p>상품 가격: <span th:text="${param.productPrice}"></span></p>
+        <p>이벤트 할인: <span th:text="${param.eventDiscount}"></span></p>
+        <p>총 가격: <span th:text="${param.totalPrice}"></span></p>
+    </div>
    <hr>
         <h3>구매자 정보</h3>
         <div th:if="${session.user != null}">
@@ -145,7 +158,7 @@
     
     <div class="larger-input">
         <label for="totalPrice">총금액</label>
-        <input type="text" readonly name="totalPrice" id="totalPrice" class="form-control larger-input" th:value="${totalPrice}">
+        <input type="text" readonly name="totalPrice" id="totalPrice" class="form-control larger-input" th:value="${param.totalPrice}">
         <span id="total_price" ></span>
     </div>
     <hr>

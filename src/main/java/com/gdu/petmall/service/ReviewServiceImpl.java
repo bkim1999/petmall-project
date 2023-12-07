@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dao.ReviewMapper;
+import com.gdu.petmall.dto.ProductDto;
 import com.gdu.petmall.dto.ProductImageDto;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.ReviewDto;
+import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.util.MyFileUtils;
 import com.gdu.petmall.util.MyPageUtils;
 
@@ -91,54 +93,6 @@ public class ReviewServiceImpl implements ReviewService {
     return Map.of("productOrderList", productOrderList);
   }
   
-  @Transactional
-  @Override
-  public boolean addReview(int productNo, ReviewDto review, MultipartHttpServletRequest multipartRequest) throws Exception {
-    int addReviewResult = reviewMapper.insertProductReview(review);
-    reviewMapper.updateProductRating(productNo);
-    
-    LocalDate today = LocalDate.now();
-    String imagePath = "/product/" + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(today);
-    List<MultipartFile> reviewImages = multipartRequest.getFiles("review_images");
-    
-    int attachCount = 0;
-
-    if(reviewImages.get(0).getSize() == 0) {
-      attachCount = 1;
-    } else {
-      attachCount = 0;
-    }
-    
-    for(MultipartFile reviewImage : reviewImages) {
-
-      if(reviewImage != null && !reviewImage.isEmpty()) {
-        // Add Review thumbnails
-        String filesystemName = myFileUtils.getFilesystemName(reviewImage.getOriginalFilename());
-        File reviewImageFile = new File(imagePath, filesystemName);
-        File thumbnailFile = new File(imagePath, "s_" + filesystemName);
-        reviewImage.transferTo(reviewImageFile);
-        
-        Thumbnails.of(reviewImageFile)
-                  .size(400, 400)      // 가로 400px, 세로 400px
-                  .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
-                  .toFile(thumbnailFile);
-        ProductImageDto thumbnailImage = ProductImageDto.builder()
-            .imageCode("review_" + review.getReviewNo())
-            .position("thumbnail")
-            .path(imagePath)
-            .filesystemName("s_" + filesystemName)
-            .build();
-
-        attachCount += productMapper.insertProductImage(thumbnailImage);
-        
-      }
-      
-    }
-    
-    return (addReviewResult == 1) && (reviewImages.size() == attachCount);
-      
-  }
-  
   @Override
   public Map<String, Object> loadNotReviewedList(HttpServletRequest request) {
     int userNo = Integer.parseInt(request.getParameter("userNo"));
@@ -151,15 +105,72 @@ public class ReviewServiceImpl implements ReviewService {
     String order = opt.orElse("ORDER_DATE");
     
     Map<String, Object> map = Map.of("userNo", userNo
-                                   , "order", order
-                                   , "begin", myPageUtils.getBegin()
-                                   , "end", myPageUtils.getEnd());
+        , "order", order
+        , "begin", myPageUtils.getBegin()
+        , "end", myPageUtils.getEnd());
     
     List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
     System.out.println("here!!!: " + notReviewedList);
     return Map.of("notReviewedList", notReviewedList
-                , "paging", myPageUtils.getAjaxPaging());
+        , "paging", myPageUtils.getAjaxPaging());
   }
   
+  @Transactional
+  @Override
+  public boolean addReview(MultipartHttpServletRequest multipartRequest) throws Exception {
+    
+    int userNo = Integer.parseInt(multipartRequest.getParameter("userNo"));
+    int optionNo = Integer.parseInt(multipartRequest.getParameter("optionNo"));
+    int productNo = Integer.parseInt(multipartRequest.getParameter("productNo"));
+    String reviewTitle = multipartRequest.getParameter("reviewTitle");
+    String reviewContents = multipartRequest.getParameter("reviewContents");
+    int reviewRating = Integer.parseInt(multipartRequest.getParameter("reviewRating"));
+    
+    ReviewDto review = ReviewDto.builder()
+                                .reviewTitle(reviewTitle)
+                                .reviewContents(reviewContents)
+                                .userDto(UserDto.builder().userNo(userNo).build())
+                                .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+                                .reviewRating(reviewRating)
+                                .build();
+    
+    int addReviewResult = reviewMapper.insertProductReview(review);
+    int addReviewImageResult = 0;
+    reviewMapper.updateProductRating(productNo);
+    
+    String imagePath = myFileUtils.getProductImagePath();
+    MultipartFile reviewImageMulti = multipartRequest.getFile("review_image");
+    
+    if(reviewImageMulti != null && !reviewImageMulti.isEmpty()) {
+      // 리뷰 이미지 추가
+      String filesystemName = myFileUtils.getFilesystemName(reviewImageMulti.getOriginalFilename());
+      File reviewImageFile = new File(imagePath, filesystemName);
+      File resizedImageFile = new File(imagePath, "r_" + filesystemName);
+      reviewImageMulti.transferTo(reviewImageFile);
+      
+      Thumbnails.of(reviewImageFile)
+                .size(400, 400)      // 가로 400px, 세로 400px
+                .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
+                .toFile(resizedImageFile);
+      ProductImageDto reviewImageDto = ProductImageDto.builder()
+          .imageCode("review_" + review.getReviewNo())
+          .position("review")
+          .path(imagePath)
+          .filesystemName("r_" + filesystemName)
+          .build();
+
+      addReviewImageResult = productMapper.insertProductImage(reviewImageDto);
+        
+    }
+    
+    return (addReviewResult == 1) && (addReviewImageResult == 1);
+      
+  }
+  
+  @Override
+  public int removeReview(int reviewNo) {
+    int removeReviewResult = reviewMapper.deleteProductReview(reviewNo);
+    return removeReviewResult;
+  }
   
 }

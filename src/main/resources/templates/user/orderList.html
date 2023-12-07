@@ -33,7 +33,6 @@
            <thead>
                <td>주문번호</td>
                <td>주문날짜</td>
-               <td colspan="2">상품정보</td>
                <td>결제금액</td>
            </thead>
            <tbody>
@@ -41,8 +40,6 @@
 				<tr th:each="pay, vs : ${myPayList}" th:if="${pay.orderState == 1}">
 				    <td th:text="${pay.yourOrder}"></td>
 				    <td th:text="${pay.orderDate}"></td>
-				    <td>상품썸네일</td>
-				    <td>상품명 x 상품수량</td>
 				    <td th:text="${pay.totalPrice}"></td>
 				</tr>
              <tr class="review"><td colspan="5">상품후기 작성하러가기 <i class="fa-solid fa-reply fa-flip-both" style="color: #d1cabd;"></i></td></tr>
