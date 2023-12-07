@@ -15,8 +15,10 @@ public interface ReviewMapper {
   public int getUserReviewCount(int userNo);
   public List<ReviewDto> getUserReviewList(Map<String, Object> map);
   public List<ProductOptionDto> getProductOrderList(Map<String, Object> map);
-  public int insertProductReview(ReviewDto review);
   public int updateProductRating(int productNo);
   public int getNotReviewedCount(int userNo);
   public List<ReviewDto> getNotReviewedList(Map<String, Object> map);
+  public int insertProductReview(ReviewDto review);
+  public int deleteProductReview(int reviewNo);
+  
 }

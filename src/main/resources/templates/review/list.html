@@ -46,7 +46,7 @@
         $('#review_list').prev().text('내 리뷰 목록');
         $.each(resData.reviewList, function(i, review){
           let str = '';
-          str += '<div class="review d-flex mt-3" data-review-no="' + review.reviewNo + '">';
+          str += '<div class="review d-flex mt-3">';
           str += '<div>'
           str += '  <h4>';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
@@ -66,8 +66,15 @@
           }
           str += '  </div>';
           str += '<div class="ms-auto">';
-          str += '  <button type="button" class="btn_edit_review">수정</button>';
-          str += '  <button type="button" class="btn_delete_review>삭제</button>';
+          str += '  <form class="frm_edit_remove_review" method="post">';
+          str += '    <input type="hidden" name="reviewNo" value="' + review.reviewNo + '">';
+          str += '    <input type="hidden" name="productName" value="' + review.productDto.productName + '">';
+          str += '    <input type="hidden" name="optionName" value="' + review.productOptionDto.optionName + '">';
+          str += '    <input type="hidden" name="reviewtitle" value="' + review.reviewTitle + '">';
+          str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
+          str += '    <input type="hidden" name="reviewRating" value="' + review.reviewRating + '">';
+          str += '    <button type="button" class="btn_edit_review">수정</button>';
+          str += '    <button type="button" class="btn_remove_review">삭제</button>';
           str += '</div>'
           str += '</div>';
           $('#review_list').append(str);
@@ -131,15 +138,18 @@
     })
   }
   
-  function fnDeleteReview(){
-    $(document).on('click', '#btn_delete_review', function(){
-      let reviewNo = $(this).parent().data('review-no');
-      
+  function fnRemoveReview(){
+    $(document).on('click', '.btn_remove_review', function(){
+      if(!confirm('이 리뷰를 삭제하시겠습니까?')){
+        return;
+      }
+      $(this).parents('.frm_edit_remove_review').attr('action', '/review/removeReview.do');
+      $(this).parents('.frm_edit_remove_review').submit();
     })
   }
   
   fnToggleList();
   fnGetReviewList();
-  fnDeleteReview();
+  fnRemoveReview();
 
 </script>

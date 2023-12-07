@@ -69,6 +69,12 @@ public class ReviewController {
     return "redirect:/review/list.do";
   }
   
+  @PostMapping(value="/removeReview.do")
+  public String removeReview(int reviewNo, RedirectAttributes redirectAttributes) {
+    int removeReviewResult = reviewService.removeReview(reviewNo);
+    redirectAttributes.addFlashAttribute("removeReviewResult", removeReviewResult);
+    return "redirect:/review/list.do";
+  }
   
   
 }

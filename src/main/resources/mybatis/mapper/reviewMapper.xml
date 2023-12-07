@@ -98,6 +98,13 @@
      WHERE A.RN BETWEEN #{begin} AND #{end}
   </select>
   
+  <update id="updateProductRating" parameterType="int">
+     UPDATE PRODUCT_T
+       SET PRODUCT_RATING = (SELECT AVG(REVIEW_RATING) 
+                               FROM REVIEW_T 
+                              WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>))
+  </update>
+  
   <insert id="insertProductReview" parameterType="ReviewDto">
     <selectKey order="BEFORE" keyProperty="reviewNo" resultType="int">
       SELECT REVIEW_SEQ.NEXTVAL
@@ -124,12 +131,10 @@
          )
   </insert>
   
-  <update id="updateProductRating" parameterType="int">
-     UPDATE PRODUCT_T
-       SET PRODUCT_RATING = (SELECT AVG(REVIEW_RATING) 
-                               FROM REVIEW_T 
-                              WHERE OPTION_NO IN (<include refid = "getProductOptionNo"/>))
-  </update>
+  <delete id="deleteProductReview" parameterType="int">
+    DELETE FROM REVIEW_T
+     WHERE REVIEW_NO = #{reviewNo}
+  </delete>
   
   <sql id = "getProductOptionNo">
     SELECT OPTION_NO 
