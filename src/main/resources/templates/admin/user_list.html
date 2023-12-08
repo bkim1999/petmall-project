@@ -20,6 +20,9 @@
   .nav_qna_list{
     text-align: center;
   }
+  .h2_text {
+    text-align: center;
+  }
   
 </style>
 
@@ -32,7 +35,7 @@
     <h1>USER 관리</h1>
     <hr>
     <a th:href="@{/admin/admin.go}">
-      <input type="button" class="btn btn-light" value="관리자페이지돌아가기">
+      <input type="button" class="btn btn-dark" value="관리자페이지돌아가기">
     </a>  
   </div>
   
@@ -56,6 +59,8 @@
   </div>
   <hr>
   <div class="test"></div>
+  <hr>
+  <div class="text"></div>
   <hr>
   <div class="table_wrap">
   <table border=1 class="table table-hover table_font">
@@ -98,8 +103,14 @@
           $('.getAccessCount').empty();
           $('.getUnAccessCount').empty();
           $('.getLeaveCount').empty();
+          $('.text').empty();
         if(resData.userList === null) {
           alert('목록 불러오기 실패');
+          return;
+        }
+        
+        if(resData.userList == null) {
+          alert('뭐야이건');
           return;
         }
         
@@ -115,10 +126,15 @@
           str1 += '<option value="NAME">이름</option>';
           str1 += '<option value="ADMIN_AUTHOR_STATE">관리자</option>'
           str1 += '</select>';
-          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력" >';
           str1 += '<input type="button" value="검색" class="btn btn-warning search">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearch">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">활동중인 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
         $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td>'+user.userNo+'</td>';
@@ -342,6 +358,7 @@
          }
           $('#user_list').empty();
           $('.test').empty();
+          $('.text').empty();
           let str1 = '<div>'
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
@@ -350,8 +367,13 @@
           str1 += '</select>';
           str1 += '<input type="text" name ="query" placeholder="검색어입력">';
           str1 += '<input type="button" value="검색" class="btn btn-warning search">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearch">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">활동중인 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
          $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td>'+user.userNo+'</td>';
@@ -438,6 +460,7 @@
          }
           $('#user_list').empty();
           $('.test').empty();
+          $('.text').empty();
           let str1 = '<div>'
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
@@ -445,8 +468,13 @@
           str1 += '</select>';
           str1 += '<input type="text" name ="query" placeholder="검색어입력">';
           str1 += '<input type="button" value="검색" class="btn btn-warning unaccesssearch">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearchUn">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">휴면 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
          $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td>'+user.userNo+'</td>';
@@ -518,14 +546,20 @@
           
           $('#user_list').empty();
           $('.test').empty();
+          $('.text').empty();
           let str1 = '<div>'
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
           str1 += '</select>';
-          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력" >';
           str1 += '<input type="button" value="검색" class="btn btn-warning leavesearch">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearchleave">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">탈퇴 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
          $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td></td>';
@@ -571,15 +605,21 @@
           
           $('#user_list').empty();
           $('.test').empty();
+          $('.text').empty();
           let str1 = '<div>'
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
           str1 += '<option value="NAME">이름</option>';
           str1 += '</select>';
-          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력" >';
           str1 += '<input type="button" value="검색" class="btn btn-warning unaccesssearch">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearchUn">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">휴면 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
          $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td>'+user.userNo+'</td>';
@@ -647,14 +687,20 @@
           
           $('#user_list').empty();
           $('.test').empty();
+          $('.text').empty();
           let str1 = '<div>'
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
           str1 += '</select>';
           str1 += '<input type="text" name ="query" placeholder="검색어입력">';
           str1 += '<input type="button" value="검색" class="btn btn-warning leavesearch">'
+          str1 += '<input type="button" value="검색 초기화" class="btn btn-warning textsearchleave">'
           str1 += '</div>'
           $('.test').append(str1);
+          let str2 = '<div>'
+          str2 += '<h2 class="h2_text">탈퇴 회원</h2>'
+          str2 += '</div>'
+          $('.text').append(str2);
          $.each(resData.userList, (i, user) => {
           let str = '<tr>'
           str += '<td></td>';
@@ -710,10 +756,26 @@
           
        }           
      })
-     
-     
    })
  }
+ 
+  function fnsearchInitleave() {
+    $(document).on('click', '.textsearchleave', function(ev){
+      fngetAllList();
+    })
+  }
+  
+  function fnsearchInitUn() {
+    $(document).on('click', '.textsearchUn', function(ev){
+      fngetAllList();
+    })
+  }
+  
+  function fnsearchInit() {
+    $(document).on('click', '.textsearch', function(ev){
+      fngetAllList();
+    })
+  }
 
 
 
@@ -732,6 +794,9 @@
   fngetAccessCountList();
   fnpwinitfail();
   fnchangeAccess();
+  fnsearchInitleave();
+  fnsearchInitUn();
+  fnsearchInit();
   
  </script>
    

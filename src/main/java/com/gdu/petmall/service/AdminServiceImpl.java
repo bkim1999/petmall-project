@@ -107,10 +107,15 @@ public class AdminServiceImpl implements AdminService {
     String pw= mySecurityUtils.getSHA256("1111");
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     
+    int agree =3;
+    int adminState =3;
+    
     UserDto userDto = UserDto.builder()
                              .email(email)
                              .userNo(userNo)
                              .pw(pw)
+                             .agree(agree)
+                             .adminAuthorState(adminState)
                              .build();
     
     int pwInitResult = userMapper.changeUserInfo(userDto);
