@@ -3,23 +3,56 @@
   
 <head th:replace="~{/layout/header::head('관리자전용 Q&A게시판')}"></head>
 
+<style>
+  .answerWrap {
+    width: 1500px;
+    height: 50px;
+    display: flex;
+    font-size: 30px;
+    line-height: 50px;
+    justify-content: space-between;
+    padding-left: 310px;
+    padding-right: 250px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    position: relative;
+  }
+  .nav_qna_list{
+    text-align: center;
+  }
+  
+</style>
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
 
-   <div>
-    <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>
+  <hr>
+  <div class="nav_qna_list">
+    <h1>Q&A 관리</h1>
+    <hr>
+    <a th:href="@{/admin/admin.go}">
+      <input type="button" class="btn btn-dark" value="관리자페이지돌아가기">
+    </a>  
   </div>
   
-  <div><h1>Q&A 페이지에 오신것을 환영합니다.</h1></div>
+  <hr>
 
-  <div>
-    <div th:text="|전체 문의글수 : ${qnaTotalCount}|"></div>
-    <div th:text="|답변 완료된 문의글 수 : ${qnaAnswerCount}|"></div>
-    <div th:text="|미답변된 문의글 수 : ${qnaNonAnswerCount}|"></div>
+  <div class="answerWrap">
+    <div>
+      <input type="button" class="btn btn-light getAllList" th:value="|전체 문의글수 : ${qnaTotalCount}|">
+    </div>
+     <div>
+      <input type="hidden" value="1">
+      <input type="button" class="btn btn-light getAnswerList" th:value="|답변 완료된 문의글 수 : ${qnaAnswerCount}|">
+     </div>
+    <div>
+      <input type="hidden" value="0">
+      <input type="button" class="btn btn-light getNonAnswerList" th:value="|미답변된 문의글 수 : ${qnaNonAnswerCount}|">
+    </div>
   </div>
   
+  <div class="table_wrap">
   <table border=1 class="table table-hover table_font">
     <thead class="table-primary">
       <tr>
@@ -32,12 +65,34 @@
        <td>답변하로가기</td>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="qna_list">
      <th:block th:each="qna,vs:${qnaList}">
       <tr>
        <td th:text="${qna.qnaNo}"></td>
-       <td th:text="${qna.title}"></td>
-       <td th:text="${qna.contents}"></td>
+       <th:block th:if="${qna.title == 1}">
+         <td value="1">[상품] 상품관련 문의</td>
+       </th:block>
+       <th:block th:if="${qna.title == 2}">
+         <td value="2">[배송] 배송관련 문의</td>
+       </th:block>
+       <th:block th:if="${qna.title == 3}">
+         <td value="3">[주문취소] 주문취소 문의</td>
+       </th:block>
+       <th:block th:if="${qna.title == 4}">
+         <td value="4">[주소변경] 주소변경 문의</td>
+       </th:block>
+       <th:block th:if="${qna.title == 5}">
+         <td value="5">[반품/환불] 반품/환불 문의</td>
+       </th:block>
+       <th:block th:if="${qna.title == 6}">
+         <td value="6">[기타] 기타문의</td>
+       </th:block>
+       <th:block th:if="${qna.contents == null}">
+        <td>(내용 없음)</td>
+       </th:block>
+       <th:block th:if="${qna.contents != null}">
+        <td th:text="${qna.contents}"></td>
+       </th:block>
        <td th:text="${qna.createdAt}"></td>
        <td th:text="${qna.userDto.name}"></td>
        <th:block th:if="${qna.checkFlag == 1}">
@@ -49,10 +104,10 @@
        <td>
         <input type="hidden" th:value="${qna.groupNo}">
         <th:block th:if="${qna.checkFlag == 1}">
-        <input type="button" id="btn_answer" value="추가답변하기">
+        <input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기">
         </th:block>
         <th:block th:if="${qna.checkFlag == 0}">
-        <input type="button" id="btn_answer" value="답변하기">
+        <input type="button" id="btn_answer" class="btn btn-warning" value="답변하기">
         </th:block>
         <input type="hidden" th:value="${qna.qnaNo}">
        </td>
@@ -60,8 +115,7 @@
      </th:block>
     </tbody>
   </table>
-  
-
+  </div>
   
  <script th:inline="javascript">
   function fnAnswer() {
@@ -70,6 +124,202 @@
   	})
   }
   
+  function getAllList(){
+    $(document).on('click', '.getAllList', function(ev){
+      $.ajax({
+        type:'get',
+        url: '/admin/admin.ajaxALL',
+        dataType:'json',
+        success : (resData) => {
+          $('#qna_list').empty();
+        if(resData.qnaList === null) {
+          alert('목록 불러오기 실패');
+          return;
+        }
+        $.each(resData.qnaList, (i, qnaList) => {
+          let str = '<tr>'
+          str += '<td>'+qnaList.qnaNo+'</td>';
+          if(qnaList.title === 1){
+            str +='<td value="1">[상품] 상품관련 문의</td>';
+          }
+          if(qnaList.title === 2){
+            str +='<td value="2">[배송] 배송관련 문의</td>';
+          }
+          if(qnaList.title === 3){
+            str +='<td value="3">[주문취소] 주문취소 문의</td>';
+          }
+          if(qnaList.title === 4){
+            str +='<td value="4">[주소변경] 주소변경 문의</td>';
+          }
+          if(qnaList.title === 5){
+            str +='<td value="5">[반품/환불] 반품/환불 문의</td>';
+          }
+          if(qnaList.title === 6){
+            str +='<td value="6">[기타] 기타문의</td>';
+          }
+          if(qnaList.contents === null){
+            str +='<td>(내용 없음)</td>'
+          }
+          if(qnaList.contents !== null) {
+            str += '<td>'+qnaList.contents+'</td>';
+          }
+          str += '<td>'+qnaList.createdAt+'</td>';
+          str += '<td>'+qnaList.userDto.name+'</td>';
+          if(qnaList.checkFlag === 1){
+            str += '<td>답변완료</td>';
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<td>미답변</td>';
+          }
+          str += '<td>';
+          str += '<input type="hidden" value="'+qnaList.groupNo+'">';
+          if(qnaList.checkFlag === 1){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기">';   
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="답변하기">'
+          }
+          str += '<input type="hidden" value="'+qnaList.qnaNo+'">';
+          str += '</td>';
+          str += '</tr>';
+          $('#qna_list').append(str);
+        })
+        }
+      })
+    })
+  }
+  
+  function getAnswerList() {
+    $(document).on('click', '.getAnswerList', function(ev){
+      $('#qna_list').empty();
+      $.ajax({
+        // 요청
+        type : 'get',
+        url: '/admin/adminanswer.ajaxALL?checkFlag='+$(this).prev().val(),
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $.each(resData.qnaAnswerList, (i, qnaList) => {
+          let str = '<tr>'
+          str += '<td>'+qnaList.qnaNo+'</td>';
+          if(qnaList.title === 1){
+            str +='<td value="1">[상품] 상품관련 문의</td>';
+          }
+          if(qnaList.title === 2){
+            str +='<td value="2">[배송] 배송관련 문의</td>';
+          }
+          if(qnaList.title === 3){
+            str +='<td value="3">[주문취소] 주문취소 문의</td>';
+          }
+          if(qnaList.title === 4){
+            str +='<td value="4">[주소변경] 주소변경 문의</td>';
+          }
+          if(qnaList.title === 5){
+            str +='<td value="5">[반품/환불] 반품/환불 문의</td>';
+          }
+          if(qnaList.title === 6){
+            str +='<td value="6">[기타] 기타문의</td>';
+          }
+          if(qnaList.contents === null){
+            str +='<td>(내용 없음)</td>'
+          }
+          if(qnaList.contents !== null) {
+            str += '<td>'+qnaList.contents+'</td>';
+          }
+          str += '<td>'+qnaList.createdAt+'</td>';
+          str += '<td>'+qnaList.userDto.name+'</td>';
+          if(qnaList.checkFlag === 1){
+            str += '<td>답변완료</td>';
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<td>미답변</td>';
+          }
+          str += '<td>';
+          str += '<input type="hidden" value="'+qnaList.groupNo+'">';
+          if(qnaList.checkFlag === 1){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기">';   
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="답변하기">'
+          }
+          str += '<input type="hidden" value="'+qnaList.qnaNo+'">';
+          str += '</td>';
+          str += '</tr>';
+          $('#qna_list').append(str);
+        })
+        }
+      })
+     
+    })
+  }
+  
+  function getNonAnswerList() {
+    $(document).on('click', '.getNonAnswerList', function(ev){
+      $('#qna_list').empty();
+      $.ajax({
+        // 요청
+        type : 'get',
+        url: '/admin/adminanswer.ajaxALL?checkFlag='+$(this).prev().val(),
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $.each(resData.qnaAnswerList, (i, qnaList) => {
+          let str = '<tr>'
+          str += '<td>'+qnaList.qnaNo+'</td>';
+          if(qnaList.title === 1){
+            str +='<td value="1">[상품] 상품관련 문의</td>';
+          }
+          if(qnaList.title === 2){
+            str +='<td value="2">[배송] 배송관련 문의</td>';
+          }
+          if(qnaList.title === 3){
+            str +='<td value="3">[주문취소] 주문취소 문의</td>';
+          }
+          if(qnaList.title === 4){
+            str +='<td value="4">[주소변경] 주소변경 문의</td>';
+          }
+          if(qnaList.title === 5){
+            str +='<td value="5">[반품/환불] 반품/환불 문의</td>';
+          }
+          if(qnaList.title === 6){
+            str +='<td value="6">[기타] 기타문의</td>';
+          }
+          if(qnaList.contents === null){
+            str +='<td>(내용 없음)</td>'
+          }
+          if(qnaList.contents !== null) {
+            str += '<td>'+qnaList.contents+'</td>';
+          }
+          str += '<td>'+qnaList.createdAt+'</td>';
+          str += '<td>'+qnaList.userDto.name+'</td>';
+          if(qnaList.checkFlag === 1){
+            str += '<td>답변완료</td>';
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<td>미답변</td>';
+          }
+          str += '<td>';
+          str += '<input type="hidden" value="'+qnaList.groupNo+'">';
+          if(qnaList.checkFlag === 1){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기">';   
+          }
+          if(qnaList.checkFlag === 0){
+            str += '<input type="button" id="btn_answer" class="btn btn-warning" value="답변하기">'
+          }
+          str += '<input type="hidden" value="'+qnaList.qnaNo+'">';
+          str += '</td>';
+          str += '</tr>';
+          $('#qna_list').append(str);
+        })
+        }
+      })
+     
+    })
+  }
+  
+  getNonAnswerList();
+  getAnswerList();
+  getAllList();
   fnAnswer();
  </script>
    

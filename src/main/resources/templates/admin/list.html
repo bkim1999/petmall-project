@@ -11,6 +11,56 @@
     .navbar navbar-expand-lg bg-light{
       border-right: 1px solid gray;
     }
+    .navbar-collapse {
+      background-color: #E0C891;
+    }
+    .admin_list_wrap {
+      width: 1500px;
+      height: 300px;
+      margin-top: 150px;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+    .user_wrap {
+      width: 200px;
+      height: 100px;
+      background-color: #E0C891;
+      line-height: 40px;
+      border-radius: 20px;
+      color: white;
+    }
+    .qna_wrap {
+      width: 200px;
+      height: 100px;
+      background-color: #E0C891;
+      line-height: 40px;
+      border-radius: 20px;
+      color: white;
+    }
+    .event_wrap {
+      width: 200px;
+      height: 100px;
+      background-color: #E0C891;
+      line-height: 40px;
+      border-radius: 20px;
+      color: white;
+    }
+    .coment {
+      text-align: center;
+    }
+    .nava_wrap {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 160px;
+      color: white;
+    }
+    .nava_list {
+      color: white;
+    }
+    a {
+      color: white;
+    }
   </style>
 <body>
   
@@ -19,52 +69,133 @@
   <div class="btn_admin">관리자 페이지에 오신것을 환영합니다.</div>
   
   
-  <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
+  <nav class="navbar navbar-expand-lg bg-light " data-bs-theme="light">
   <div class="container-fluid">
-    <a class="nav-link active">관리자페이지</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     
     <div class="collapse navbar-collapse" id="navbarColor03">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/event_list.go}">이벤트 현황
+        <li class="nav-item nava_wrap">
+          <a class="nav-link active nava_list" th:href="@{/admin/event_list.go}">이벤트 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/qna_list.go}">모든 문의글 관리
+        <li class="nav-item nava_wrap">
+          <a class="nav-link active nava_list" th:href="@{/admin/qna_list.go}">문의글 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/product_list.go}">제품 재고 관리
+        <li class="nav-item nava_wrap">
+          <a class="nav-link active nava_list" th:href="@{/admin/product_list.go}">제품재고 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/partner_list.go}">파트너십 제안 관리
+        <li class="nav-item nava_wrap">
+          <a class="nav-link active nava_list" th:href="@{/main.do}">주문현황 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/main.do}">총 주문현황 관리
+        <li class="nav-item nava_wrap">
+          <a class="nav-link active nava_list" th:href="@{/admin/user_list.go}">유저현황 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
-        
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="search" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>
   </div>
 </nav>
   
+   <hr>
+   
+   <div class="coment">
+     <h1 th:text="|${session.user.name}님 환영합니다 관리자페이지에 방문해주셔서 감사합니다.|"></h1>
+   </div>
+   
+   <hr>
+   <div class="admin_list_wrap">
+     
+     <div class="user_wrap">
+       <div>
+         <p class="totalUserCount"></p>
+         <p>회원 수</p>
+       </div>
+     </div>
+     
+     <div>
+       <div class="qna_wrap">
+         <p th:text="${qnaNonAnswerCount}"></p>
+         <p>미답변 문의 수</p>
+       </div>
+     </div>
+     
+     <div>
+       <div>
+         <p></p>
+         <p>매출 현황</p>
+       </div>
+     </div>
+       
+     <div>
+       <div class="event_wrap">
+         <p class="totalEventCount"></p>
+         <p>이벤트 진행갯수</p>
+       </div>
+     </div>
+
+   </div>
    
    <div th:replace="~{/layout/footer::footer}"></div>
+   
+   <script>
+     
+     function getUser() {
+       $.ajax({
+         type: 'get',
+         url : '/admin/user_list.do',
+         dataType : 'json',
+         success : (resData) => {
+          
+           let totalUserCount = resData.totalUserCount;
+           
+            if(resData.totalUserCount === null) {
+              alert('목록 불러오기 실패');
+              return;
+            }
+           
+           $('.totalUserCount').text(totalUserCount);
+         }
+       })
+     }
+     
+     function getEvent() {
+       $.ajax({
+         type: 'get',
+         url : '/admin/get_event.do',
+         dataType : 'json',
+         success : (resData) => {
+          
+           let totalEventCount = resData.eventResult;
+           
+            if(resData.totalEventCount === null) {
+              alert('목록 불러오기 실패');
+              return;
+            }
+           
+           $('.totalEventCount').text(totalEventCount);
+         }
+       })
+     }
+     
+     
+     
+     
+     getEvent();
+     getUser();
+     
+   </script>
    
 </body>
 </html>
