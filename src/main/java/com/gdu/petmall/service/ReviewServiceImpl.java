@@ -1,8 +1,6 @@
 package com.gdu.petmall.service;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +14,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dao.ReviewMapper;
-import com.gdu.petmall.dto.ProductDto;
 import com.gdu.petmall.dto.ProductImageDto;
 import com.gdu.petmall.dto.ProductOptionDto;
 import com.gdu.petmall.dto.ReviewDto;
@@ -43,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(opt.orElse("1"));
     int reviewCount = reviewMapper.getProductReviewCount(productNo);
-    int display = 10;
+    int display = 5;
     myPageUtils.setPaging(page, reviewCount, display);
     
     opt = Optional.ofNullable(request.getParameter("order"));
@@ -91,6 +88,28 @@ public class ReviewServiceImpl implements ReviewService {
                                    , "productNo", request.getParameter("productNo"));
     List<ProductOptionDto> productOrderList = reviewMapper.getProductOrderList(map);
     return Map.of("productOrderList", productOrderList);
+  }
+  
+  @Override
+  public Map<String, Object> loadNotReviewedList(HttpServletRequest request) {
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(opt.orElse("1"));
+    int notReviewedCount = reviewMapper.getNotReviewedCount(userNo);
+    int display = 5;
+    myPageUtils.setPaging(page, notReviewedCount, display);
+    opt = Optional.ofNullable(request.getParameter("order"));
+    String order = opt.orElse("ORDER_DATE");
+    
+    Map<String, Object> map = Map.of("userNo", userNo
+        , "order", order
+        , "begin", myPageUtils.getBegin()
+        , "end", myPageUtils.getEnd());
+    
+    List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
+    System.out.println("here!!!: " + notReviewedList);
+    return Map.of("notReviewedList", notReviewedList
+        , "paging", myPageUtils.getAjaxPaging());
   }
   
   @Transactional
@@ -146,26 +165,51 @@ public class ReviewServiceImpl implements ReviewService {
   }
   
   @Override
-  public Map<String, Object> loadNotReviewedList(HttpServletRequest request) {
-    int userNo = Integer.parseInt(request.getParameter("userNo"));
-    Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
-    int page = Integer.parseInt(opt.orElse("1"));
-    int notReviewedCount = reviewMapper.getNotReviewedCount(userNo);
-    int display = 10;
-    myPageUtils.setPaging(page, notReviewedCount, display);
-    opt = Optional.ofNullable(request.getParameter("order"));
-    String order = opt.orElse("ORDER_DATE");
-    
-    Map<String, Object> map = Map.of("userNo", userNo
-                                   , "order", order
-                                   , "begin", myPageUtils.getBegin()
-                                   , "end", myPageUtils.getEnd());
-    
-    List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
-    System.out.println("here!!!: " + notReviewedList);
-    return Map.of("notReviewedList", notReviewedList
-                , "paging", myPageUtils.getAjaxPaging());
+  public int removeReview(int reviewNo) {
+    int removeReviewResult = reviewMapper.deleteProductReview(reviewNo);
+    return removeReviewResult;
   }
   
+  @Override
+  public boolean editReview(ReviewDto review, MultipartHttpServletRequest multipartRequest) throws Exception {
+    int editReviewResult = reviewMapper.updateProductReview(review);
+    int productNo = Integer.parseInt(multipartRequest.getParameter("productNo"));
+    reviewMapper.updateProductRating(productNo);
+    
+    int addReviewImageResult = 0;
+    String deletedImage = multipartRequest.getParameter("deletedImage");
+    if(deletedImage != null) {
+      String[] split = deletedImage.split("/");
+      productMapper.deleteProductImage(split[split.length - 1]);
+    }
+    
+    String imagePath = myFileUtils.getProductImagePath();
+    MultipartFile reviewImageMulti = multipartRequest.getFile("review_image");
+    
+    if(reviewImageMulti != null && !reviewImageMulti.isEmpty()) {
+      // 리뷰 이미지 추가
+      String filesystemName = myFileUtils.getFilesystemName(reviewImageMulti.getOriginalFilename());
+      File reviewImageFile = new File(imagePath, filesystemName);
+      File resizedImageFile = new File(imagePath, "r_" + filesystemName);
+      reviewImageMulti.transferTo(reviewImageFile);
+      
+      Thumbnails.of(reviewImageFile)
+                .size(400, 400)      // 가로 400px, 세로 400px
+                .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
+                .toFile(resizedImageFile);
+      ProductImageDto reviewImageDto = ProductImageDto.builder()
+          .imageCode("review_" + review.getReviewNo())
+          .position("review")
+          .path(imagePath)
+          .filesystemName("r_" + filesystemName)
+          .build();
+
+      addReviewImageResult = productMapper.insertProductImage(reviewImageDto);
+    } else {
+      addReviewImageResult = 1;
+    }
+    
+    return (editReviewResult == 1) && (addReviewImageResult == 1);
+  }
   
 }

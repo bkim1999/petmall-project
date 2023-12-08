@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gdu.petmall.dto.OrderDetailDto;
 import com.gdu.petmall.dto.OrderDto;
 
 @Mapper
@@ -13,6 +14,6 @@ public interface OrderMapper {
       
       public List<OrderDto> getMyOrderList(Map<String, Object> map);
 
-  
+      public int orderOption(OrderDetailDto  orderDetailDto);
        public  List<OrderDto> getOrder(OrderDto orderDto);
 }

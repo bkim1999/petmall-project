@@ -1,5 +1,6 @@
 package com.gdu.petmall.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gdu.petmall.dao.OrderMapper;
 import com.gdu.petmall.dao.PayMapper;
+import com.gdu.petmall.dto.OrderDetailDto;
 import com.gdu.petmall.dto.OrderDto;
 import com.gdu.petmall.dto.UserDto;
 
@@ -41,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
         String reText =multipartRequest.getParameter("reText");
         String yourOrder = multipartRequest.getParameter("yourOrder");
         
+
         
         OrderDto order = OrderDto.builder()
                 .reName(reName)
@@ -56,9 +59,28 @@ public class OrderServiceImpl implements OrderService {
                         .userNo(userNo)
                         .build())
                 .build();
-
-        orderMapper.insertOrderPay(order);
         
+        orderMapper.insertOrderPay(order);
+        String[] optionNos = multipartRequest.getParameterValues("optionNo");
+        List<OrderDetailDto> orderDetailList = new ArrayList<>();
+
+        if (optionNos != null) {
+            for (String optionNoStr : optionNos) {
+                int optionNo = Integer.parseInt(optionNoStr);
+                OrderDetailDto orderDetailDto = OrderDetailDto.builder()
+                        .orderNo(order.getOrderNo()) 
+                        .optionNo(optionNo)
+                        .build();
+                orderDetailList.add(orderDetailDto);
+            }
+        } else {
+        	
+        }
+
+        
+        for (OrderDetailDto orderDetailDto : orderDetailList) {
+            orderMapper.orderOption(orderDetailDto);
+        }
         return true;
     }
     

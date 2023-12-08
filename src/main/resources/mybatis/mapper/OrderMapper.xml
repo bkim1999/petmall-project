@@ -22,6 +22,10 @@
       <result column="NAME" property="name"/>
       <result column="MOBILE" property="mobile"/>   
     </association>
+    <association javaType="com.gdu.petmall.dto.OrderDetailDto" property="orderDetailDto">
+      <id column="ORDER_NO" property="orderNo" />
+      <result column="OPTION_NO" property="optionNo"/>
+    </association>
   </resultMap>  
     
   <insert id="insertOrderPay" parameterType="com.gdu.petmall.dto.OrderDto">
@@ -57,6 +61,16 @@
         #{yourOrder},
         TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
     )
+  </insert>
+  
+  <insert id="orderOption" parameterType="orderDetailDto">
+    INSERT INTO ORDER_DETAIL_T(
+            ORDER_NO,
+            OPTION_NO
+            )VALUES (
+        	#{orderNo},
+        	#{optionNo}
+    	  )  
   </insert>
   
     <select id="getMyOrderList" parameterType="java.util.Map" resultType="OrderDto">

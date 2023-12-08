@@ -1,6 +1,6 @@
   <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header :: head('리뷰 등록')}"></head>
+<head th:replace="~{/layout/header :: head('리뷰 수정')}"></head>
 <style>
   h1 {
     margin: 100px 0 50px 0;
@@ -95,22 +95,26 @@
         </div>
       </div>
       <div class="btn-group d-flex justify-content-center">
-        <button class="star">☆</button>
-        <button class="star">☆</button>
-        <button class="star">☆</button>
-        <button class="star">☆</button>
-        <button class="star">☆</button>
+        <th:block th:each"${#numbers.sequence"
+        <th:block th:each="num:${#numbers.sequence(1, map.reviewRating)}">
+          <button class="star">★</button>
+        </th:block>
+        <th:block th:each="num:${#numbers.sequence(map.reviewRating, 4)}">
+          <button class="star">☆</button>
+        </th:block>
+
       </div>
     </div>
-    <form id="frm_add_review" method="post" th:action="@{/review/addReview.do}" enctype="multipart/form-data">
+    <form id="frm_add_review" method="post" th:action="@{/review/editReview.do}" enctype="multipart/form-data">
       <div class="form-group">
         <label for="reviewTitle" class="form-label mt-4">리뷰제목</label>
-        <input type="text" class="form-control" name="reviewTitle" id="reviewTitle">
+        <input type="text" class="form-control" name="reviewTitle" id="reviewTitle" th:value="${map.reviewTitle}">
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label for="reviewContents" class="form-label mt-4">리뷰내용</label>
-        <textarea class="form-control" name="reviewContents" id="reviewContents"></textarea>
+        <textarea class="form-control" name="reviewContents" id="reviewContents" th:text="${map.reviewContents}"></textarea>
+        <div th:text="${map}"></div>
         <div class="invalid-feedback"></div>
       </div>
       <div class="form-group mt-3">
@@ -119,20 +123,22 @@
           <div class="mb-2">리뷰사진 미리보기</div>
           <div class="preview-list">
             <input type="file" class="form-control image-input d-none" name="review_image" id="review_image">
-            <div class="add-image-area">
-              <img class="preview-image" src="/image/plus_sign.png">
-              <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>
+            <div class="preview-image-area">
+              <img class="preview-image" th:src="${map.reviewImagePath}">
+              <div class="btn_delete_image" style="height: 30px;">X</div>
             </div>
           </div>
         </div>
         <div class="invalid-feedback"></div>
       </div>
       <div class="d-grid mb-5">
+        <input type="hidden" name="reviewNo" th:value="${map.reviewNo}">
         <input type="hidden" name="optionNo" th:value="${map.optionNo}">
         <input type="hidden" name="productNo" th:value="${map.productNo}">
         <input type="hidden" name="userNo" th:value="${map.userNo}">
-        <input type="hidden" id="reviewRating" name="reviewRating" value="0">
-        <button type="button" id="btn_add_review" class="btn btn-lg btn-primary">리뷰 등록</button>
+        <input type="hidden" id="reviewRating" name="reviewRating" th:value="${map.reviewRating}">
+        <input type="hidden" id="deletedImage" name="deletedImage">
+        <button type="button" id="btn_edit_review" class="btn btn-lg btn-primary">리뷰 수정</button>
       </div>
     </form>
   </div>
@@ -207,11 +213,14 @@
       fnToggleValid($('#thumbnail_area'), false, '');
     });
   }
-  
   const fnDeleteReviewImage = () => {
     $(document).on('click', '#review_image_area .btn_delete_image', function(ev){
       if(!confirm('이 이미지를 삭제하시겠습니까?')){
         return;
+      }
+      if($('#review_image')[0].files.length === 0) {
+        let imagePath = /*[[${map.reviewImagePath}]]*/ 0;
+        $('#deletedImage').val(imagePath);
       }
       let str = '<div class="add-image-area">';
       str += '  <img class="preview-image" src="/image/plus_sign.png">';
@@ -233,7 +242,7 @@
   }
   
   const fnCheckRequired = () => {
-    $(document).on('click', '#btn_add_review', function(){
+    $(document).on('click', '#btn_edit_review', function(){
       
       // 평점 입력 여부 체크
       if($('#reviewRating').val() == 0){
