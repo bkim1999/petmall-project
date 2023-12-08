@@ -202,6 +202,13 @@
         <button type="button" id="btn_add_cart" class="btn btn-light btn-lg">장바구니 담기</button>
         <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
       </div>
+      <th:block th:if="${session.user} != null">
+        <form th:if="${session.user.adminAuthorState == 1}" id="frm_edit_remove_product">
+          <input type="hidden" name="productNo" th:value="${product.productNo}">
+          <button type="button" id="btn_edit_product" class="btn btn-light btn-lg">수정</button>
+          <button type="button" id="btn_remove_product" class="btn btn-success btn-lg">삭제</button>
+        </form>
+      </th:block>
     </div>
   </div>
   <div id="product_contents" th:utext="${product.productContents}"></div>
@@ -402,6 +409,30 @@
     })
   }
   
+  function fnEditProduct(){
+    $(document).on('click', '#btn_edit_product', function(){
+      if(!confirm('이 제품을 수정하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'get');
+      $(form).attr('action', '/product/editProduct.form');
+      $(form).submit();
+    });
+  }
+  
+  function fnRemoveProduct(){
+    $(document).on('click', '#btn_remove_product', function(){
+      if(!confirm('이 제품을 삭제하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'post');
+      $(form).attr('action', '/product/removeProduct.do');
+      $(form).submit();
+    });
+  }
+  
   fnAddOption();
   fnDeleteOption();
   fnDecreaseCount();
@@ -409,5 +440,7 @@
   fnUpdateTotalPrice();
   fnAddCartOrder();
   fnGetReviewList();
+  fnEditProduct();
+  fnRemoveProduct();
   
 </script>
