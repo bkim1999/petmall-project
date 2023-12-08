@@ -87,8 +87,8 @@
   <div id="wrapper">
     <div>
       <div class="d-flex product-info">
-        <img class="thumbnail" th:if="${productImagePath != null}" th:src="${productImagePath}">
-        <img class="thumbnail" th:if="${productImagePath == null}" th:src="@{/image/cat1.png}">
+        <img class="thumbnail" th:if="${map.productImagePath != null}" th:src="${map.productImagePath}">
+        <img class="thumbnail" th:if="${map.productImagePath == null}" th:src="@{/image/cat1.png}">
         <div>
           <div th:text="${map.productName}"></div>
           <div th:text="${map.optionName}"></div>
@@ -123,10 +123,18 @@
           <div class="mb-2">리뷰사진 미리보기</div>
           <div class="preview-list">
             <input type="file" class="form-control image-input d-none" name="review_image" id="review_image">
-            <div class="preview-image-area">
-              <img class="preview-image" th:src="${map.reviewImagePath}">
-              <div class="btn_delete_image" style="height: 30px;">X</div>
-            </div>
+            <th:block th:if="${not #strings.isEmpty(map.reviewImagePath)}">
+              <div class="preview-image-area">
+                <img class="preview-image" th:src="${map.reviewImagePath}">
+                <div class="btn_delete_image" style="height: 30px;">X</div>
+              </div>
+            </th:block>
+            <th:block th:if="${#strings.isEmpty(map.reviewImagePath)}">
+              <div class="add-image-area">
+                <img class="preview-image" src="/image/plus_sign.png">
+                <div class="text-center mb-2" style="height: 30px;">새 이미지 추가</div>
+              </div>
+            </th:block>
           </div>
         </div>
         <div class="invalid-feedback"></div>

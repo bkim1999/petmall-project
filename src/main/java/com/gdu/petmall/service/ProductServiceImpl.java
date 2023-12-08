@@ -243,7 +243,7 @@ public class ProductServiceImpl implements ProductService {
     
     // Thumbnailator로 크기조절 후 저장
     Thumbnails.of(thumbnailOriginalFile)
-              .size(100, 100)      // 가로 100px, 세로 100px
+              .size(150, 150)      // 가로 150, 세로 150px
               .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
               .toFile(previewFile);
     Thumbnails.of(thumbnailOriginalFile)
@@ -431,7 +431,7 @@ public class ProductServiceImpl implements ProductService {
       
       // Thumbnailator로 크기조절 후 저장
       Thumbnails.of(thumbnailOriginalFile)
-                .size(100, 100)      // 가로 100px, 세로 100px
+                .size(150, 150)      // 가로 150px, 세로 150px
                 .imageType(ThumbnailParameter.DEFAULT_IMAGE_TYPE)
                 .toFile(previewFile);
       Thumbnails.of(thumbnailOriginalFile)

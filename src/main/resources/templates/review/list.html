@@ -104,11 +104,21 @@
           str += '    <input type="hidden" name="productName" value="' + review.productDto.productName + '">';
           str += '    <input type="hidden" name="optionNo" value="' + review.productOptionDto.optionNo + '">';
           str += '    <input type="hidden" name="optionName" value="' + review.productOptionDto.optionName + '">';
-          str += '    <input type="hidden" name="reviewTitle" value="' + review.reviewTitle + '">';
-          str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
           str += '    <input type="hidden" name="reviewRating" value="' + review.reviewRating + '">';
+          if(review.reviewTitle !== null){
+            str += '    <input type="hidden" name="reviewTitle" value="' + review.reviewTitle + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewTitle" value="">';
+          }
+          if(review.reviewContents !== null){
+            str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewContents" value="">';
+          }
           if(review.reviewImageDto !== null){
             str += '    <input type="hidden" name="reviewImagePath" value="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewImagePath" value="">';
           }
           str += '    <button type="button" class="btn btn_edit_review">수정</button>';
           str += '    <button type="button" class="btn btn_remove_review">삭제</button>';
@@ -143,13 +153,11 @@
         $.each(resData.notReviewedList, function(i, notReviewed){
           let str = '';
           str += '<div class="review d-flex mt-3" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
-          str += '  <div class="thumbnail">';
           if(notReviewed.reviewImageDto !== null){
-            str += '    <image src="/' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
+            str += '<image class="thumbnail" src="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
           } else {
             str += '<image class="thumbnail" src="/image/cat1.png">';
           }
-          str += '  </div>';
           str += '  <div>';
           str += '    <div>구매일자: ' + notReviewed.orderDate + '</div>';
           str += '    <div>' + notReviewed.productDto.productName + '</div>';
