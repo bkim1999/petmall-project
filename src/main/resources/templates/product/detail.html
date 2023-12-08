@@ -102,6 +102,9 @@
     font-weight: bold;
     color: black;
   }
+  .star {
+    color: gold;
+  }
   .review {
     border-top: 1px solid gray;
     padding: 30px;
@@ -203,8 +206,10 @@
       <th:block th:if="${product.productRating != 0}">
         이 상품의 평점: 
         <span id="average_rating">
-          <th:block th:each="num:${#numbers.sequence(1, product.productRating)}">★</th:block><th:block th:each="num:${#numbers.sequence(1, 5 - product.productRating)}">☆</th:block>
-          <span th:text="${product.productRating}"></span>
+          <strong class="star">
+            <th:block th:each="num:${#numbers.sequence(1, product.productRating)}">★</th:block><th:block th:if="${productRating < 5}" th:each="num:${#numbers.sequence(product.productRating + 1, 5)}">☆</th:block>
+          </strong>
+          <span th:text="${#numbers.formatDecimal(product.productRating, 1, 1)}"></span>
         </span>
       </th:block>
       <th:block th:if="${product.productRating == 0}">
@@ -365,7 +370,7 @@
         }
         $.each(resData.reviewList, (i, review) => {
           let str = '<div class="review" data-review-no="' + review.reviewNo + '">';
-          str += '<h4>';
+          str += '<h4 class="star">';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '</h4>';
           str += '<div>' + review.userDto.name + '  ' + review.reviewModifiedAt + '</div>';

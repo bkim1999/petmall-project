@@ -351,6 +351,12 @@
   
   const fnAddThumbnail = () => {
     $(document).on('change', '#thumbnail_area .image-input', function(ev){
+      // 첨부파일이 이미지가 아닐 시
+      if($(this)[0].files[0].type.split('/')[0] !== 'image'){
+        $(this).val('');
+        alert('이미지 파일만 추가해주세요.');
+        return false;
+      }
       let target = $('#thumbnail_area .add-image-area');
       fnPreviewImage(-1, URL.createObjectURL($(this)[0].files[0]), target);
       target.remove();
@@ -403,16 +409,17 @@
       };
       
       // 추가 파일이 이미지 파일인지 체크
-      let isNonImage = false;
+      let isNotImage = false;
       $.each($(this)[0].files, function(i, image){
         // 첨부파일이 이미지가 아닐 시
         if(image.type.split('/')[0] !== 'image'){
-          console.log('이미지가 아닙니다');
-          isNonImage = true;
+          $('#product_images_area .image-input').val('');
+          alert('이미지 파일만 추가해주세요.')
+          isNotImage = true;
           return false;
         }
       });
-      if(isNonImage === true){
+      if(isNotImage){
         return;
       }
       

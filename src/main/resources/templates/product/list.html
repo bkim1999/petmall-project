@@ -70,7 +70,10 @@
     font-size: 28px;
     color: red;
   }
-  
+  .star {
+    font-size: 20px;
+    color: gold;
+  }
 </style>
 <body>
   <div th:replace="~{layout/header :: header}"></div>
@@ -187,7 +190,7 @@
           if(product.reviewCount === 0){
             str += '  <p class="card-text">아직 리뷰가 없습니다.</p>';
           } else {
-            str += '  <p class="card-text">' + '★'.repeat(product.productRating) + '☆'.repeat(5 - product.productRating) + '  ' + product.reviewCount + '개의 리뷰</p>';
+            str += '  <p class="card-text"><strong class="star">' + '★'.repeat(Math.floor(product.productRating)) + '☆'.repeat(5 - Math.floor(product.productRating)) + '</strong>  ' + product.reviewCount + '개의 리뷰</p>';
           }
           str += '  </div>';
           str += '</div>';     	

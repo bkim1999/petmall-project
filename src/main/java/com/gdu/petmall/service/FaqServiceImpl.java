@@ -27,21 +27,13 @@ public class FaqServiceImpl implements FaqService {
   private final FaqMapper faqMapper;
   private final MyPageUtils myPageUtils;
   
-  @Override
-  public Map<String, Object> getloadCategoryList() {
-    List<CategoryDto> getCategoryList = faqMapper.getCategoryList(); 
-    return Map.of("getCategoryList", getCategoryList);
-  }
-  
-  @Override
-  public Map<String, Object> getloadFaqCategoryList() {
-    List<FaqCategoryDto> getFaqCategoryList = faqMapper.getFaqCategoryList();
-    return Map.of("getFaqCategoryList", getFaqCategoryList);
+  public List<FaqCategoryDto> getloadFaqCategoryList() {
+   return faqMapper.getFaqCategoryList();
   }
   
   @Transactional(readOnly=true)
   @Override
-  public void getFaqList(HttpServletRequest request, Model model) {
+  public void customerFaqList(HttpServletRequest request, Model model) {
     
     Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
     
@@ -54,7 +46,7 @@ public class FaqServiceImpl implements FaqService {
     Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
                                    , "end", myPageUtils.getEnd());
     
-    List<FaqDto> faqList = faqMapper.getFaqList(map);
+    List<FaqDto> faqList = faqMapper.customerFaqList(map);
     
     model.addAttribute("faqList", faqList);
     model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/faq/list.do"));
@@ -114,28 +106,62 @@ public class FaqServiceImpl implements FaqService {
     model.addAttribute("beginNo", total - (page - 1) * display);
   }  
   
+  
+  @Override
+  public Map<String, Object> getloadCategorySearchList(HttpServletRequest request, Model model) {
+    
+      
+      String column = request.getParameter("column");
+      String query = request.getParameter("query");
+      String faqName = request.getParameter("faqName");
+      
+      
+      // 검색결과 개수 구하기
+      Map<String, Object> map = new HashMap<>();
+      map.put("column", column);
+      map.put("query", query);
+      map.put("faqName", faqName);
+      
+      
+      int total = faqMapper.getSearchCategoryCount(map); 
+      
+      Optional<String> opt = Optional.ofNullable(request.getParameter("page"));
+      String strPage = opt.orElse("1");
+      int page = Integer.parseInt(strPage);
+      
+      int display = 10;
+      
+      myPageUtils.setPaging(page, total, display);
+      
+      map.put("begin", myPageUtils.getBegin()); 
+      map.put("end", myPageUtils.getEnd());
+     
+      List<FaqDto> categorySearchList = faqMapper.getSearchCategoryList(map);
+      
+      model.addAttribute("categorySearchList", categorySearchList);
+      model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/faq/serchCategory.do","column=" + column + "&query"));
+      model.addAttribute("beginNo", total - (page - 1) * display);
+      
+   
+    return Map.of("categorySearchList",categorySearchList);
+  }
+  
+  
+  
   public int addFaq(HttpServletRequest request) {
     
     int faqCategoryNo = Integer.parseInt(request.getParameter("faqCategoryNo"));
-    int categoryNo = Integer.parseInt(request.getParameter("categoryNo"));
     String faqTitle = request.getParameter("faqTitle");
     String faqContents = request.getParameter("faqContents");
     
     
     FaqDto faq = FaqDto.builder()
                     .faqCategoryDto(FaqCategoryDto.builder().faqCategoryNo(faqCategoryNo).build())
-                    .categoryDto(CategoryDto.builder().categoryNo(categoryNo).build())
                     .faqTitle(faqTitle)
                     .faqContents(faqContents)
                     .build();
     
     return faqMapper.insertFaq(faq);
-  }
-  
-  @Override
-  public int removeFaq(int faqNo) {
-    return faqMapper.deleteFaq(faqNo);
-    
   }
   
   @Override
@@ -158,6 +184,29 @@ public class FaqServiceImpl implements FaqService {
     
     return Map.of("updateResult", updateResult);
   }
+  
+  @Override
+  public Map<String, Object> deleteFaq(HttpServletRequest request) {
+    
+    int faqNo = Integer.parseInt(request.getParameter("faqNo"));
+    
+    Map<String, Object> map = new HashMap<>();
+    map.put("faqNo", faqNo);
+    
+    int removeResult = faqMapper.deleteFaq(map);
+    
+    return Map.of("removeResult", removeResult);
+   
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   

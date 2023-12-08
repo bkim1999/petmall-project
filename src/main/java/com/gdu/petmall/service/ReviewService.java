@@ -16,4 +16,5 @@ public interface ReviewService {
   public Map<String, Object> loadNotReviewedList(HttpServletRequest request);
   public boolean addReview(MultipartHttpServletRequest multipartRequest) throws Exception;
   public int removeReview(int reviewNo);
+  public boolean editReview(ReviewDto review, MultipartHttpServletRequest multipartRequest) throws Exception;
 }
