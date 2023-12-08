@@ -82,7 +82,7 @@
             <tr class="a">
               <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <img   th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail">
+                <img th:if="${c.productImageDto != null}" th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail">
                 <input type="text" class="pr_Name"       th:value="${c.productDto.productName}" size="8" readonly>
                 <input type="text" class="optionName"    th:value="${c.productOptionDto.optionName}" name="optionName" size="11" readonly>
                 <input type="text" class="pr_Price"      th:value="${c.productDto.productPrice}+'원'" size="5" readonly>
