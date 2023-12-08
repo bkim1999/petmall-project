@@ -76,6 +76,7 @@
     FROM FAQ_T
     WHERE STATUS = 1
     AND FAQ_NAME LIKE '%' || #{faqName} || '%'
+    
   </select>
   
   <select id="getSearchCategoryList" parameterType="Map" resultType="FaqDto">
