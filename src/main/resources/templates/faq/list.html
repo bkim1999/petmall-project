@@ -16,7 +16,10 @@
    padding-left: 840px;
   }
   
-  
+  .blind_text{
+    text-align: right;
+   
+  }
   
   .text-center {
     padding-right: 800px;
@@ -24,7 +27,7 @@
   
   #wrap_box {
     padding-left: 550px; 
-  
+    
   }
   
   
@@ -126,8 +129,8 @@
   }
   
   .table_wrap {
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left:450px;
+    padding-right: 200px;
    
   }
   
@@ -155,14 +158,15 @@
           </div>
           </div>
           <div id="wrap_box">
-            <div id="all_box" onclick="">전체</div>
-            <div id="pay_box" onclick="">주문/결제</div>
-            <div id="delivery_box">배송</div>
-            <div id="cancell_box">배송전/취소변경</div>
-            <div id="exchange_box">배송후/교환반품</div>
-            <div id="etc_box">기타</div>
-            <div id="category_box">
-              <select id="getFaqCategoryList" name="faqCategoryNo" th:value="faqCategoryNo" >
+            <div id="all_box" onclick="location.href=''">전체</div>
+            <div id="pay_box" onclick="fnChoiceCategory('주문/결제')">주문/결제</div>
+            <div id="delivery_box" onclick="fnChoiceCategory('배송')">배송</div>
+            <div id="cancell_box" onclick="fnChoiceCategory('배송 전 취소/변경')">배송전/취소변경</div>
+            <div id="exchange_box" onclick="fnChoiceCategory('배송 후 교환/반품')">배송후/교환반품</div>
+            <div id="etc_box"onclick="fnChoiceCategory('기타')">기타</div>
+            <div id="category_box">카테고리
+              <select id="getFaqCategoryList" name="faqCategoryNo" th:value="faqCategoryNo" style="width:20px; height:20px; border-width: 0;">
+                    <option value="">--선택안함--</option>
                 <th:block th:each="g:${getFaqCategoryList}">
                     <option th:value="${g.faqCategoryName}"th:text="${g.faqCategoryName}"></option>
                 </th:block>
@@ -170,13 +174,12 @@
             </div>
            </div>   
           <div class="table_wrap">
-            <table class="table" border="1">
+            <table class="table" border="1" style="width: 1100px;">
               <thead class="table-li">
                 <tr>
-                  <td>번호</td>
-                  <td>카테고리</td>
-                  <td>제목</td>
-                  <td></td>
+                  <td style="width: 90px;">번호</td>
+                  <td style="width: auto;">카테고리</td>
+                  <td>질문내용</td>
                 </tr>
               </thead>
               <tbody class="category_list">
@@ -185,18 +188,15 @@
                     <td th:text="${beginNo - vs.index}"></td>
                     <td><span th:text="${faq.faqName}"></span></td>
                     <td><span class="click_title" th:text="${faq.faqTitle}"></span></td>
-                    <td><span th:each="n:${#numbers.sequence(1, faq.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span></td>
                   </tr>
                   <tr>
-                    <td colspan="6">
-                      <td><span class="blind_text" th:text="${faq.faqContents}"></span></td>
-                    </td>
+                      <td class="blind_text"th:text="${faq.faqContents}"></td>
                   </tr>
                 </th:block>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="4" th:utext="${paging}"></td>
+                  <td style="height: 300px;" colspan="4" th:utext="${paging}"></td>
                 </tr>
               </tfoot>
             </table>
@@ -205,75 +205,88 @@
         </div>
   </div>
   
-  <div>
-    <table>
-      <thead>
-        <tr>
-          <td>이름</td>
-          <td>제목</td>
-          <td>내용</td>
-        </tr>
-      </thead>
-      <tbody class="textlist"></tbody>
-    </table>
-   </div>
-              
+  
               
 <script>
- 
-const fnBlind = () => {
-$(document).ready(function () {
-    $('.click_title').on('click', function () {
-        var blind = $(this).closest('tr').next().find('.blind_text');
-        if (blind.css('display') === 'none') {
-            blind.css('display', 'block');
-            
-        } else {
-            blind.css('display', 'none');
-        }
+  
+ const fnBlind = () => {
+    $(document).ready(function () {
+        $('.category_list').on('click', '.click_title', function () {
+            var blind = $(this).closest('tr').next().find('.blind_text');
+            if (blind.css('display') === 'none') {
+                blind.css('display', 'block');
+            } else {
+                blind.css('display', 'none');
+            }
+        });
     });
-});
 }
   
   
- 
- 
- const fnSerchCategory = () => {
-  $(document).ready(function () {
-    $('#getFaqCategoryList').change(function () {
-        var faqName = $('#getFaqCategoryList option:selected').val();
-        $.ajax({
-            type: 'post',
-            url: '/faq/serchCategory.do',
-            data: {
-                "faqName": faqName
-            },
-            dataType: 'json',
-            success: (resData) => {
-              $('.category_list').empty();
-             $.each(resData.categorySearchList, (i,cList) => {
-                  let str = '<tr class="list">'
-                    str += '<td>' + (i+1) + '</td>';
-                    str += '<td>'+ cList.faqName + '</td>';
-                    str += '<td><span class="click_title">'+ cList.faqTitle + '</span></td>';
-                    str += '</tr>';
-                     $('.category_list').append(str)
-              })
-                
-                console.log(resData);
-            }
+  
+  const fnSerchCategory = () => {
+    $(document).ready(function () {
+      $('#getFaqCategoryList').change(function () {
+          var faqName = $('#getFaqCategoryList option:selected').val();
+          $.ajax({
+              type: 'post',
+              url: '/faq/serchCategory.do',
+              data: {
+                  "faqName": faqName
+              },
+              dataType: 'json',
+              success: (resData) => {
+                $('.category_list').empty();
+               $.each(resData.categorySearchList, (i,cList) => {
+                    let str = '<tr class="list">'
+                      str += '<td>' + (i) + '</td>';
+                      str += '<td>'+ cList.faqName + '</td>';
+                      str += '<td><span class="click_title">'+ cList.faqTitle + '</span></td>';
+                      str += '</tr>';
+                      str += '<tr>';
+                      str += '<td class="blind_text">'+ cList.faqContents + '</td>'; 
+                      str += '</tr>';
+                      $('.category_list').append(str)
+                })
+                  console.log(resData);
+                }
           });
+        });
       });
-    });
-   }
+     }
    
-   fnSerchCategory();
+   
+   const fnChoiceCategory = (faqName) => {
+     $.ajax({
+          type: 'post',
+          url: '/faq/serchCategory.do',
+          data: {
+              "faqName": faqName
+          },
+          dataType: 'json',
+          success: (resData) => {
+            $('.category_list').empty();
+           $.each(resData.categorySearchList, (i,cList) => {
+                    let str = '<tr class="list">'
+                      str += '<td>' + (i) + '</td>';
+                      str += '<td>'+ cList.faqName + '</td>';
+                      str += '<td><span class="click_title">'+ cList.faqTitle + '</span></td>';
+                      str += '</tr>';
+                      str += '<tr>';
+                      str += '<td class="blind_text">'+ cList.faqContents + '</td>'; 
+                      str += '</tr>';
+                      $('.category_list').append(str)
+            })
+           }
+        })
+      }
+   
    fnBlind();
+   fnSerchCategory();
    
 </script>
 
-
-
+ 
 
 
   <div th:replace="~{/layout/footer::footer}"></div>
