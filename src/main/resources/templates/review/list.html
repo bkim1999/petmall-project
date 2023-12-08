@@ -15,9 +15,12 @@
     min-height: 1000px;
   }
   .review{
-    height: 150px;
+    min-height: 160px;
     border-bottom: solid 1px gray;
     margin: 10px;
+  }
+  .review_info {
+    max-width: 685px;
   }
   .thumbnail {
     width: 150px;
@@ -27,6 +30,9 @@
   }
   .star {
     color: gold;
+  }
+  .expand:hover, .collapse:hover {
+    cursor: pointer;
   }
 </style>
 <body>
@@ -81,19 +87,26 @@
           if(review.reviewImageDto !== null){
             str += '<image class="thumbnail" src="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
           } else {
-            str += '<image class="thumbnail" src="image/cat1.png">';
+            str += '<image class="thumbnail" src="/image/no_image.png">';
           }
-          str += '<div>'
+          str += '<div class="review_info">'
           str += '  <h4 class="star">';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '  </h4>';
           str += '  <div>' + review.reviewModifiedAt + '</div>';
           str += '  <div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
           if(review.reviewTitle){
-            str += '  <h5 class="review_title">' + review.reviewTitle + '</h5>'
+            str += '  <h5 class="review_title mt-2">' + review.reviewTitle + '</h5>'
           }
           if(review.reviewContents){
-            str += '  <div class="review_contents">' + review.reviewContents + '</div>';
+            if(review.reviewContents.length > 80){
+              str += '  <div class="expand review_contents mt-2">' + (review.reviewContents).substring(0, 75) + '...</div>';
+              str += '  <div class="expand text-center">∨</div>'
+              str += '  <div class="collapse text-center d-none">∧</div>'
+              str += '  <div class="collapse text-center d-none">' + review.reviewContents + '</div>'
+            } else {
+              str += '  <div class="review_contents mt-2">' + review.reviewContents + '</div>';
+            }
           }
           str += '</div>'
           str += '<div class="ms-auto btn-group">';
@@ -152,11 +165,11 @@
         }
         $.each(resData.notReviewedList, function(i, notReviewed){
           let str = '';
-          str += '<div class="review d-flex mt-3" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
+          str += '<div class="review d-flex mt-3 align-content-center" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
           if(notReviewed.reviewImageDto !== null){
             str += '<image class="thumbnail" src="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
           } else {
-            str += '<image class="thumbnail" src="/image/cat1.png">';
+            str += '<image class="thumbnail" src="/image/no_image.png">';
           }
           str += '  <div>';
           str += '    <div>구매일자: ' + notReviewed.orderDate + '</div>';
@@ -204,9 +217,19 @@
     })
   }
   
+  function fnExpand(){
+    $(document).on('click', '.expand', function(){
+      console.log('dd')
+      $(this).addClass('d-none');
+      $(this).siblings('.expand').addClass('d-none');
+      $(this).siblings('.collapse').removeClass('d-none');
+    })
+  }
+  
   fnToggleList();
   fnGetReviewList();
   fnRemoveReview();
   fnEditReview();
-
+  fnExpand();
+  
 </script>

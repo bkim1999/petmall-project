@@ -79,6 +79,7 @@
     width: 100px;
     height: 100px;
     object-fit: contain;
+    text-align: center;
   }
 </style>
 
@@ -88,7 +89,7 @@
     <div>
       <div class="d-flex product-info">
         <img class="thumbnail" th:if="${productImagePath != null}" th:src="${productImagePath}">
-        <img class="thumbnail" th:if="${productImagePath == null}" th:src="@{/image/cat1.png}">
+        <img class="thumbnail" th:if="${productImagePath == null}" th:src="@{/image/no_image.png}">
         <div>
           <div th:text="${map.productName}"></div>
           <div th:text="${map.optionName}"></div>
