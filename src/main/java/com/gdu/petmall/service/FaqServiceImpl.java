@@ -121,6 +121,7 @@ public class FaqServiceImpl implements FaqService {
       map.put("column", column);
       map.put("query", query);
       map.put("faqName", faqName);
+     
       
       
       int total = faqMapper.getSearchCategoryCount(map); 
