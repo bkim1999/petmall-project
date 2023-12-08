@@ -16,5 +16,14 @@ public interface AdminService {
   public Map<String, Object> pwInit(HttpServletRequest request);
   public Map<String, Object> adminTake(HttpServletRequest request);
   public Map<String, Object> normalTake(HttpServletRequest request);
+  public Map<String, Object> changeagree(HttpServletRequest request);
+  public Map<String, Object> changedeagree(HttpServletRequest request);
+  public Map<String, Object> searchInfo(HttpServletRequest request);
+  public Map<String, Object> LeaveSearchInfo(HttpServletRequest request);
+  public Map<String, Object> UnaccessSearchInfo(HttpServletRequest request);
+  public Map<String, Object> accessList();
+  public Map<String, Object> LeaveList();
+  public Map<String, Object> changeAccessUser(HttpServletRequest request);
+  public Map<String, Object> eventCount();
   
 }

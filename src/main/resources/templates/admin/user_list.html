@@ -40,15 +40,18 @@
 
   <div class="answerWrap">
     <div>
-      <input type="button" class="btn btn-light getAllList" th:value="|전체 회원수 :|">
+      <input type="button" class="btn btn-light getTotalCount" readonly>
+    </div>
+    <div>
+      <input type="button" class="btn btn-light getAccessCount">
     </div>
      <div>
       <input type="hidden" value="1">
-      <input type="button" class="btn btn-light getAnswerList" th:value="|휴면 회원수 : |">
+      <input type="button" class="btn btn-light getUnAccessCount">
      </div>
     <div>
       <input type="hidden" value="0">
-      <input type="button" class="btn btn-light getNonAnswerList" th:value="|탈퇴 회원수 : |">
+      <input type="button" class="btn btn-light getLeaveCount">
     </div>
   </div>
   <hr>
@@ -56,7 +59,7 @@
   <hr>
   <div class="table_wrap">
   <table border=1 class="table table-hover table_font">
-    <thead class="table-primary">
+    <thead class="table-primary leavelist">
       <tr>
        <td>유저 번호</td>
        <td>이메일</td>
@@ -91,17 +94,29 @@
         success : (resData) => {
           $('#user_list').empty();
           $('.test').empty();
+          $('.getTotalCount').empty();
+          $('.getAccessCount').empty();
+          $('.getUnAccessCount').empty();
+          $('.getLeaveCount').empty();
         if(resData.userList === null) {
           alert('목록 불러오기 실패');
           return;
         }
+        
+        $('.getTotalCount').append().val('전체 회원 수 :  ' +resData.totalUserCount)
+        $('.getAccessCount').append().val('활동 회원 수 :  '+resData.accessUserCount);
+        $('.getUnAccessCount').append().val('비활동(휴면) 회원 수 :  '+resData.unAccessUserCount);
+        $('.getLeaveCount').append().val('탈퇴 회원 수 :  '+resData.leaveUserCount);
+        
+        
           let str1 = '<div>'
-          str1 += '<select>';
-          str1 += '<option name="email">이메일</option>';
-          str1 += '<option name="name">이름</option>';
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '<option value="NAME">이름</option>';
+          str1 += '<option value="ADMIN_AUTHOR_STATE">관리자</option>'
           str1 += '</select>';
-          str1 +='<input type="text">';
-          str1 += '<input type="button" value="검색" class="btn btn-warning">'
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning search">'
           str1 += '</div>'
           $('.test').append(str1);
         $.each(resData.userList, (i, user) => {
@@ -120,20 +135,20 @@
             str += '<td value="0">'
             str += '광고 수신 비동의'
             str += '<br>'
-            str += '<input type="hidden" value="0">'
+            str += '<input type="hidden" value="1">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="button" class="btn btn-warning" value="동의로 변경">'
+            str += '<input type="button" class="btn btn-warning changeagree" value="동의로 변경">'
             str += '</td>'
           }
           if (user.agree === 1) {
             str += '<td value="1">'
             str += '광고 수신 동의'
             str += '<br>'
-            str += '<input type="hidden" value="1">'
+            str += '<input type="hidden" value="0">'
             str += '<input type="hidden" value="'+user.userNo+'">'
             str += '<input type="hidden" value="'+user.email+'">'
-            str += '<input type="button" class="btn btn-warning" value="비동의로 변경">'
+            str += '<input type="button" class="btn btn-warning changedeagree" value="비동의로 변경">'
             str += '</td>'
           }
           if (user.joinState === 0) {
@@ -201,44 +216,13 @@
       let userNo = $(this).prev().prev().val();
       let adminAuthorState = $(this).prev().prev().prev().val();
       
-      console.log(adminAuthorState);
-      
-      $.ajax({
-        type: 'get',
-        url : '/admin/normalTake.do',
-        data : {'email' : email,
-                'userNo' : userNo,
-                'adminAuthorState' : adminAuthorState },
-        //응답
-        dataType:'json',
-        success: (resData) => {
-          if(resData.normalTakeResult === 1) {
-            alert(email+'님이 일반 권한을 얻었습니다.');
-            fngetAllList();
-          } else {
-            alert('일반 권한 얻기가 실패하였습니다.');
-            return;
-          }
-        }
-      })
-    })
-  }
-  
-  function fnnormaltake() {
-    $(document).on('click', '.normalTake', function(ev){
-      
-      let email = $(this).prev().val();
-      let userNo = $(this).prev().prev().val();
-      let adminAuthorState = $(this).prev().prev().prev().val();
-      
-      console.log(adminAuthorState);
       
       $.ajax({
         type: 'get',
         url : '/admin/adminTake.do',
         data : {'email' : email,
                 'userNo' : userNo,
-                'adminAuthorState' : adminAuthorState },
+                'adminAuthorState' : adminAuthorState},
         //응답
         dataType:'json',
         success: (resData) => {
@@ -254,6 +238,482 @@
     })
   }
   
+  function fnnormaltake() {
+    $(document).on('click', '.normalTake', function(ev){
+      
+      let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
+      let adminAuthorState = $(this).prev().prev().prev().val();
+      
+      $.ajax({
+        type: 'get',
+        url : '/admin/normalTake.do',
+        data : {'email' : email,
+                'userNo' : userNo,
+                'adminAuthorState' : adminAuthorState},
+        //응답
+        dataType:'json',
+        success: (resData) => {
+          if(resData.normalTakeResult === 1) {
+            alert(email+'님이 일반 권한을 얻었습니다.');
+            fngetAllList();
+          } else {
+            alert('일반 권한 얻기가 실패하였습니다.');
+            return;
+          }
+        }
+      })
+    })
+  }
+  
+  function fnchangeagree() {
+    $(document).on('click', '.changeagree', function(ev){
+      
+      let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
+      let changeagree = $(this).prev().prev().prev().val();
+      
+      $.ajax({
+        type: 'get',
+        url : '/admin/changeagree.do',
+        data : {'email' : email,
+                'userNo' : userNo,
+                'changeagree' : changeagree},
+        //응답
+        dataType:'json',
+        success: (resData) => {
+          if(resData.changeagreeResult === 1) {
+            alert(email+'님의 광고수신이 동의로 변경되었습니다.');
+            fngetAllList();
+          } else {
+            alert('광고 수신 변경이 실패하였습니다.');
+            return;
+          }
+        }
+      })
+    })
+  }
+  
+  
+  function fnchangedeagree() {
+    $(document).on('click', '.changedeagree', function(ev){
+      
+      let email = $(this).prev().val();
+      let userNo = $(this).prev().prev().val();
+      let changedeagree = $(this).prev().prev().prev().val();
+      
+      $.ajax({
+        type: 'get',
+        url : '/admin/changenoneagree.do',
+        data : {'email' : email,
+                'userNo' : userNo,
+                'changedeagree' : changedeagree},
+        //응답
+        dataType:'json',
+        success: (resData) => {
+          if(resData.changedeagreeResult === 1) {
+            alert(email+'님의 광고수신이 비동의로 변경되었습니다.');
+            fngetAllList();
+          } else {
+            alert('광고 수신 변경이 실패하였습니다.');
+            return;
+          }
+        }
+      })
+    })
+  }
+  
+  function fnsearch() {
+    
+    $(document).on('click', '.search', function(ev){
+      
+      let column = $(this).prev().prev().val();
+      let query = $(this).prev().val();
+      
+     $.ajax({
+       type : 'post',
+       url : '/admin/search.do',
+       data : {'column' : column,
+               'query' : query },
+       dataType : 'json',
+       success: (resData) => {
+         if(resData.userList === 0){
+           alert('실패');
+         }
+          $('#user_list').empty();
+          $('.test').empty();
+          let str1 = '<div>'
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '<option value="NAME">이름</option>';
+          str1 += '<option value="ADMIN_AUTHOR_STATE">관리자</option>'
+          str1 += '</select>';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning search">'
+          str1 += '</div>'
+          $('.test').append(str1);
+         $.each(resData.userList, (i, user) => {
+          let str = '<tr>'
+          str += '<td>'+user.userNo+'</td>';
+          str += '<td>'+user.email+'</td>';
+          str += '<td>';
+          str += '<input type="hidden" name="userNo"value="'+user.userNo+'">'  
+          str += '<input type="hidden" name="email" value="'+user.email+'">'
+          str += '<input type="button" class="btn btn-warning pwinit" value="비밀번호 초기화">';
+          str += '</td>';
+          str += '<td>'+user.name+'</td>';
+          str += '<td>'+user.gender+'</td>';
+          str += '<td>'+user.mobile+'</td>';
+          if (user.agree === 0) {
+            str += '<td value="0">'
+            str += '광고 수신 비동의'
+            str += '<br>'
+            str += '<input type="hidden" value="1">'
+            str += '<input type="hidden" value="'+user.userNo+'">'
+            str += '<input type="hidden" value="'+user.email+'">'
+            str += '<input type="button" class="btn btn-warning changeagree" value="동의로 변경">'
+            str += '</td>'
+          }
+          if (user.agree === 1) {
+            str += '<td value="1">'
+            str += '광고 수신 동의'
+            str += '<br>'
+            str += '<input type="hidden" value="0">'
+            str += '<input type="hidden" value="'+user.userNo+'">'
+            str += '<input type="hidden" value="'+user.email+'">'
+            str += '<input type="button" class="btn btn-warning changedeagree" value="비동의로 변경">'
+            str += '</td>'
+          }
+          if (user.joinState === 0) {
+            str += '<td value="0">홈페이지 회원가입</td>'
+          }
+          if (user.joinState === 1) {
+            str += '<td value="1">간편 회원가입</td>'
+          }
+          str += '<td>'+user.joinedAt+'</td>';
+          if (user.adminAuthorState === 0) {
+            str += '<td value="0">일반 회원'
+            str += '<br>'
+            str += '<input type="hidden" value="1">'
+            str += '<input type="hidden" value="'+user.userNo+'">'
+            str += '<input type="hidden" value="'+user.email+'">'
+            str += '<input type="button" class="btn btn-warning adminTake" value="관리자권한주기">'
+            str += '</td>'
+          }
+          if (user.adminAuthorState === 1) {
+            str += '<td value="1">관리자'
+            str += '<br>'
+            str += '<input type="hidden" value="0">'
+            str += '<input type="hidden" value="'+user.userNo+'">'
+            str += '<input type="hidden" value="'+user.email+'">'
+            str += '<input type="button" class="btn btn-warning normalTake" value="일반 권한주기">'
+            str += '</td>'
+          }
+          str += '<td>'+user.point+'</td>';
+          str += '</tr>';
+          $('#user_list').append(str);
+         
+        })
+       }
+     })
+    })
+  }
+  
+  function fnunaccesssearch() {
+    
+    $(document).on('click', '.unaccesssearch', function(ev){
+      
+      let column = $(this).prev().prev().val();
+      let query = $(this).prev().val();
+      
+     $.ajax({
+       type : 'post',
+       url : '/admin/unaccesssearch.do',
+       data : {'column' : column,
+               'query' : query },
+       dataType : 'json',
+       success: (resData) => {
+         if(resData.userList === 0){
+           alert('실패');
+         }
+          $('#user_list').empty();
+          $('.test').empty();
+          let str1 = '<div>'
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '<option value="NAME">이름</option>';
+          str1 += '</select>';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning unaccesssearch">'
+          str1 += '</div>'
+          $('.test').append(str1);
+         $.each(resData.userList, (i, user) => {
+          let str = '<tr>'
+          str += '<td>'+user.userNo+'</td>';
+          str += '<td>'
+          str += user.email
+          str += '<br>'
+          str += '<input type="hidden" value="'+user.email+'">'
+          str += '<input type="button" class="btn btn-warning changeAccess" value="휴면복원하기">'
+          str += '</td>';
+          str += '<td>';
+          str += '<input type="button" class="btn btn-warning pwinitfail" value="비밀번호 초기화">';
+          str += '</td>';
+          str += '<td>'+user.name+'</td>';
+          str += '<td>'+user.gender+'</td>';
+          str += '<td>'+user.mobile+'</td>';
+          if (user.agree === 0) {
+            str += '<td>'
+            str += '광고 수신 비동의'
+            str += '</td>'
+          }
+          if (user.agree === 1) {
+            str += '<td>'
+            str += '광고 수신 동의'
+            str += '</td>'
+          }
+          if (user.joinState === 0) {
+            str += '<td>홈페이지 회원가입</td>'
+          }
+          if (user.joinState === 1) {
+            str += '<td>간편 회원가입</td>'
+          }
+          str += '<td>'+user.joinedAt+'</td>';
+          if (user.adminAuthorState === 0) {
+            str += '<td>일반 회원'
+            str += '</td>'
+          }
+          if (user.adminAuthorState === 1) {
+            str += '<td value="1">관리자'
+            str += '</td>'
+          }
+          str += '<td>'+user.point+'</td>';
+          str += '</tr>';
+          $('#user_list').append(str);
+         
+        })
+       }
+     })
+    })
+  }
+  
+  function fnLeavesearch() {
+    
+    $(document).on('click', '.leavesearch', function(ev){
+      
+      let column = $(this).prev().prev().val();
+      let query = $(this).prev().val();
+      
+     $.ajax({
+       type : 'post',
+       url : '/admin/Leavesearch.do',
+       data : {'column' : column,
+               'query' : query },
+       dataType : 'json',
+       success: (resData) => {
+          
+          if(resData.userList === null){
+            alert('실패');
+          }
+          
+          $('#user_list').empty();
+          $('.test').empty();
+          let str1 = '<div>'
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '</select>';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning leavesearch">'
+          str1 += '</div>'
+          $('.test').append(str1);
+         $.each(resData.userList, (i, user) => {
+          let str = '<tr>'
+          str += '<td></td>';
+          str += '<td>'+user.email+'</td>';
+          str += '<td>없음';
+          str += '</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음'
+          str += '</td>'
+          str += '<td>없음</td>'
+          str += '<td>'+user.joinedAt+'</td>';
+          str += '<td>없음'
+          str += '</td>'
+          str += '<td>없음</td>';
+          str += '</tr>';
+          $('#user_list').append(str);
+         
+        })
+       }
+     })
+    })
+  }
+  
+  function fngetAccessCountList() {
+    $(document).on('click', '.getAccessCount', function(ev){
+      fngetAllList();
+    })
+  }
+  function fngetUnAccessCountList() {
+    $(document).on('click', '.getUnAccessCount', function(ev){
+      
+      $.ajax({
+        type : "post",
+        url : '/admin/AccessList.do',
+        dataType: "json",
+        success: (resData) => {
+          
+          if(resData.userList === null){
+            alert('실패');
+          }
+          
+          $('#user_list').empty();
+          $('.test').empty();
+          let str1 = '<div>'
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '<option value="NAME">이름</option>';
+          str1 += '</select>';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning unaccesssearch">'
+          str1 += '</div>'
+          $('.test').append(str1);
+         $.each(resData.userList, (i, user) => {
+          let str = '<tr>'
+          str += '<td>'+user.userNo+'</td>';
+          str += '<td>'
+          str += user.email
+          str += '<br>'
+          str += '<input type="hidden" value="'+user.email+'">'
+          str += '<input type="button" class="btn btn-warning changeAccess" value="휴면복원하기">'
+          str += '</td>';
+          str += '<td>';
+          str += '<input type="hidden" name="userNo"value="'+user.userNo+'">'  
+          str += '<input type="hidden" name="email" value="'+user.email+'">'
+          str += '<input type="button" class="btn btn-warning pwinitfail" value="비밀번호 초기화">';
+          str += '</td>';
+          str += '<td>'+user.name+'</td>';
+          str += '<td>'+user.gender+'</td>';
+          str += '<td>'+user.mobile+'</td>';
+          if (user.agree === 0) {
+            str += '<td>'
+            str += '광고 수신 비동의'
+            str += '</td>'
+          }
+          if (user.agree === 1) {
+            str += '<td>'
+            str += '광고 수신 동의'
+            str += '</td>'
+          }
+          if (user.joinState === 0) {
+            str += '<td value="0">홈페이지 회원가입</td>'
+          }
+          if (user.joinState === 1) {
+            str += '<td value="1">간편 회원가입</td>'
+          }
+          str += '<td>'+user.joinedAt+'</td>';
+          if (user.adminAuthorState === 0) {
+            str += '<td>일반 회원'
+            str += '</td>'
+          }
+          if (user.adminAuthorState === 1) {
+            str += '<td>관리자'
+            str += '</td>'
+          }
+          str += '<td>'+user.point+'</td>';
+          str += '</tr>';
+          $('#user_list').append(str);
+         
+        })
+        }
+      })
+      
+    })
+  }
+
+ function fngetLeaveCountList() {
+   $(document).on('click', '.getLeaveCount', function(ev){
+     $.ajax({
+        type : "post",
+        url : '/admin/LeaveList.do',
+        dataType: "json",
+        success: (resData) => {
+          
+          if(resData.userList === null){
+            alert('실패');
+          }
+          
+          $('#user_list').empty();
+          $('.test').empty();
+          let str1 = '<div>'
+          str1 += '<select name="column">';
+          str1 += '<option value="EMAIL">이메일</option>';
+          str1 += '</select>';
+          str1 += '<input type="text" name ="query" placeholder="검색어입력">';
+          str1 += '<input type="button" value="검색" class="btn btn-warning leavesearch">'
+          str1 += '</div>'
+          $('.test').append(str1);
+         $.each(resData.userList, (i, user) => {
+          let str = '<tr>'
+          str += '<td></td>';
+          str += '<td>'+user.email+'</td>';
+          str += '<td>없음';
+          str += '</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음</td>';
+          str += '<td>없음'
+          str += '</td>'
+          str += '<td>없음</td>'
+          str += '<td>'+user.joinedAt+'</td>';
+          str += '<td>없음'
+          str += '</td>'
+          str += '<td>없음</td>';
+          str += '</tr>';
+          $('#user_list').append(str);
+         
+        })
+        }
+      })
+   })
+ }
+ 
+ function fnpwinitfail() {
+   $(document).on('click', '.pwinitfail', function(ev){
+     alert('비밀번호 초기화는 활동중인 회원만 가능합니다.휴면복원버튼을 통해 복원을 먼저 진행해주세요');
+     return;
+   })
+ }
+ 
+ function fnchangeAccess() {
+   $(document).on('click', '.changeAccess', function(ev){
+     
+     let email = $(this).prev().val();
+     
+    if(!confirm(email+'님을 휴면해제하시겠습니까?')){
+       alert('휴면해제를 취소했습니다.')
+       return;
+     }
+     
+     $.ajax({
+       type : "post",
+        url : '/admin/changeList.do',
+        data : {'email' : email},
+        dataType: "json",
+        success: (resData) => {
+          if(resData.insertActiveResult === 1 && resData.deleteInactiveResult ===1) {
+            alert(email+'님 휴면해제에 성공했습니다.');
+            fngetAllList();
+          }
+          
+       }           
+     })
+     
+     
+   })
+ }
 
 
 
@@ -261,6 +721,17 @@
   fngetAllList();
   fnpwinit();
   fnadmintake();
+  fnnormaltake();
+  fnchangeagree();
+  fnchangedeagree();
+  fnsearch();
+  fnunaccesssearch();
+  fnLeavesearch();
+  fngetUnAccessCountList();
+  fngetLeaveCountList();
+  fngetAccessCountList();
+  fnpwinitfail();
+  fnchangeAccess();
   
  </script>
    

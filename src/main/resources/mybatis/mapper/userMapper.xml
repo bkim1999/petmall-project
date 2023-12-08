@@ -41,6 +41,7 @@
       <if test="joinedAt != null">AND JOINED_AT = #{joinedAt}</if>
       <if test="adminAuthorState != null">AND ADMIN_AUTHOR_STATE = #{adminAuthorState}</if>
       <if test="point != null">AND POINT = #{point}</if>
+      <if test="column != null">AND ${column} Like '%' || #{query} || '%'</if>
     </where>
     ORDER BY USER_NO DESC
   </select>
@@ -308,14 +309,46 @@ INSERT INTO INACTIVE_USER_T(
     UPDATE USER_T
     <set>
       <if test="pw != null and pw != ''">PW = #{pw},</if>
-      <if test="agree != null and agree != ''">AGREE = #{agree},</if>
-      <if test="adminAuthorState != null and adminAuthorState != ''"> ADMIN_AUTHOR_STATE = #{adminAuthorState},</if>
+      <if test="agree != null and agree != 3">AGREE = #{agree},</if>
+      <if test="adminAuthorState != null and adminAuthorState != 3">ADMIN_AUTHOR_STATE = #{adminAuthorState},</if>
     </set>
     <where>
       <if test="userNo != null">USER_NO = #{userNo}</if>
       <if test="email != null">AND EMAIL = #{email}</if>
     </where>
   </update>
+  
+  <select id="accessUserCount" resultType="int">
+     SELECT COUNT(*)
+       FROM USER_T
+  </select>
+  
+  <select id="unAccessUserCount" resultType="int">
+     SELECT COUNT(*)  
+       FROM INACTIVE_USER_T
+  </select>
+  
+  <select id="leaveUserCount" resultType="int">
+      SELECT COUNT(*)
+        FROM LEAVE_USER_T
+  </select>
+  
+  <select id="UnAccesstotalUserList" resultType="InactiveUserDto" parameterType="Map">
+       SELECT USER_NO, EMAIL, PW, NAME, GENDER, MOBILE, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, AGREE, JOIN_STATE, PW_MODIFIED_AT, JOINED_AT,INACTIVED_AT, ADMIN_AUTHOR_STATE, POINT
+         FROM INACTIVE_USER_T
+     <where>
+      <if test="column != null">AND ${column} Like '%' || #{query} || '%'</if>
+     </where>     
+  </select>
+  
+  <select id="LeaveAccessUserList" resultType="LeaveUserDto" parameterType="Map">
+       SELECT EMAIL, JOINED_AT, LEAVED_AT
+         FROM LEAVE_USER_T
+     <where>
+      <if test="column != null">AND ${column} Like '%' || #{query} || '%'</if>
+     </where>
+  </select>
+ 
 
  
 </mapper>

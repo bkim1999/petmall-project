@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.gdu.petmall.dao.EventMapper;
@@ -14,6 +15,8 @@ import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dao.QnaMapper;
 import com.gdu.petmall.dao.UserMapper;
 import com.gdu.petmall.dto.EventDto;
+import com.gdu.petmall.dto.InactiveUserDto;
+import com.gdu.petmall.dto.LeaveUserDto;
 import com.gdu.petmall.dto.QnaDto;
 import com.gdu.petmall.dto.UserDto;
 import com.gdu.petmall.util.MyPageUtils;
@@ -31,6 +34,7 @@ public class AdminServiceImpl implements AdminService {
   private final EventMapper eventMapper;
   private final UserMapper userMapper;
   private final MySecurityUtils mySecurityUtils;
+ 
   
   @Override
   public void getQna(HttpServletRequest request, Model model) {
@@ -81,7 +85,19 @@ public class AdminServiceImpl implements AdminService {
     
     List<UserDto> userList = userMapper.getUserList(map);
     
-    return Map.of("userList",userList);
+    int accessUserCount = userMapper.accessUserCount();
+    int unAccessUserCount = userMapper.unAccessUserCount();
+    int leaveUserCount = userMapper.leaveUserCount();
+    
+    int totalUserCount = accessUserCount+unAccessUserCount;
+    
+    
+    
+    return Map.of("userList",userList
+                  ,"totalUserCount",totalUserCount
+                  ,"accessUserCount",accessUserCount
+                  ,"unAccessUserCount",unAccessUserCount
+                  ,"leaveUserCount",leaveUserCount);
   }
   
   @Override
@@ -110,13 +126,17 @@ public class AdminServiceImpl implements AdminService {
     int adminAuthorState= Integer.parseInt(request.getParameter("adminAuthorState"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     
+    int agree = 3;
+    
     UserDto userDto = UserDto.builder()
                              .email(email)
                              .userNo(userNo)
                              .adminAuthorState(adminAuthorState)
+                             .agree(agree)
                              .build();
     
     int adminTakeResult = userMapper.changeUserInfo(userDto);
+    
     
     return Map.of("adminTakeResult",adminTakeResult);
   }
@@ -130,16 +150,152 @@ public class AdminServiceImpl implements AdminService {
     int adminAuthorState= Integer.parseInt(request.getParameter("adminAuthorState"));
     int userNo = Integer.parseInt(request.getParameter("userNo"));
     
+    int agree = 3;
+    
     UserDto userDto = UserDto.builder()
-                            .email(email)
-                            .userNo(userNo)
                             .adminAuthorState(adminAuthorState)
+                            .userNo(userNo)
+                            .email(email)
+                            .agree(agree)
                             .build();
-
+    
+    
     int normalTakeResult = userMapper.changeUserInfo(userDto);
+    
     
     return Map.of("normalTakeResult",normalTakeResult);
   }
+  
+  public Map<String, Object> changeagree(HttpServletRequest request) {
     
+    String email = request.getParameter("email");
+    int changeagree= Integer.parseInt(request.getParameter("changeagree"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    int adminAuthorState =3;
+    
+    UserDto userDto = UserDto.builder()
+                  .email(email)
+                  .userNo(userNo)
+                  .agree(changeagree)
+                  .adminAuthorState(adminAuthorState)
+                  .build();
+    
+    int changeagreeResult = userMapper.changeUserInfo(userDto);
+    
+    return Map.of("changeagreeResult",changeagreeResult);
+  }
+  
+  public Map<String, Object> changedeagree(HttpServletRequest request) {
+    
+    String email = request.getParameter("email");
+    int changedeagree= Integer.parseInt(request.getParameter("changedeagree"));
+    int userNo = Integer.parseInt(request.getParameter("userNo"));
+    
+    int adminAuthorState = 3;
+    
+    UserDto userDto = UserDto.builder()
+        .email(email)
+        .userNo(userNo)
+        .agree(changedeagree)
+        .adminAuthorState(adminAuthorState)
+        .build();
+    
+    int changedeagreeResult = userMapper.changeUserInfo(userDto);
+    
+    return Map.of("changedeagreeResult",changedeagreeResult);
+  }
+  
+  @Override
+  public Map<String, Object> searchInfo(HttpServletRequest request) {
+    
+    String column = request.getParameter("column");
+    String query = request.getParameter("query");
+   
+    Map<String, Object> map = new HashMap<>();
+    
+    map.put("column", column);
+    map.put("query",query);
+    
+    List<UserDto> userList = userMapper.getUserList(map);
+    
+    return Map.of("userList",userList);
+  }
+  
+  @Override
+  public Map<String, Object> LeaveSearchInfo(HttpServletRequest request) {
+    String column = request.getParameter("column");
+    String query = request.getParameter("query");
+   
+    Map<String, Object> map = new HashMap<>();
+    
+    map.put("column", column);
+    map.put("query",query);
+    
+    List<LeaveUserDto> userList = userMapper.LeaveAccessUserList(map);
+    
+    return Map.of("userList",userList);
+  }
+  
+  @Override
+  public Map<String, Object> UnaccessSearchInfo(HttpServletRequest request) {
+    String column = request.getParameter("column");
+    String query = request.getParameter("query");
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    map.put("column", column);
+    map.put("query",query);
+    
+    List<InactiveUserDto> userList = userMapper.UnAccesstotalUserList(map);
+    
+    return Map.of("userList",userList);
+  }
+  
+  
+  
+  
+  @Override
+  public Map<String, Object> accessList() {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    List<InactiveUserDto> userList = userMapper.UnAccesstotalUserList(map);
+    
+    return Map.of("userList",userList);
+  }
+  
+  @Override
+  public Map<String, Object> LeaveList() {
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    List<LeaveUserDto> userList = userMapper.LeaveAccessUserList(map);
+    
+    return Map.of("userList",userList);
+  }
+  
+  @Transactional
+  @Override
+  public Map<String, Object> changeAccessUser(HttpServletRequest request) {
+   
+    String email = request.getParameter("email");
+    
+    int insertActiveResult = userMapper.insertActiveUser(email);
+    
+    int deleteInactiveResult = userMapper.deleteInactiveUser(email);
+    
+    
+    return Map.of("insertActiveResult",insertActiveResult,"deleteInactiveResult",deleteInactiveResult);
+  }
+  
+  @Override
+  public Map<String, Object> eventCount() {
+    
+    int eventResult = eventMapper.getEventCount();
+    
+    return Map.of("eventResult",eventResult);
+  }
+  
   
 }

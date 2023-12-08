@@ -43,5 +43,10 @@ public interface UserMapper {
   
   //관리자 
   public int changeUserInfo(UserDto userDto);
+  public int accessUserCount();
+  public int unAccessUserCount();
+  public int leaveUserCount();
+  public List<InactiveUserDto>UnAccesstotalUserList(Map<String, Object>user);
+  public List<LeaveUserDto>LeaveAccessUserList(Map<String, Object>user);
   
 }
