@@ -212,6 +212,7 @@
   // 정렬 버튼 클릭 시 상품 목록 정렬 후 다시 가져오기
   const fnOrderProduct = () => {
     $(document).on('click', '.btn-check', function(){
+      page = 1;
       order = $(this).val();
       $('#product_list').empty();
       fnGetProductList();
