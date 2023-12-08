@@ -169,7 +169,7 @@
         	let str = '<div class="card product" data-product-no="' + product.productNo + '">';        	
         	str += '  <div class="product_thumbnail d-flex justify-content-center align-items-center">';
           if(product.productImageDto === null){
-              str += '썸네일 없음';
+            str += '    <img class= "product-img" src="/image/no_image.png">';
           } else {
             str += '    <img class= "product-img" src="' + product.productImageDto.path + '/' + product.productImageDto.filesystemName + '">';
           }
