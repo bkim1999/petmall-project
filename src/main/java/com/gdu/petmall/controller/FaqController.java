@@ -52,6 +52,7 @@ public class FaqController {
   public String search(HttpServletRequest request, Model model) {
     faqService.getSearchList(request, model);
     System.out.println("서치" + request.getParameter("FAQ_CONTENTS"));
+    System.out.println("FAQ카테고리 리스트: " + model);
     model.addAttribute("customerFaqCategoryList", faqService.getloadFaqCategoryList());
     return "faq/list";
   }
