@@ -15,23 +15,34 @@
   }
   .td_font {
     border-right: 1px solid gray;
-    padding-top: 20px;
+    margin: auto;
   }
   .table {
     width :100%;
     position: relative;
   }
   .table_wrap{
-    width: 1400px;
+    width: 100%;
     justify-content: center;
     text-align: center;
-    padding-left: auto;
-    padding-right: auto;
     display: inline;
+    padding: 0;
   }
   
   .nav_event_list {
     text-align: center;
+  }
+  .big_wrap {
+    width: 1000px;
+    margin: auto;
+  }
+  .table > :not(caption) > * > * {
+    padding: 0rem;
+    padding-top:  5px;
+  }
+  .btn_event_update, .btn_event_detail, .btn_event_start, .btn_event_end {
+    margin: 3px;
+    padding: 7px 7px 7px 7px;
   }
 </style>
 
@@ -39,6 +50,7 @@
 
   <div th:replace="~{/layout/header::header}"></div>
   
+  <div class="big_wrap">
   <hr>
   <div class="nav_event_list">
     <div><h1>EVENT관리</h1></div>
@@ -60,16 +72,13 @@
         <td style="width: 100px;">이벤트 할인율</td>       
         <td style="width: 100px;">이벤트 할인가</td>       
         <td style="width: 100px;">이벤트 종료여부</td>       
-        <td style="width: 100px;">이벤트 수정</td>
-        <td style="width: 100px;">이벤트 상세</td>
-        <td style="width: 100px;">이벤트 시작하기</td>
-        <td style="width: 100px;">이벤트 종료하기</td>       
+        <td style="width: 100px;" colspan="4">이벤트 관리</td>
       </tr>
     </thead>
     <tbody id="event_list"></tbody>
   </table>
   </div>
-  
+  </div>
    <script th:inline="javascript">
    
     function fnReEventList() {
@@ -93,21 +102,21 @@
     	   str +='<td class="td_font">'+event.startAt+'</td>';
     	   str +='<td class="td_font">'+event.endAt+'</td>';
     	   str +='<td class="td_font">';
-    	   str +='<input type="text" style="width: 120px" value="'+event.discountPercent+'%" readonly>';
+    	   str +='<input type="text" style="width: 80px" value="'+event.discountPercent+'%" readonly>';
     	   str +='<div>';
     	   str +='<form class="frm_changePercent">';
-    	   str +='<input type="text" style="width: 120px; font-size: 10px;" name="discountPercent" placeholder="변경될할인율입력">';
-    	   str +='<input style="width: 120px; font-size: 10px;" class="change_Percent btn btn btn-warning" type="submit" value="할인율 변경하기">';
+    	   str +='<input type="text" style="width: 80px; font-size: 11px;" name="discountPercent" placeholder="할인율입력">';
+    	   str +='<input style="width: 80px; font-size: 11px;" class="change_Percent btn btn btn-warning" type="submit" value="할인율 변경">';
     	   str +='<input type="hidden" name="eventNo" value="'+event.eventNo+'">';
     	   str +='</form>';
     	   str +='</div>';
     	   str +='</td>';
     	   str +='<td class="td_font">';
-    	   str +='<input type="text" style="width: 120px; font-size: 13px;" value="'+event.discountPrice+'원" readonly>';
+    	   str +='<input type="text" style="width: 80px; font-size: 11px;" value="'+event.discountPrice+'원" readonly>';
     	   str +='<div>';
     	   str +='<form class="frm_changePrice">';
-    	   str +='<input type="text" style="width: 120px; font-size: 10px;" name="discountPrice" placeholder="변경될할인가입력">';
-    	   str +='<input style="width: 120px; font-size: 10px;" class="change_Price btn btn-warning" type="submit" value="할인가 변경하기">';
+    	   str +='<input type="text" style="width: 80px; font-size: 11px;" name="discountPrice" placeholder="할인가입력">';
+    	   str +='<input style="width: 80px; font-size: 11px;" class="change_Price btn btn-warning" type="submit" value="할인가 변경">';
     	   str +='<input type="hidden" name="eventNo" value="'+event.eventNo+'">';
     	   str +='</form>';
     	   str +='</div>';
@@ -121,22 +130,16 @@
     	   if(event.state === 0){
     		  str +='<td class="td_font">이벤트 종료</td>';   
     	   }
-    	   str +='<td class="td_font">';
-    	   str +='<input style="width: 100px; font-size: 12px;" type="button" class="btn_event_update btn btn-warning" value="수정하기">';
+    	   str +='<td class="td_font" colspan="4">';
+    	   str +='<input style="width: 90px; font-size: 15px;" type="button" class="btn_event_update btn btn-warning" value="수정하기">';
     	   str +='<input type="hidden" value="'+event.eventNo+'">';
-    	   str +='</td>';
-    	   str +='<td class="td_font">';
-    	   str +='<input style="width: 100px; font-size: 12px;" type="button" class="btn_event_detail btn btn-warning" value="상세보기">';
+    	   str +='<input style="width: 90px; font-size: 15px;" type="button" class="btn_event_detail btn btn-warning" value="상세보기">';
     	   str +='<input type="hidden" value="'+event.eventNo+'">';
-    	   str +='</td>';
-    	   str +='<td class="td_font">';
     	   str +='<input type="hidden" value="'+event.state+'">';
-    	   str +='<input style="width: 120px; font-size: 12px;" type="button" class="btn_event_start btn btn-warning" value="이벤트시작하기">';
+    	   str +='<input style="width: 90px; font-size: 15px;" type="button" class="btn_event_start btn btn-warning" value="시작하기">';
     	   str +='<input type="hidden" value="'+event.eventNo+'">';
-    	   str +='</td>';
-    	   str +='<td class="td_font">';
     	   str +='<input type="hidden" value="'+event.state+'">';
-    	   str +='<input style="width: 120px; font-size: 12px;" type="button" class="btn_event_end btn btn-warning" value="이벤트종료시키기">';
+    	   str +='<input style="width: 90px; font-size: 15px;" type="button" class="btn_event_end btn btn-warning" value="종료하기">';
     	   str +='<input type="hidden" value="'+event.eventNo+'">';
     	   str +='</td>';
     	   str +='</tr>';

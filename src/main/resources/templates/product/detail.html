@@ -14,7 +14,8 @@
   #product_info h2 {
     font-weight: bold;
     margin: 30px 0;
-  }
+    word-break: break-word;
+      }
   #product_info .tab-content {
     padding: 20px 10px;
   }
@@ -51,7 +52,7 @@
     border-top: 1px solid gray;
     text-align: center;
   }
-  #product_contents >.image > img {
+  #product_contents img {
     width: 850px;
     height: 100%;
   }
@@ -109,6 +110,9 @@
     border-top: 1px solid gray;
     padding: 30px;
     width: 100%;
+  }
+  .review_title, .review_contents {
+    max-width: 900px;
   }
   .review_image{
     width: 200px;
@@ -202,6 +206,13 @@
         <button type="button" id="btn_add_cart" class="btn btn-light btn-lg">장바구니 담기</button>
         <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
       </div>
+      <th:block th:if="${session.user} != null">
+        <form th:if="${session.user.adminAuthorState == 1}" id="frm_edit_remove_product">
+          <input type="hidden" name="productNo" th:value="${product.productNo}">
+          <button type="button" id="btn_edit_product" class="btn btn-light btn-lg">수정</button>
+          <button type="button" id="btn_remove_product" class="btn btn-success btn-lg">삭제</button>
+        </form>
+      </th:block>
     </div>
   </div>
   <div id="product_contents" th:utext="${product.productContents}"></div>
@@ -383,10 +394,10 @@
           str += '  <div>' + review.userDto.name + '  ' + review.reviewModifiedAt + '</div>';
           str += '  <div>상품명: ' + productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
           if(review.reviewTitle !== null){
-            str += '  <h5 class="review_title mt-2">' + review.reviewTitle + '</h5>'
+            str += '  <h5 class="review_title mt-2 text-break">' + review.reviewTitle + '</h5>'
           }
           if(review.reviewContents !== null){
-            str += '  <div class="review_contents">' + review.reviewContents + '</div>';
+            str += '  <div class="review_contents text-break">' + review.reviewContents + '</div>';
           }
           str += '</div>'
           if(review.reviewImageDto !== null){
@@ -402,6 +413,41 @@
     })
   }
   
+  function fnEditProduct(){
+    $(document).on('click', '#btn_edit_product', function(){
+      if(!confirm('이 제품을 수정하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'get');
+      $(form).attr('action', '/product/editProduct.form');
+      $(form).submit();
+    });
+  }
+  
+  function fnRemoveProduct(){
+    $(document).on('click', '#btn_remove_product', function(){
+      if(!confirm('이 제품을 삭제하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'post');
+      $(form).attr('action', '/product/removeProduct.do');
+      $(form).submit();
+    });
+  }
+  
+  const fnEditProductResult = () => {
+    let editProductResult = /*[[${editProductResult}]]*/ null;  // '', true, false
+    if(editProductResult !== null){
+      if(editProductResult === true){
+        alert('성공적으로 수정되었습니다.');
+      } else {
+        alert('상품 수정에 실패하였습니다.');
+      }
+    }
+  }
+  
   fnAddOption();
   fnDeleteOption();
   fnDecreaseCount();
@@ -409,5 +455,8 @@
   fnUpdateTotalPrice();
   fnAddCartOrder();
   fnGetReviewList();
+  fnEditProduct();
+  fnRemoveProduct();
+  fnEditProductResult();
   
 </script>

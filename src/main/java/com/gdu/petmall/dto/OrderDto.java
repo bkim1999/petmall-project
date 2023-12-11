@@ -30,4 +30,6 @@ public class OrderDto {
   private String reText;
   
   private String yourOrder;
+  private OrderDetailDto orderDetailDto;
+
 }

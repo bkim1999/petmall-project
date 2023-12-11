@@ -1,6 +1,7 @@
 package com.gdu.petmall.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +29,10 @@ public class ProductController {
   private final ProductService productService;
   
   @GetMapping(value="/list.do")
-  public String list() {
+  public String list(HttpServletRequest request, Model model) {
+    Optional<String> opt = Optional.ofNullable(request.getParameter("categoryNo"));
+    int categoryNo = Integer.parseInt(opt.orElse("0"));
+    model.addAttribute("categoryNo", categoryNo);
     return "/product/list";
   }
   
@@ -69,7 +73,7 @@ public class ProductController {
                           , RedirectAttributes redirectAttributes) throws Exception {
     boolean addProductResult = productService.addProduct(product, multipartrequest);
     redirectAttributes.addFlashAttribute("addProductResult", addProductResult);
-    return "redirect:/product/list.do";
+    return "redirect:/admin/product_list.go";
   }
   
   @GetMapping(value="/editProduct.form")
@@ -86,7 +90,7 @@ public class ProductController {
                           , RedirectAttributes redirectAttributes) throws Exception {
     boolean editProductResult = productService.editProduct(product, multipartrequest);
     redirectAttributes.addFlashAttribute("editProductResult", editProductResult);
-    return "redirect:/product/list.do";
+    return "redirect:/product/detail.do?productNo=" + product.getProductNo();
   }
   
   @PostMapping(value="/removeProduct.do")

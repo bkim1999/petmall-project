@@ -5,12 +5,20 @@
   div {
     box-sizing: border-box;
   }
+  #wrapper {
+    width: 1500px;
+    margin: 80px auto;
+  }
   #category_list {
-    font-size: 20px;
+    font-size: 18px;
   }
   #category_list .nav-item {
-    width: 200px;
+    min-width: 100px;
     text-align: center;
+    margin: 0 1px;
+  }
+  #category_list .nav-item:hover {
+    cursor: pointer;
   }
   #search_condition {
     width: 100%;
@@ -18,17 +26,18 @@
     padding: 30px;
   }
   #product_list {
-    margin: 50px auto;
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     min-height: 500px;
+    width: 1500px;
    }
   .product {
     border: none;
     width: 450px;
     height: 600px;
     text-align: left;
-    margin: 20px 40px;
+    margin: 20px 10px;
   }
   .product_thumbnail {
     height: 450px;
@@ -77,7 +86,7 @@
 </style>
 <body>
   <div th:replace="~{layout/header :: header}"></div>
-  <div>
+  <div id="wrapper">
     <h1>상품 목록</h1>
     <ul id="category_list" class="nav nav-tabs d-flext justify-content-center" role="tablist"></ul>
     <div id="search_condition" class="d-flex justify-content-between">
@@ -103,10 +112,11 @@
 <script th:inline="javascript">
 
   // 전역 변수
-  var categoryNo = 0;
+  var categoryNo = /*[[${categoryNo}]]*/ 0;
   var page = 1;
   var order = 'PRODUCT_SALES';
   var totalPage = 0;
+  var searchText = '';
   
   // 카테고리 목록
   const fnGetCategoryList = () => {
@@ -125,11 +135,14 @@
         // 카테고리 목록이 있을 경우: 버튼 생성
         $.each(resData.categoryList, function(i, category){
           let str = '<li class="nav-item category" role="presentation" data-category-no="' + category.categoryNo + '">';
-          str += '  <a class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab">' + category.categoryName + '</a>';
+          if(i !== categoryNo){
+            str += '  <a class="nav-link" data-bs-toggle="tab" aria-selected="false" role="tab">' + category.categoryName + '</a>';
+          } else {
+            str += '  <a class="nav-link active" data-bs-toggle="tab" aria-selected="false" role="tab">' + category.categoryName + '</a>';
+          }
           str += '</li>';
           $('#category_list').append(str);
         })
-        $('#category_list > li > a').first().addClass('active');
       }
     });
   }
@@ -137,6 +150,7 @@
   // 카테고리 버튼 클릭 시 data에서 카테고리번호 가져오기
   const fnGetCategoryProductList = () => {
     $(document).on('click', '.category', function(){
+      page = 1;
       $('#product_list').empty();
       categoryNo = $(this).data('category-no');
       fnGetProductList();
@@ -152,7 +166,7 @@
       data: {'categoryNo' : categoryNo,
              'page' : page,
              'order' : order,
-             'searchText' : $('#searchText').val()
+             'searchText' : searchText
             },
       // 응답
       dataType: 'json',
@@ -195,7 +209,6 @@
           str += '  </div>';
           str += '</div>';     	
           $('#product_list').append(str);
-          
         });
       }
     })
@@ -204,6 +217,8 @@
   // 검색 버튼 클릭 시 상품 목록 다시 가져오기
   const fnSearchProduct = () => {
     $(document).on('click', '#btn_search', function(){
+      page = 1;
+      searchText = $.trim($('#searchText').val());
       $('#product_list').empty();
       fnGetProductList();
     });
@@ -212,6 +227,7 @@
   // 정렬 버튼 클릭 시 상품 목록 정렬 후 다시 가져오기
   const fnOrderProduct = () => {
     $(document).on('click', '.btn-check', function(){
+      page = 1;
       order = $(this).val();
       $('#product_list').empty();
       fnGetProductList();
@@ -247,29 +263,19 @@
       if(addProductResult === true){
         alert('성공적으로 등록되었습니다.');
       } else {
-        alert('상품등록에 실패하였습니다.');
-      }
-    }
-  }
-  
-  const fnEditProductResult = () => {
-    let editProductResult = /*[[${editProductResult}]]*/ null;  // '', true, false
-    if(editProductResult !== null){
-      if(editProductResult === true){
-        alert('성공적으로 수정되었습니다.');
-      } else {
-        alert('상품수정애 실패하였습니다.');
+        alert('상품 등록에 실패하였습니다.');
       }
     }
   }
   
   const fnRemoveProductResult = () => {
-    let removeProductResult = /*[[${removeProductResult}]]*/ null;  // '', true, false
+    let removeProductResult = /*[[${removeProductResult}]]*/ 0;  // '', 1, 2
+    console.log(removeProductResult);
     if(removeProductResult !== null){
-      if(removeProductResult === true){
+      if(removeProductResult == 1){
         alert('성공적으로 삭제되었습니다.');
       } else {
-        alert('상품삭제에 실패하였습니다.');
+        alert('상품 삭제에 실패하였습니다.');
       }
     }
   }
@@ -287,6 +293,7 @@
   fnOrderProduct();
   fnScroll();
   fnAddProductResult();
+  fnRemoveProductResult();
   fnDetail();
   
 

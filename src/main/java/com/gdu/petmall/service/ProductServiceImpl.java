@@ -84,10 +84,10 @@ public class ProductServiceImpl implements ProductService {
     String order = opt.orElse("PRODUCT_SALES");
     
     // 카테고리번호, 순서, 페이지 시작/끝 map에 저장
-    map = Map.of("categoryNo", categoryNo
-                                   , "order", order
-                                   , "begin", begin
-                                   , "end", end);
+    map.put("order", order);
+    map.put("searchText", searchText);
+    map.put("begin", begin);
+    map.put("end", end);
     
     // 상품 목록 DB에 요청(map 전달)
     List<ProductDto> productList = productMapper.getProductList(map);
@@ -332,7 +332,7 @@ public class ProductServiceImpl implements ProductService {
     }
     
     addContentsImageResult = getEditorImageList(product.getProductContents()).size() == insertContentsImageCount;
-    
+
     // 상품, 옵션, 사진 정보 삽입 결과 반환
     return addProductResult && addOptionResult && addThumbnailResult && addDisplayImageResult && addContentsImageResult;
       
