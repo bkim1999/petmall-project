@@ -21,4 +21,5 @@ public interface ProductService {
   public boolean addProduct(ProductDto product, MultipartHttpServletRequest multipartRequest) throws Exception;
   public boolean editProduct(ProductDto product, MultipartHttpServletRequest multipartRequest) throws Exception;
   public void removeProduct(int productNo, RedirectAttributes redirectAttributes);
+  public void productImageBatch();
 }
