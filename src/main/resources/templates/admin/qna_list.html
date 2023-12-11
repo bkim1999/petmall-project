@@ -11,14 +11,22 @@
     font-size: 30px;
     line-height: 50px;
     justify-content: space-between;
-    padding-left: 310px;
-    padding-right: 250px;
     margin-bottom: 30px;
-    margin-top: 30px;
     position: relative;
+    padding-left: 85px;
+    padding-right: 60px;
+    text-align: center;
   }
   .nav_qna_list{
     text-align: center;
+  }
+  .big_wrap {
+    width: 1000px;
+    margin: auto;
+  }
+  .table_wrap {
+    text-align: center;
+    line-height: 50px;
   }
   
 </style>
@@ -26,7 +34,8 @@
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-
+  
+  <div class="big_wrap">
   <hr>
   <div class="nav_qna_list">
     <h1>Q&A 관리</h1>
@@ -44,11 +53,11 @@
     </div>
      <div>
       <input type="hidden" value="1">
-      <input type="button" class="btn btn-light getAnswerList" th:value="|답변 완료된 문의글 수 : ${qnaAnswerCount}|">
+      <input type="button" class="btn btn-light getAnswerList" th:value="|답변 완료 문의글 수 : ${qnaAnswerCount}|">
      </div>
     <div>
       <input type="hidden" value="0">
-      <input type="button" class="btn btn-light getNonAnswerList" th:value="|미답변된 문의글 수 : ${qnaNonAnswerCount}|">
+      <input type="button" class="btn btn-light getNonAnswerList" th:value="|미답변 문의글 수 : ${qnaNonAnswerCount}|">
     </div>
   </div>
   
@@ -62,7 +71,7 @@
        <td>문의일</td>
        <td>문의자</td>
        <td>답변여부</td>
-       <td>답변하로가기</td>
+       <td></td>
       </tr>
     </thead>
     <tbody id="qna_list">
@@ -104,10 +113,10 @@
        <td>
         <input type="hidden" th:value="${qna.groupNo}">
         <th:block th:if="${qna.checkFlag == 1}">
-        <input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기">
+        <input type="button" id="btn_answer" class="btn btn-warning" value="추가답변하기" style="width: 120px; font-size: 14px;">
         </th:block>
         <th:block th:if="${qna.checkFlag == 0}">
-        <input type="button" id="btn_answer" class="btn btn-warning" value="답변하기">
+        <input type="button" id="btn_answer" class="btn btn-warning" value="답변하기" style="width: 120px; font-size: 14px;">
         </th:block>
         <input type="hidden" th:value="${qna.qnaNo}">
        </td>
@@ -116,7 +125,7 @@
     </tbody>
   </table>
   </div>
-  
+  </div>
  <script th:inline="javascript">
   function fnAnswer() {
   	$(document).on('click', '#btn_answer', function(ev){
