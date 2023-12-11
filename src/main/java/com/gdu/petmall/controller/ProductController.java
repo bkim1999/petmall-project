@@ -73,7 +73,7 @@ public class ProductController {
                           , RedirectAttributes redirectAttributes) throws Exception {
     boolean addProductResult = productService.addProduct(product, multipartrequest);
     redirectAttributes.addFlashAttribute("addProductResult", addProductResult);
-    return "redirect:/product/list.do";
+    return "redirect:/admin/product_list.go";
   }
   
   @GetMapping(value="/editProduct.form")
@@ -90,7 +90,7 @@ public class ProductController {
                           , RedirectAttributes redirectAttributes) throws Exception {
     boolean editProductResult = productService.editProduct(product, multipartrequest);
     redirectAttributes.addFlashAttribute("editProductResult", editProductResult);
-    return "redirect:/product/list.do";
+    return "redirect:/product/detail.do?productNo=" + product.getProductNo();
   }
   
   @PostMapping(value="/removeProduct.do")

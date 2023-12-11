@@ -19,6 +19,9 @@
     border-bottom: solid 1px gray;
     margin: 10px;
   }
+  .review:hover{
+    cursor: pointer;
+  }
   .review_info {
     max-width: 685px;
     height: auto;
@@ -87,7 +90,7 @@
           
           console.log(review);
           let str = '';
-          str += '<div class="review d-flex mt-3">';
+          str += '<div class="review d-flex mt-3" data-product-no="' + review.productDto.productNo + '">';
           if(review.reviewImageDto !== null){
             str += '<image class="thumbnail" src="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
           } else {
@@ -162,7 +165,7 @@
         }
         $.each(resData.notReviewedList, function(i, notReviewed){
           let str = '';
-          str += '<div class="review mt-3 d-flex justify-content-start" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
+          str += '<div class="review mt-3 d-flex justify-content-start" data-product-no="' + notReviewed.productDto.productNo + '">';
           if(notReviewed.reviewImageDto !== null){
             str += '<image class="thumbnail" src="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
           } else {
@@ -195,7 +198,8 @@
   }
   
   function fnRemoveReview(){
-    $(document).on('click', '.btn_remove_review', function(){
+    $(document).on('click', '.btn_remove_review', function(ev){
+      ev.stopPropagation();
       if(!confirm('이 리뷰를 삭제하시겠습니까?')){
         return;
       }
@@ -205,7 +209,8 @@
   }
   
   function fnEditReview(){
-    $(document).on('click', '.btn_edit_review', function(){
+    $(document).on('click', '.btn_edit_review', function(ev){
+      ev.stopPropagation();
       if(!confirm('이 리뷰를 수정하시겠습니까?')){
         return;
       }
@@ -214,19 +219,56 @@
     })
   }
   
-  function fnExpand(){
-    $(document).on('click', '.expand', function(){
-      console.log('dd')
-      $(this).addClass('d-none');
-      $(this).siblings('.expand').addClass('d-none');
-      $(this).siblings('.collapse').removeClass('d-none');
-    })
+  const fnAddReviewResult = () => {
+    let addReviewResult = /*[[${addReviewResult}]]*/ null;  // '', true, false
+    console.log(addReviewResult);
+    if(addReviewResult !== null){
+      if(addReviewResult === true){
+        alert('성공적으로 등록되었습니다.');
+      } else {
+        alert('리뷰 등록에 실패하였습니다.');
+      }
+    }
+  }
+  
+  const fnEditReviewResult = () => {
+    let editReviewResult = /*[[${editReviewResult}]]*/ null;  // '', true, false
+    console.log(editReviewResult);
+    if(editReviewResult !== null){
+      if(editReviewResult === true){
+        alert('성공적으로 수정되었습니다.');
+      } else {
+        alert('리뷰 수정에 실패하였습니다.');
+      }
+    }
+  }
+  
+  const fnRemoveReviewResult = () => {
+    let removeReviewResult = /*[[${removeReviewResult}]]*/ 0;  // '', 1, 2
+    console.log(removeReviewResult);
+    if(removeReviewResult !== null){
+      if(removeReviewResult == 1){
+        alert('성공적으로 삭제되었습니다.');
+      } else {
+        alert('리뷰 삭제에 실패하였습니다.');
+      }
+    }
+  }
+  
+  const fnGoToProduct = () => {
+    $(document).on('click', '.review', function(){
+      let productNo = $(this).closest('.review').data('product-no');
+      location.href = '/product/detail.do?productNo=' + productNo;
+    });
   }
   
   fnToggleList();
   fnGetReviewList();
   fnRemoveReview();
   fnEditReview();
-  fnExpand();
+  fnAddReviewResult();
+  fnEditReviewResult();
+  fnRemoveReviewResult();
+  fnGoToProduct();
   
 </script>

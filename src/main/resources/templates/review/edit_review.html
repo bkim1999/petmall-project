@@ -297,6 +297,13 @@
     })
   }
   
+  const fnGoToProduct = () => {
+    $(document).on('click', '.product-info', function(){
+      let productNo = /*[[${map.productNo}]]*/ 0;
+      location.href = '/product/detail.do?productNo=' + productNo;
+    });
+  }
+  
   
   fnFileCheck();
   fnOpenFileSelect();
@@ -305,5 +312,6 @@
   fnCheckRequired();
   
   fnSetRating();
+  fnGoToProduct();
   
 </script>

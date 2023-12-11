@@ -332,7 +332,7 @@ public class ProductServiceImpl implements ProductService {
     }
     
     addContentsImageResult = getEditorImageList(product.getProductContents()).size() == insertContentsImageCount;
-    
+
     // 상품, 옵션, 사진 정보 삽입 결과 반환
     return addProductResult && addOptionResult && addThumbnailResult && addDisplayImageResult && addContentsImageResult;
       
