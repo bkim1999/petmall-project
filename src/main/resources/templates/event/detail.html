@@ -47,6 +47,17 @@
   <div class="detail_total_wrap">
   <h1 style="color: #fff;">EVENT</h1>
   <input type="button" value="다른이벤트 보로가기" id="other_event" class="btn btn-danger">
+  <th:block th:if="${session.user != null}">
+     <th:block th:if="${session.user.adminAuthorState == 0}">
+      <input type="hidden">
+     </th:block>
+     <th:block th:if="${session.user.adminAuthorState == 1}">
+      <input type="button" value="이벤트 관리 페이지 돌아가기" class="btn btn-danger admin">
+    </th:block>
+  </th:block>
+  <th:block th:if="${session.user == null}">
+    <input type="hidden">
+  </th:block>
   <hr>
   <div th:text="${event.title}"></div>
   <div th:text="|${event.startAt} ~ ${event.endAt}|"></div>
@@ -94,9 +105,15 @@
     $('.carousel-item').first().addClass('active');
    });
    
+   function fnadmingo() {
+     $(document).on('click', '.admin', function(ev){
+       location.href ='/admin/event_list.go';
+     })
+   }
+   
    
    fnOtherEvent();
-   
+   fnadmingo();
    </script>
    
    <div th:replace="~{/layout/footer::footer}"></div>
