@@ -45,7 +45,6 @@ public class ReviewController {
   @ResponseBody
   @GetMapping(value="/getMyReviewList.do", produces="application/json")
   public Map<String, Object> loadMyReviewList(HttpServletRequest request){
-    System.out.println("here!");
     return reviewService.loadUserReviewList(request);
   }
   

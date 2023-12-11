@@ -2,14 +2,19 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header :: head('리뷰 수정')}"></head>
 <style>
+  body {
+    background-image: url('/image/cat_background.jpg');
+  }
   h1 {
     margin: 100px 0 50px 0;
     text-align:center;
   }
   #wrapper {
     width: 1000px;
-    height: 1000px;
-    margin: 0px auto;
+    margin: 100px auto;
+    background-color: white;
+    padding: 30px;
+    border: solid 1px black;
   }
   .preview-area {
     margin: 30px;
@@ -292,6 +297,13 @@
     })
   }
   
+  const fnGoToProduct = () => {
+    $(document).on('click', '.product-info', function(){
+      let productNo = /*[[${map.productNo}]]*/ 0;
+      location.href = '/product/detail.do?productNo=' + productNo;
+    });
+  }
+  
   
   fnFileCheck();
   fnOpenFileSelect();
@@ -300,5 +312,6 @@
   fnCheckRequired();
   
   fnSetRating();
+  fnGoToProduct();
   
 </script>
