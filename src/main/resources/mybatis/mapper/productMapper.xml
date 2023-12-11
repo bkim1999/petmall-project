@@ -68,9 +68,11 @@
   </select>
   
   <select id="getCurrentEvent" resultType="EventDto">
-    SELECT DISCOUNT_PERCENT, DISCOUNT_PRICE
-      FROM EVENT_T
-     WHERE STATE = 1
+    SELECT A.DISCOUNT_PERCENT, A.DISCOUNT_PRICE
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DISCOUNT_PERCENT DESC) AS RN, DISCOUNT_PERCENT, DISCOUNT_PRICE
+            FROM EVENT_T
+            WHERE STATE = 1) A
+     WHERE RN = 1
   </select>
   
   <select id="getProduct" parameterType="int" resultType="ProductDto">

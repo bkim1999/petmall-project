@@ -15,10 +15,6 @@
     <result  column="GROUP_NO"      property="groupNo" />
     <result  column="GROUP_ORDER"   property="groupOrder" />
     <result  column="FAQ_CONTENTS"  property="faqContents" />
-      <association  javaType="CategoryDto" property="categoryDto">
-        <id     column="CATEGORY_NO"       property="categoryNo" />
-        <result column="CATEGORY_NAME"     property="categoryName" />
-      </association>
       <association  javaType="faqCategoryDto" property="faqcategoryDto">
         <id     column="FAQ_CATEGORY_NO"       property="faqCategoryNo" />
         <result column="FAQ_CATEGORY_NAME"     property="faqCategoryName" />
@@ -35,17 +31,12 @@
       FROM FAQ_T
   </select>
   
-  <select id="getCategoryList" resultType="CategoryDto">
-    SELECT CATEGORY_NO, CATEGORY_NAME
-      FROM CATEGORY_T
-  </select>
-  
   <select id="getFaqCategoryList" resultType="FaqCategoryDto">
     SELECT FAQ_CATEGORY_NO, FAQ_CATEGORY_NAME
       FROM FAQ_CATEGORY_T
   </select>
   
-  <select id="getFaqList" parameterType="Map" resultType="FaqDto">
+  <select id="customerFaqList" parameterType="Map" resultType="FaqDto">
     SELECT FAQ_NO
          , FAQ_NAME
          , FAQ_TITLE
@@ -79,11 +70,20 @@
      WHERE STATUS = 1
        AND ${column} LIKE '%' || #{query} || '%'
   </select>
-   
-  <select id="getSearchList" parameterType="Map" resultType="FaqDto">
+  
+  <select id="getSearchCategoryCount" resultType="int">
+    SELECT COUNT(*)
+    FROM FAQ_T
+    WHERE STATUS = 1
+    AND FAQ_NAME LIKE '%' || #{faqName} || '%'
+    
+  </select>
+  
+  <select id="getSearchCategoryList" parameterType="Map" resultType="FaqDto">
     SELECT FAQ_NO
          , FAQ_NAME
          , FAQ_TITLE
+         , FAQ_CATEGORY_NO
          , FAQ_CONTENTS
          , STATUS
          , DEPTH
@@ -92,6 +92,38 @@
       FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
                    FAQ_NO
                  , FAQ_NAME
+                 , FAQ_CATEGORY_NO
+                 , FAQ_TITLE
+                 , FAQ_CONTENTS
+                 , STATUS
+                 , DEPTH
+                 , GROUP_NO
+                 , GROUP_ORDER
+             FROM FAQ_T
+            WHERE STATUS = 1
+              AND FAQ_NAME LIKE '%' || #{faqName} || '%')          
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  
+  
+  
+  
+   
+  <select id="getSearchList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , FAQ_NAME
+         , FAQ_TITLE
+         , FAQ_CATEGORY_NO
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
+                   FAQ_NO
+                 , FAQ_NAME
+                 , FAQ_CATEGORY_NO
                  , FAQ_TITLE
                  , FAQ_CONTENTS
                  , STATUS
@@ -117,51 +149,29 @@
           ,FAQ_CONTENTS = #{faqContents}
      WHERE FAQ_NO = #{faqNo}
   </update>
-  
+ 
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-      <insert id="insertFaq" parameterType="FaqDto">
+  <insert id="insertFaq" parameterType="FaqDto">
     INSERT INTO FAQ_T (
-    FAQ_NO,
-    CATEGORY_NO,
-    FAQ_CATEGORY_NO,
-    FAQ_NAME,
-    FAQ_TITLE,
-    FAQ_CONTENTS,
-    STATUS,
-    DEPTH,
-    GROUP_NO,
-    GROUP_ORDER
-) VALUES (
-    FAQ_SEQ.NEXTVAL,
-    #{categoryDto.categoryNo},
-    #{faqCategoryDto.faqCategoryNo},
-    (
-        SELECT CATEGORY_NAME FROM CATEGORY_T WHERE CATEGORY_NO = #{categoryDto.categoryNo}
-    ) || (
-        SELECT FAQ_CATEGORY_NAME FROM FAQ_CATEGORY_T WHERE FAQ_CATEGORY_NO = #{faqCategoryDto.faqCategoryNo}
-    ),
-    #{faqTitle},
-    #{faqContents},
-    1,
-    0,
-    FAQ_SEQ.CURRVAL,
-    0
+      FAQ_NO,
+      FAQ_CATEGORY_NO,
+      FAQ_NAME,
+      FAQ_TITLE,
+      FAQ_CONTENTS,
+      STATUS,
+      DEPTH,
+      GROUP_NO,
+      GROUP_ORDER
+    ) VALUES (
+      FAQ_SEQ.NEXTVAL,
+      #{faqCategoryDto.faqCategoryNo},
+      (SELECT FAQ_CATEGORY_NAME FROM FAQ_CATEGORY_T WHERE FAQ_CATEGORY_NO = #{faqCategoryDto.faqCategoryNo}),
+      #{faqTitle},
+      #{faqContents},
+      1,
+      0,
+      FAQ_SEQ.CURRVAL,
+      0
 )
    </insert>
    

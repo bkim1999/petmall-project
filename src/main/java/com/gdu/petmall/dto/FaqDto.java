@@ -19,6 +19,5 @@ public class FaqDto {
   private int depth;
   private int groupNo;
   private int groupOrder;
-  private CategoryDto categoryDto;
   private FaqCategoryDto faqCategoryDto;
 }

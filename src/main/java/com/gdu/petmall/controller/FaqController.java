@@ -1,6 +1,5 @@
 package com.gdu.petmall.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.service.FaqService;
@@ -22,21 +21,20 @@ import lombok.RequiredArgsConstructor;
 public class FaqController {
 
   private final FaqService faqService;
- 
+
   @GetMapping(value="/faq/list.do")
   public String faqList(HttpServletRequest request, Model model) {
-    faqService.getFaqList(request, model);
-    model.addAttribute("categoryList", faqService.getloadCategoryList());
-    System.out.println("사용자:" + model);
+    faqService.customerFaqList(request, model);
+    model.addAttribute("getFaqCategoryList", faqService.getloadFaqCategoryList());
+    System.out.println("사용자:" + faqService.getloadFaqCategoryList());
     return "/faq/list";
   }
- 
+  
   @GetMapping(value="/faq/write.do")
   public String faqWrite(HttpServletRequest request, Model model) {
     faqService.adminList(request, model);
-    model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList());
-    model.addAttribute("categoryList", faqService.getloadCategoryList());
-    System.out.println("관리자:" + model);
+    model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList()); 
+   System.out.println("관리자:" + model);
     return "/faq/write";
   }
  
@@ -53,6 +51,8 @@ public class FaqController {
   @GetMapping(value="/faq/search.do")
   public String search(HttpServletRequest request, Model model) {
     faqService.getSearchList(request, model);
+    System.out.println("서치" + request.getParameter("FAQ_CONTENTS"));
+    model.addAttribute("customerFaqCategoryList", faqService.getloadFaqCategoryList());
     return "faq/list";
   }
   
@@ -62,22 +62,19 @@ public class FaqController {
     return "redirect:/faq/write.do";
   }
   
-  
-  
-  
-  @PostMapping(value="/faq/delete.do", produces = "application/json")
-  public String remove(@RequestParam(value="faqNo") int faqNo, RedirectAttributes redirectAttributes) {
-    System.out.println("faqNo:" + faqNo);
-    
-    int removeResult = faqService.removeFaq(faqNo);
-    redirectAttributes.addFlashAttribute("removeResult", removeResult);
-    return "redirect:/faq/write.do";
+  @ResponseBody
+  @PostMapping(value="/faq/delete.do", produces="application/json")
+  public Map<String, Object> deleteFaq(HttpServletRequest request) {
+    System.out.println("delete:" + request.getParameter("faqNo"));
+    return faqService.deleteFaq(request);
   }
   
-  
-  
-  
-  
-
+  @ResponseBody
+  @PostMapping(value="/faq/serchCategory.do" , produces="application/json")
+  public Map<String, Object> serchCategory(HttpServletRequest request, Model model) {
+    System.out.println("카테고리:" + request.getParameter("faqName"));
+    System.out.println("카테고리:" + request.getParameter("category"));
+    return faqService.getloadCategorySearchList(request, model);
+  } 
   
 }

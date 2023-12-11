@@ -32,18 +32,13 @@
         <form id="add_frm" method="post" th:action="@{/faq/add.do}">
           <div class="form-group">
             <label for="category_select" class="form-label mt-4">카테고리 선택</label>
-            <select class="form-select" id="combinedSelect">
+            <select class="form-select" id="faqCategoryNo" name="faqCategoryNo">
               <option value="">--선택 안함--</option>
-              <th:block th:each="faq : ${faqCategoryList.getFaqCategoryList}">
+              <th:block th:each="faq : ${faqCategoryList}">
                 <th:block th:if="${faq.faqCategoryNo != 0}">
-                  <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
+                   <option th:value="${faq.faqCategoryNo}" th:text="${faq.faqCategoryName}"></option>
                 </th:block>
               </th:block> 
-              <th:block th:each="product : ${categoryList.getCategoryList}">
-                <th:block th:if="${product.categoryNo != 0}">
-                  <option th:value="${product.categoryNo}" th:text="${product.categoryName}"></option>
-                </th:block>
-              </th:block>
             </select>
         <div class="invalid-feedback"></div>
       </div>
@@ -65,94 +60,65 @@
       </div>
     </form>
    </div>
-   
-      <div class="table_wrap">
-       <form id="update_frm" method="post" th:action="@{/faq/update.do}">
-        <table class="table" border="1">
-          <thead class="table-li">
-            <tr>
-              <td>번호</td>
-              <td>카테고리</td>
-              <td>제목</td>
-              <td>답변내용</td>
-            </tr>
-          </thead>
-          <tbody>
-            <th:block th:each="a,vs:${adminList}">
-              <tr class="list">
-                <td th:text="${beginNo - vs.index}"></td>
-                <td><input type="text" name="faqName" th:value="${a.faqName}" size="4"></input></td>
-                <td><input type="text" name="faqTitle" th:value="${a.faqTitle}"></input></td>
-                <td><input type="text" name="faqContents" th:value="${a.faqContents}" ></span></td>
-                <td><span th:each="n:${#numbers.sequence(1, a.depth, 1)}" th:utext="|&nbsp;&nbsp;|"></span>
-                <td>
-                  <input type="hidden"  id="faqNo" name="faqNo" th:value="${a.faqNo}">  
-                  <button type="submit" id="modify_btn">수정</button>
-                  <button type="button" id="delete_btn">삭제</button>
-                </td>
-              </tr>
-            </th:block>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="4" th:utext="${paging}"></td>
-            </tr>
-          </tfoot>
-        </table>
-       </form>
-      </div>
-   
-   
+  <div class="table_wrap">
+   <form id="update_frm" method="post" th:action="@{/faq/update.do}">
+    <table class="table" border="1">
+      <thead class="table-li">
+        <tr>
+          <td>번호</td>
+          <td>카테고리</td>
+          <td>제목</td>
+          <td>답변내용</td>
+        </tr>
+      </thead>
+      <tbody>
+        <th:block th:each="a,vs:${adminList}">
+          <tr class="list">
+            <td th:text="${beginNo - vs.index}"></td>
+            <td><input type="text" name="faqName" th:value="${a.faqName}" size="4"></input></td>
+            <td><input type="text" name="faqTitle" th:value="${a.faqTitle}"></input></td>
+            <td><input type="text" name="faqContents" th:value="${a.faqContents}" ></span></td>
+           <td>
+              <input type="hidden"  id="faqNo" name="faqNo" th:value="${a.faqNo}">  
+              <button type="submit" id="modify_btn">수정</button>
+              <button type="button" id="delete_btn">삭제</button>
+            </td>
+          </tr>
+        </th:block>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" th:utext="${paging}"></td>
+        </tr>
+      </tfoot>
+    </table>
+   </form>
+  </div>
+    
+    
+    
    <script th:inline="javascript">
-    
-    const fnSelectCategory = () => {
-      var combinedSelect = document.getElementById("combinedSelect");
-      var faqCategoryNo = document.getElementById("faqCategoryNo");
-      var categoryNo = document.getElementById("categoryNo");
-
-     combinedSelect.addEventListener("change", function() {
-        var selectCtegory = combinedSelect.value;
-        console.log(selectCtegory)
-        if (selectCtegory) {
-            if (selectCtegory.startsWith("faq")) {
-                faqCategoryNo.value = selectCtegory.substring(3);
-                categoryNo.value = "0"; 
-            } else {
-                categoryNo.value = selectCtegory;
-                faqCategoryNo.value = "0"; 
-            }
-        } else {
-            faqCategoryNo.value = "0";
-            categoryNo.value = "0";
-        }
-     });  
-    }
-    
-     fnSelectCategory();
-   
-   </script>
-   
-   
-   
-   <script>
    
       const fnDelete = () => {
         $(document).on('click', '#delete_btn', function(){
-          var faqNo = $(this).find('.faqNo');
-          console.log(faqNo);
-          $.ajax({
+        var faqNo = $(this).closest('tr').find('[name="faqNo"]').val();
+        console.log(faqNo);
+        $.ajax({
             type: 'post',
             url: '/faq/delete.do',
-            data: faqNo,
+            data: {
+                "faqNo": faqNo
+            },
             dataType: 'json',
             success: (resData) => {  
-              alert('FAQ가 삭제되었습니다.')
+                alert('FAQ가 삭제되었습니다.')
+                 location.reload();
             }
           })
-        })
+       });
       };
-    fnDelete();
-    
+
+      fnDelete();
     
    </script>
 

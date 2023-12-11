@@ -1949,12 +1949,12 @@ progress {
 .table-primary {
   --bs-table-color: #fff;
   --bs-table-bg: #E0C891;
-  --bs-table-border-color: #93cebd;
-  --bs-table-striped-bg: #7fc5b1;
+  --bs-table-border-color: #E0C891;
+  --bs-table-striped-bg: #E0C891;
   --bs-table-striped-color: #fff;
-  --bs-table-active-bg: #86c8b5;
+  --bs-table-active-bg: #E0C891;
   --bs-table-active-color: #fff;
-  --bs-table-hover-bg: #82c7b3;
+  --bs-table-hover-bg: #E0C891;
   --bs-table-hover-color: #fff;
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);

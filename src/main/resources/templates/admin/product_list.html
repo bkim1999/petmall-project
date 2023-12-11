@@ -24,6 +24,7 @@ const fnGetProductDetailList = () => {
     // 응답
     dataType: 'json',
     success: (resData) => {  // resData = {"uploadList": [], "totalPage": 10}
+      $('#product_list').empty();
       if(resData.productList === null){
         alert(resData.message);
         return;
@@ -33,15 +34,16 @@ const fnGetProductDetailList = () => {
     	let str = '<tr>'
     	str += '<td class="product" data=product_no="'+product.productNo+'">'+product.productNo+'</td>';
         str += '<td>' + product.productName+'</td>';
+        str += '<td>' + product.productPrice+'</td>';
         str += '<td>' + product.categoryNo + '</td>';
         str += '<td class="bseq_ea">' + product.productCount + '</td>';
         str += '<td>'
-        str += '<input type="button" value=" - " onclick="fndel()">'
-        str += '<input type="text" class="amounts" value="'+product.productCount+'" readonly="readonly" style="text-align:center;"/>'
-        str += '<input type="button" value=" + " onclick="fnadd()">'
+        str += '<input type="hidden" value="'+product.productNo+'">'
+        str += '<input type="button" value="변경하기" class="editProduct btn btn-warning">'
         str += '</td>'
         str += '<td>'
-        str += '<input type="button" value="변경하기">'
+        str += '<input type="hidden" value="'+product.productNo+'">'
+        str += '<input type="button" value="삭제하기" class="removeProduct btn btn-warning">'
         str += '</td>'
         str += '</tr>'
         $('#product_list').append(str);
@@ -50,8 +52,89 @@ const fnGetProductDetailList = () => {
   })
 }
 
-
+  function fneditProduct () {
+    $(document).on('click', '.editProduct', function(ev){
+      let productNo = $(this).prev().val();
+      location.href = '/product/editProduct.form?productNo='+productNo;
+    })
+  }
+  
+  function fnserachProduct() {
+    $(document).on('click', '.searchText', function(ev) {
+      let searchText = $('.searchText').prev().val();
+        $.ajax({
+        // 요청
+        type: 'get',
+        url: '/admin/getlist.do',
+        data: {'categoryNo' : categoryNo,
+               'page' : page,
+               'order' : order,
+               'ascDesc' : ascDesc,
+               'searchText' : searchText
+              },
+        // 응답
+    success: (resData) => {  // resData = {"uploadList": [], "totalPage": 10}
+      $('#product_list').empty();
+      if(resData.productList === null){
+        alert(resData.message);
+        return;
+      }
+      totalPage = resData.totalPage;
+      $.each(resData.productList, (i, product) => {
+      let str = '<tr>'
+      str += '<td class="product" data=product_no="'+product.productNo+'">'+product.productNo+'</td>';
+        str += '<td>' + product.productName+'</td>';
+        str += '<td>' + product.productPrice+'</td>';
+        str += '<td>' + product.categoryNo + '</td>';
+        str += '<td class="bseq_ea">' + product.productCount + '</td>';
+        str += '<td>'
+        str += '<input type="hidden" value="'+product.productNo+'">'
+        str += '<input type="button" value="변경하기" class="editProduct btn btn-warning">'
+        str += '</td>'
+        str += '<td>'
+        str += '<input type="hidden" value="'+product.productNo+'">'
+        str += '<input type="button" value="삭제하기" class="removeProduct btn btn-warning">'
+        str += '</td>'
+        str += '</tr>'
+        $('#product_list').append(str);
+      })
+    }
+  })
+ })
+}
+   function fnsearchInit() {
+     $(document).on('click', '.searchInit', function(ev){
+       $('.search').val('');
+       fnGetProductDetailList();
+       
+     })
+   }
+   
+   function fnremoveProduct() {
+     $(document).on('click', '.removeProduct', function(ev){
+      let productNo = $(this).prev().val();
+      $.ajax({
+        // 요청
+        type: 'post',
+        url: '/product/removeProduct.do',
+        data: 'productNo=' + productNo,
+        // 응답
+        success: (resData) => {
+          alert('삭제에 성공했습니다.');
+          fnGetProductDetailList();
+        }
+     })
+   })
+  }
+   
+   
+   
+   
+   fnserachProduct();
+   fneditProduct();
    fnGetProductDetailList();
+   fnsearchInit();
+   fnremoveProduct();
    
 </script>
 
@@ -61,7 +144,10 @@ const fnGetProductDetailList = () => {
       text-align: center;
     }
     .table{
-      display:flex;
+      text-align: center;
+    }
+    
+    .nav_product_list {
       text-align: center;
     }
   </style>
@@ -70,33 +156,50 @@ const fnGetProductDetailList = () => {
   
   <div th:replace="~{/layout/header::header}"></div>
   
-  <div class="btn_admin">재고 관리 페이지에 오신것을 환영합니다.</div>
-  
-  <div>
-   <a th:href="@{/product/addProduct.form}">
-    <input type="button" value="제품추가하기">
-   </a>
+  <hr>
+  <div class="btn_admin">
+    <h1>Product 관리</h1>
   </div>
   
-  <div>
-    <a th:href="@{/admin/admin.go}"><input type="button" value="관리자페이지돌아가기"></a>
+  <hr>
+  
+  <div class="nav_product_list">
+   <a th:href="@{/product/addProduct.form}">
+    <input type="button" value="제품추가하기" class="btn btn-light">
+   </a>
+    <a th:href="@{/admin/admin.go}">
+      <input type="button" value="관리자페이지돌아가기" class="btn btn-dark">
+    </a>
   </div>
     
-  <div class="table">
-    <table border=1>
-     <thead>
+  <hr>
+  
+  <div>
+    <select>
+      <option>제품 이름</option>
+    </select>
+    <input type="text" name="searchText" placeholder="검색어 입력" class="search">
+    <input type="button" value="검색" class="btn btn-warning searchText">
+    <input type="button" value="검색 초기화" class="btn btn-warning searchInit">
+  </div>
+  
+  <hr>
+  
+  <div class="table_wrap">
+    <table border=1 class="table table-hover table_font">
+     <thead class="table-primary">
       <tr>
         <td>제품 번호</td>
         <td>제품 이름</td>
+        <td>제품 가격</td>
         <td>제품 카테고리</td>
         <td>재고 현황</td>
-        <td>제품 수량조절</td>
-        <td>수량 변경하기</td>
+        <td>제품 수정</td>
+        <td>제품 삭제</td>
       </tr>
      </thead>
-     <tbody id="product_list">
      
-     </tbody>
+     <tbody id="product_list"></tbody>
     </table>
   </div>
   

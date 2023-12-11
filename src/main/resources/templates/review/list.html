@@ -15,9 +15,12 @@
     min-height: 1000px;
   }
   .review{
-    height: 150px;
+    min-height: 160px;
     border-bottom: solid 1px gray;
     margin: 10px;
+  }
+  .review_info {
+    max-width: 685px;
   }
   .thumbnail {
     width: 150px;
@@ -27,6 +30,9 @@
   }
   .star {
     color: gold;
+  }
+  .expand:hover, .collapse:hover {
+    cursor: pointer;
   }
 </style>
 <body>
@@ -81,19 +87,26 @@
           if(review.reviewImageDto !== null){
             str += '<image class="thumbnail" src="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
           } else {
-            str += '<image class="thumbnail" src="image/cat1.png">';
+            str += '<image class="thumbnail" src="/image/no_image.png">';
           }
-          str += '<div>'
+          str += '<div class="review_info">'
           str += '  <h4 class="star">';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
           str += '  </h4>';
           str += '  <div>' + review.reviewModifiedAt + '</div>';
           str += '  <div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
           if(review.reviewTitle){
-            str += '  <h5 class="review_title">' + review.reviewTitle + '</h5>'
+            str += '  <h5 class="review_title mt-2">' + review.reviewTitle + '</h5>'
           }
           if(review.reviewContents){
-            str += '  <div class="review_contents">' + review.reviewContents + '</div>';
+            if(review.reviewContents.length > 80){
+              str += '  <div class="expand review_contents mt-2">' + (review.reviewContents).substring(0, 75) + '...</div>';
+              str += '  <div class="expand text-center">∨</div>'
+              str += '  <div class="collapse text-center d-none">∧</div>'
+              str += '  <div class="collapse text-center d-none">' + review.reviewContents + '</div>'
+            } else {
+              str += '  <div class="review_contents mt-2">' + review.reviewContents + '</div>';
+            }
           }
           str += '</div>'
           str += '<div class="ms-auto btn-group">';
@@ -104,11 +117,21 @@
           str += '    <input type="hidden" name="productName" value="' + review.productDto.productName + '">';
           str += '    <input type="hidden" name="optionNo" value="' + review.productOptionDto.optionNo + '">';
           str += '    <input type="hidden" name="optionName" value="' + review.productOptionDto.optionName + '">';
-          str += '    <input type="hidden" name="reviewTitle" value="' + review.reviewTitle + '">';
-          str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
           str += '    <input type="hidden" name="reviewRating" value="' + review.reviewRating + '">';
+          if(review.reviewTitle !== null){
+            str += '    <input type="hidden" name="reviewTitle" value="' + review.reviewTitle + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewTitle" value="">';
+          }
+          if(review.reviewContents !== null){
+            str += '    <input type="hidden" name="reviewContents" value="' + review.reviewContents + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewContents" value="">';
+          }
           if(review.reviewImageDto !== null){
             str += '    <input type="hidden" name="reviewImagePath" value="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '    <input type="hidden" name="reviewImagePath" value="">';
           }
           str += '    <button type="button" class="btn btn_edit_review">수정</button>';
           str += '    <button type="button" class="btn btn_remove_review">삭제</button>';
@@ -142,32 +165,30 @@
         }
         $.each(resData.notReviewedList, function(i, notReviewed){
           let str = '';
-          str += '<div class="review d-flex mt-3" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
-          str += '  <div class="thumbnail">';
+          str += '<div class="review mt-3 d-flex justify-content-start" data-option-no="' + notReviewed.productOptionDto.optionNo + '">';
           if(notReviewed.reviewImageDto !== null){
-            str += '    <image src="/' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
+            str += '<image class="thumbnail" src="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
           } else {
-            str += '<image class="thumbnail" src="/image/cat1.png">';
+            str += '<image class="thumbnail" src="/image/no_image.png">';
           }
-          str += '  </div>';
-          str += '  <div>';
-          str += '    <div>구매일자: ' + notReviewed.orderDate + '</div>';
-          str += '    <div>' + notReviewed.productDto.productName + '</div>';
-          str += '    <div>옵션: ' + notReviewed.productOptionDto.optionName + '</div>';
-          str += '  </div>'
-          str += '  <div>'
-          str += '    <form method="post" action="/review/addReview.form">';
-          str += '      <input type="hidden" name="userNo" value="' + userNo + '">';
-          str += '      <input type="hidden" name="productNo" value="' + notReviewed.productDto.productNo + '">';
-          str += '      <input type="hidden" name="productName" value="' + notReviewed.productDto.productName + '">';
-          str += '      <input type="hidden" name="optionNo" value="' + notReviewed.productOptionDto.optionNo + '">';
-          str += '      <input type="hidden" name="optionName" value="' + notReviewed.productOptionDto.optionName + '">';
+          str += '<div>';
+          str += '  <div>구매일자: ' + notReviewed.orderDate + '</div>';
+          str += '  <h4 class="mt-3">' + notReviewed.productDto.productName + '</h4>';
+          str += '  <div>옵션: ' + notReviewed.productOptionDto.optionName + '</div>';
+          str += '</div>'
+          str += '<div class="ms-auto">'
+          str += '  <form method="post" action="/review/addReview.form">';
+          str += '    <input type="hidden" name="userNo" value="' + userNo + '">';
+          str += '    <input type="hidden" name="productNo" value="' + notReviewed.productDto.productNo + '">';
+          str += '    <input type="hidden" name="productName" value="' + notReviewed.productDto.productName + '">';
+          str += '    <input type="hidden" name="optionNo" value="' + notReviewed.productOptionDto.optionNo + '">';
+          str += '    <input type="hidden" name="optionName" value="' + notReviewed.productOptionDto.optionName + '">';
           if(notReviewed.reviewImageDto !== null){
             str += '      <input type="hidden" name="productImagePath" value="' + notReviewed.reviewImageDto.path + '/' + notReviewed.reviewImageDto.filesystemName + '">';
           }
-          str += '      <button type="submit" class="btn_add_review_form btn" id="btn_add_review">리뷰 작성</button>';
-          str += '    </form>'
-          str += '  </div>'
+          str += '    <button type="submit" class="btn_add_review_form btn ms-auto" id="btn_add_review">리뷰 작성</button>';
+          str += '  </form>'
+          str += '</div>'
           str += '</div>';
           $('#review_list').append(str);
         });
@@ -196,9 +217,19 @@
     })
   }
   
+  function fnExpand(){
+    $(document).on('click', '.expand', function(){
+      console.log('dd')
+      $(this).addClass('d-none');
+      $(this).siblings('.expand').addClass('d-none');
+      $(this).siblings('.collapse').removeClass('d-none');
+    })
+  }
+  
   fnToggleList();
   fnGetReviewList();
   fnRemoveReview();
   fnEditReview();
-
+  fnExpand();
+  
 </script>

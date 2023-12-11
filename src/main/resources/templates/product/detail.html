@@ -110,6 +110,11 @@
     padding: 30px;
     width: 100%;
   }
+  .review_image{
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
 </style>
 <body>
   <div th:replace="~{layout/header :: header}"></div>
@@ -117,7 +122,7 @@
     <div id="slideshow" class="carousel slide me-5 d-flex align-items-center" data-bs-ride="carousel">
       <div id="product_images" class="carousel-inner">
         <div class="carousel-item active" th:if="${#lists.isEmpty(imageList)}">
-          <img class="d-block w-100" alt="아직 사진이 없습니다.">
+          <img class="d-block w-100" th:src="@{/image/no_image.png}">
         </div>
         <th:block th:if="${not #lists.isEmpty(imageList)}">
           <th:block th:each="image, imageStat : ${imageList}">
@@ -197,6 +202,13 @@
         <button type="button" id="btn_add_cart" class="btn btn-light btn-lg">장바구니 담기</button>
         <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
       </div>
+      <th:block th:if="${session.user} != null">
+        <form th:if="${session.user.adminAuthorState == 1}" id="frm_edit_remove_product">
+          <input type="hidden" name="productNo" th:value="${product.productNo}">
+          <button type="button" id="btn_edit_product" class="btn btn-light btn-lg">수정</button>
+          <button type="button" id="btn_remove_product" class="btn btn-success btn-lg">삭제</button>
+        </form>
+      </th:block>
     </div>
   </div>
   <div id="product_contents" th:utext="${product.productContents}"></div>
@@ -206,8 +218,9 @@
       <th:block th:if="${product.productRating != 0}">
         이 상품의 평점: 
         <span id="average_rating">
-          <strong class="star">
-            <th:block th:each="num:${#numbers.sequence(1, product.productRating)}">★</th:block><th:block th:if="${productRating < 5}" th:each="num:${#numbers.sequence(product.productRating + 1, 5)}">☆</th:block>
+          <strong class="star" th:each="num:${#numbers.sequence(1, 5)}">
+            <th:block th:if="${num} <= ${product.productRating}" class="star">★</th:block>
+            <th:block th:if="${num} > ${product.productRating}" class="star">☆</th:block>
           </strong>
           <span th:text="${#numbers.formatDecimal(product.productRating, 1, 1)}"></span>
         </span>
@@ -369,30 +382,55 @@
           return;
         }
         $.each(resData.reviewList, (i, review) => {
-          let str = '<div class="review" data-review-no="' + review.reviewNo + '">';
-          str += '<h4 class="star">';
+          let str = '<div class="review d-flex" data-review-no="' + review.reviewNo + '">';
+          str += '<div>'
+          str += '  <h4 class="star">';
           str += '★'.repeat(review.reviewRating) + '☆'.repeat(5 - review.reviewRating);
-          str += '</h4>';
-          str += '<div>' + review.userDto.name + '  ' + review.reviewModifiedAt + '</div>';
-          str += '<div>상품명: ' + productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
-          str += '<div class="d-flex">'
-          str += '  <div class="w-100">'
-          str += '    <h5 class="review_title">' + review.reviewTitle + '</h5>'
-          str += '    <div class="review_contents">' + review.reviewContents + '</div>';
-          str += '  </div>'
-          str += '  <div class="review_thumbnail">';
-          if(review.reviewImageDto !== null){
-            str += '    <image src="/' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
-          } else {
-            str += '    <image src="기본이미지">';
+          str += '  </h4>';
+          str += '  <div>' + review.userDto.name + '  ' + review.reviewModifiedAt + '</div>';
+          str += '  <div>상품명: ' + productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
+          if(review.reviewTitle !== null){
+            str += '  <h5 class="review_title mt-2">' + review.reviewTitle + '</h5>'
           }
-          str += '  </div>';
+          if(review.reviewContents !== null){
+            str += '  <div class="review_contents">' + review.reviewContents + '</div>';
+          }
+          str += '</div>'
+          if(review.reviewImageDto !== null){
+            str += '<image class="review_image ms-auto" src="' + review.reviewImageDto.path + '/' + review.reviewImageDto.filesystemName + '">';
+          } else {
+            str += '<image class="review_image ms-auto" src="/image/no_image.png">';
+          }
           str += '</div>';
           $('#review_list').append(str);
         });
         $('#review_list').append(resData.paging);
       }
     })
+  }
+  
+  function fnEditProduct(){
+    $(document).on('click', '#btn_edit_product', function(){
+      if(!confirm('이 제품을 수정하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'get');
+      $(form).attr('action', '/product/editProduct.form');
+      $(form).submit();
+    });
+  }
+  
+  function fnRemoveProduct(){
+    $(document).on('click', '#btn_remove_product', function(){
+      if(!confirm('이 제품을 삭제하시겠습니까?')){
+        return;
+      }
+      let form = $(this).parents('form');
+      $(form).attr('method', 'post');
+      $(form).attr('action', '/product/removeProduct.do');
+      $(form).submit();
+    });
   }
   
   fnAddOption();
@@ -402,5 +440,7 @@
   fnUpdateTotalPrice();
   fnAddCartOrder();
   fnGetReviewList();
+  fnEditProduct();
+  fnRemoveProduct();
   
 </script>
