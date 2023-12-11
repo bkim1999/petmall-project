@@ -96,7 +96,7 @@
                   <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" >-</button>
                   <input  type="hidden" class="minus_cartcount" name="count" th:value="${c.count}"></input>
                 </span>                                   
-                <input type="text"   name=""         class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
+                <input type="text"   name=""         class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0)}" size="7"  readonly>
                 <input type="hidden" name="userNo"   class="" th:value="${c.userDto.userNo}">
                 <input type="hidden" name="productNo"class="productNo" th:value="${c.productDto.productNo}"size="3" >
                 <input type="hidden" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
@@ -106,6 +106,7 @@
           </th:block>
         </tbody>
         </table>
+                <button type="submit" name=""         class="btn_all_delete btn btn-danger">전체삭제</button>
       </form>
      </div> 
   <hr>
@@ -149,6 +150,8 @@
  
 
 <script th:inline="javascript">
+   
+   
    
    
    $(document).ready(function(){
@@ -202,6 +205,8 @@
 </script>
 
 <script th:inline="javascript">
+  
+   
           
   const fnMinusCount = () => {
     $(document).on('click', '.minus_btn', function(ev){
@@ -283,6 +288,39 @@
   fnPlusCount();
   fnDeleteCart();
   fnMinusCount();
+  
+  const fnAllDeleteCart = () => {
+      $(document).on('click', '.btn_all_delete', function (ev) {
+        if (!confirm('상품을 삭제할까요?')) {
+            return; 
+        }
+           var optionNos = [];
+        $('.cart_info_td').each(function () {
+            var optionNo = $(this).find('.delete_optionNo').val();
+            optionNos.push(optionNo);
+        });
+
+        console.log(optionNos);
+
+        $.ajax({
+            type: 'post',
+            url: '/order/deleteAll.do',
+            data: { optionNos: optionNos },
+            dataType: 'json',
+            success: function (resData) {
+                if (resData.removeResult === '0') {
+                    alert('상품 삭제를 취소합니다.');
+                } else {
+                    alert('전체 상품이 삭제되었습니다.');
+                }
+                location.reload();
+            },
+        });
+    });
+};
+  
+  
+  fnAllDeleteCart();
 </script>
 
 

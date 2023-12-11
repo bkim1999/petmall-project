@@ -15,7 +15,7 @@ public interface CartService {
   public Map<String, Object> deleteCart(HttpServletRequest request);
   public Map<String, Object> minusCart(HttpServletRequest request);
   public Map<String, Object> plusCart(HttpServletRequest request);                                   
-  
+  public Map<String, Object> deleteAllCart(CartOptionListDto cartList,HttpServletRequest request);
  
  
 }

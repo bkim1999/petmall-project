@@ -146,6 +146,36 @@ public class CartServiceImpl implements CartService {
     return Map.of("plusResult", plusResult);
   }
 
-  
-
+  @Override
+  public Map<String, Object> deleteAllCart(CartOptionListDto cartList, HttpServletRequest request) {
+    
+    List<CartDto> deleteAll = new ArrayList<>();
+    
+    for(CartDto cartDto : cartList.getCartList()) {
+      int userNo = cartDto.getUserDto().getUserNo();
+      int optionNo = cartDto.getProductOptionDto().getOptionNo();
+      int count = cartDto.getCount();
+      
+          CartDto cart = CartDto.builder()
+                                .userDto(UserDto.builder().userNo(userNo).build())
+                                .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+                                .count(count)
+                                .build();
+    
+          deleteAll.add(cart);
+          Map<String, Object> map = new HashMap<>();
+          map.put("userNo", userNo);
+          map.put("optionNo", optionNo);
+      }
+    
+    
+    int daleteAllCartListResult = cartMapper.deleteAllCart(deleteAll);
+   
+   
+    
+   return Map.of ("daleteAllCartListResult", daleteAllCartListResult);
+    
+  }
+    
+    
 }

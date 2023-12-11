@@ -51,7 +51,7 @@ public class FaqController {
   @GetMapping(value="/faq/search.do")
   public String search(HttpServletRequest request, Model model) {
     faqService.getSearchList(request, model);
-    System.out.println("서치" + request.getParameter("FAQ_CONTENTS"));
+    System.out.println("서치" + request.getParameter(""));
     System.out.println("FAQ카테고리 리스트: " + model);
     model.addAttribute("customerFaqCategoryList", faqService.getloadFaqCategoryList());
     return "faq/list";
