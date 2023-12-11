@@ -15,36 +15,40 @@
       background-color: #E0C891;
     }
     .admin_list_wrap {
-      width: 1500px;
+      width: 100%;
       height: 300px;
-      margin-top: 150px;
       display: flex;
       justify-content: space-between;
       text-align: center;
+      font-size: 15px;
     }
     .user_wrap {
       width: 200px;
       height: 100px;
       background-color: #E0C891;
       line-height: 40px;
-      border-radius: 20px;
-      color: white;
+      color: black;
     }
     .qna_wrap {
       width: 200px;
       height: 100px;
       background-color: #E0C891;
       line-height: 40px;
-      border-radius: 20px;
-      color: white;
+      color: black;
     }
     .event_wrap {
       width: 200px;
       height: 100px;
       background-color: #E0C891;
       line-height: 40px;
-      border-radius: 20px;
-      color: white;
+      color: black;
+    }
+    .pay_wrap {
+      width: 200px;
+      height: 100px;
+      background-color: #E0C891;
+      line-height: 40px;
+      color: black;
     }
     .coment {
       text-align: center;
@@ -52,31 +56,48 @@
     .nava_wrap {
       display: flex;
       justify-content: space-between;
-      margin-left: 160px;
       color: white;
+      width: 30%;
+      text-align: center;
     }
     .nava_list {
       color: white;
+      margin: auto;
     }
     a {
       color: white;
+      text-align: center;
+    }
+    .nav_wrap, .ul_wrap {
+      width: 100%;
+    }
+    .big_wrap {
+      width: 1000px;
+      margin: auto;
+      padding-top: 50px;
+    }
+    .line_nav {
+      text-align: center;
+      margin-top: 40px;
     }
   </style>
 <body>
   
     <div th:replace="~{/layout/header::header}"></div>
 
-  <div class="btn_admin">관리자 페이지에 오신것을 환영합니다.</div>
+
+ <div class="big_wrap">
+  <h1 class="btn_admin">관리자 페이지</h1>
+  <hr>
   
-  
-  <nav class="navbar navbar-expand-lg bg-light " data-bs-theme="light">
+  <nav class="navbar navbar-expand-lg bg-light line_nav" data-bs-theme="light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     
-    <div class="collapse navbar-collapse" id="navbarColor03">
-      <ul class="navbar-nav me-auto">
+    <div class="collapse navbar-collapse nav_wrap" id="navbarColor03">
+      <ul class="navbar-nav me-auto ul_wrap">
         <li class="nav-item nava_wrap">
           <a class="nav-link active nava_list" th:href="@{/admin/event_list.go}">이벤트 관리
             <span class="visually-hidden">(current)</span>
@@ -93,12 +114,12 @@
           </a>
         </li>
         <li class="nav-item nava_wrap">
-          <a class="nav-link active nava_list" th:href="@{/main.do}">주문현황 관리
+          <a class="nav-link active nava_list" th:href="@{/admin/user_list.go}">유저현황 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item nava_wrap">
-          <a class="nav-link active nava_list" th:href="@{/admin/user_list.go}">유저현황 관리
+          <a class="nav-link active nava_list" th:href="@{/faq/write.do}">FAQ 관리
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
@@ -111,7 +132,7 @@
    <hr>
    
    <div class="coment">
-     <h1 th:text="|${session.user.name}님 환영합니다 관리자페이지에 방문해주셔서 감사합니다.|"></h1>
+     <h4 th:text="|${session.user.name}님 환영합니다.|"></h4>
    </div>
    
    <hr>
@@ -132,20 +153,14 @@
      </div>
      
      <div>
-       <div>
-         <p></p>
-         <p>매출 현황</p>
-       </div>
-     </div>
-       
-     <div>
        <div class="event_wrap">
          <p class="totalEventCount"></p>
-         <p>이벤트 진행갯수</p>
+         <p>이벤트 진행 수</p>
        </div>
      </div>
 
    </div>
+ </div>
    
    <div th:replace="~{/layout/footer::footer}"></div>
    

@@ -5,14 +5,12 @@
 
 <style>
   .answerWrap {
-    width: 1500px;
+    width: 100%;
     height: 50px;
     display: flex;
     font-size: 30px;
     line-height: 50px;
     justify-content: space-between;
-    padding-left: 310px;
-    padding-right: 250px;
     margin-bottom: 30px;
     margin-top: 30px;
     position: relative;
@@ -24,12 +22,41 @@
     text-align: center;
   }
   
+  .big_wrap {
+    width: 1000px;
+    margin:auto;
+  }
+  .table > :not(caption) > * > * {
+    padding: 0rem;
+    padding-top:  5px;
+    font-size: 13px;
+    text-align: center;
+    border: 1px solid gray;
+    line-height: 30px;
+    
+  }
+  
+  .pwinit {
+    width: 95px;
+    font-size: 10px;
+  }
+  
+  .changeagree, .changedeagree {
+    width: 95px;
+    font-size: 10px;
+  }
+  
+  .adminTake, .normalTake {
+    width: 95px;
+    font-size: 10px;
+  }
 </style>
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
-
+  
+  <div class="big_wrap">
   <hr>
   <div class="nav_qna_list">
     <h1>USER 관리</h1>
@@ -83,7 +110,7 @@
     <tbody id="user_list"></tbody>
   </table>
   </div>
-  
+  </div>
  <script th:inline="javascript">
   function fnAnswer() {
   	$(document).on('click', '#btn_answer', function(ev){
@@ -124,7 +151,6 @@
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
           str1 += '<option value="NAME">이름</option>';
-          str1 += '<option value="ADMIN_AUTHOR_STATE">관리자</option>'
           str1 += '</select>';
           str1 += '<input type="text" name ="query" placeholder="검색어입력" >';
           str1 += '<input type="button" value="검색" class="btn btn-warning search">'
@@ -363,7 +389,6 @@
           str1 += '<select name="column">';
           str1 += '<option value="EMAIL">이메일</option>';
           str1 += '<option value="NAME">이름</option>';
-          str1 += '<option value="ADMIN_AUTHOR_STATE">관리자</option>'
           str1 += '</select>';
           str1 += '<input type="text" name ="query" placeholder="검색어입력">';
           str1 += '<input type="button" value="검색" class="btn btn-warning search">'
@@ -744,7 +769,7 @@
      }
      
      $.ajax({
-       type : "post",
+       type : 'post',
         url : '/admin/changeList.do',
         data : {'email' : email},
         dataType: "json",

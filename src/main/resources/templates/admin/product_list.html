@@ -35,7 +35,6 @@ const fnGetProductDetailList = () => {
     	str += '<td class="product" data=product_no="'+product.productNo+'">'+product.productNo+'</td>';
         str += '<td>' + product.productName+'</td>';
         str += '<td>' + product.productPrice+'</td>';
-        str += '<td>' + product.categoryNo + '</td>';
         str += '<td class="bseq_ea">' + product.productCount + '</td>';
         str += '<td>'
         str += '<input type="hidden" value="'+product.productNo+'">'
@@ -85,7 +84,6 @@ const fnGetProductDetailList = () => {
       str += '<td class="product" data=product_no="'+product.productNo+'">'+product.productNo+'</td>';
         str += '<td>' + product.productName+'</td>';
         str += '<td>' + product.productPrice+'</td>';
-        str += '<td>' + product.categoryNo + '</td>';
         str += '<td class="bseq_ea">' + product.productCount + '</td>';
         str += '<td>'
         str += '<input type="hidden" value="'+product.productNo+'">'
@@ -120,6 +118,9 @@ const fnGetProductDetailList = () => {
         data: 'productNo=' + productNo,
         // 응답
         success: (resData) => {
+          if(!confirm('해당 물품을 삭제시키겠습니까?')){
+            return;
+          }
           alert('삭제에 성공했습니다.');
           fnGetProductDetailList();
         }
@@ -150,12 +151,17 @@ const fnGetProductDetailList = () => {
     .nav_product_list {
       text-align: center;
     }
+    .big_wrap {
+      width: 1000px;
+      margin: auto;
+    }
   </style>
 
 <body>
   
   <div th:replace="~{/layout/header::header}"></div>
   
+  <div class="big_wrap">
   <hr>
   <div class="btn_admin">
     <h1>Product 관리</h1>
@@ -192,7 +198,6 @@ const fnGetProductDetailList = () => {
         <td>제품 번호</td>
         <td>제품 이름</td>
         <td>제품 가격</td>
-        <td>제품 카테고리</td>
         <td>재고 현황</td>
         <td>제품 수정</td>
         <td>제품 삭제</td>
@@ -202,7 +207,7 @@ const fnGetProductDetailList = () => {
      <tbody id="product_list"></tbody>
     </table>
   </div>
-  
+  </div>
 
 
    

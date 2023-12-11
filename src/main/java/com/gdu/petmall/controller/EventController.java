@@ -59,7 +59,7 @@ public class EventController {
                       ,  RedirectAttributes redirectAttributes
                       ,  HttpServletRequest request) throws  Exception{
     eventService.addEvent(multiparRequest, redirectAttributes, request);
-    return "redirect:/event/list.do";
+    return "redirect:/admin/event_list.go";
   }
   
   @ResponseBody

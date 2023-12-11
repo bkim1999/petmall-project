@@ -4,6 +4,11 @@
 <head th:replace="~{/layout/header::head('이벤트작성게시판')}"></head>
 
 <style>
+  
+  body {
+    background-color: rgb(183,175,163);
+  }
+  
   .ck.ck-editor {
     max-width: 1200px;
   }
@@ -28,9 +33,14 @@
     background-color: rgb(183,175,163);
     text-align: center;
     color: #fff;
+    width: 1000px;
+    margin: auto;
   }
   hr {
     margin-bottom: 0;
+  }
+  #title {
+    font-size: 20px;
   }
 </style>
 
@@ -39,13 +49,14 @@
   <div th:replace="~{/layout/header::header}"></div>
 
   <div class="event_add_wrap">
-  <h1 style="color: #fff;">EVENT 추가하기</h1>
+  <h1 style="color: #fff;">EVENT 추가</h1>
   <hr>
   
   <div>
     <form id="frm_event_write" action="/event/addevent.do" method="post" enctype="multipart/form-data">
       <div>
         <label for="title">제목</label>
+        <br>
         <input type="text" name="title" id="title">
       </div>
       
