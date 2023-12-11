@@ -84,10 +84,10 @@ public class ProductServiceImpl implements ProductService {
     String order = opt.orElse("PRODUCT_SALES");
     
     // 카테고리번호, 순서, 페이지 시작/끝 map에 저장
-    map = Map.of("categoryNo", categoryNo
-                                   , "order", order
-                                   , "begin", begin
-                                   , "end", end);
+    map.put("order", order);
+    map.put("searchText", searchText);
+    map.put("begin", begin);
+    map.put("end", end);
     
     // 상품 목록 DB에 요청(map 전달)
     List<ProductDto> productList = productMapper.getProductList(map);

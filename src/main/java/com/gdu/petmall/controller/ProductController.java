@@ -1,6 +1,7 @@
 package com.gdu.petmall.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +29,10 @@ public class ProductController {
   private final ProductService productService;
   
   @GetMapping(value="/list.do")
-  public String list() {
+  public String list(HttpServletRequest request, Model model) {
+    Optional<String> opt = Optional.ofNullable(request.getParameter("categoryNo"));
+    int categoryNo = Integer.parseInt(opt.orElse("0"));
+    model.addAttribute("categoryNo", categoryNo);
     return "/product/list";
   }
   

@@ -12,7 +12,7 @@
   }
   #review_list {
     margin: 50px auto;
-    min-height: 1000px;
+    min-height: 500px;
   }
   .review{
     min-height: 160px;
@@ -21,6 +21,10 @@
   }
   .review_info {
     max-width: 685px;
+    height: auto;
+  }
+  .review_title {
+    height: auto;
   }
   .thumbnail {
     width: 150px;
@@ -96,17 +100,10 @@
           str += '  <div>' + review.reviewModifiedAt + '</div>';
           str += '  <div>상품명: ' + review.productDto.productName + ' / 옵션: ' + review.productOptionDto.optionName + '</div>';
           if(review.reviewTitle){
-            str += '  <h5 class="review_title mt-2">' + review.reviewTitle + '</h5>'
+            str += '  <h5 class="review_title mt-2 text-break">' + review.reviewTitle + '</h5>'
           }
           if(review.reviewContents){
-            if(review.reviewContents.length > 80){
-              str += '  <div class="expand review_contents mt-2">' + (review.reviewContents).substring(0, 75) + '...</div>';
-              str += '  <div class="expand text-center">∨</div>'
-              str += '  <div class="collapse text-center d-none">∧</div>'
-              str += '  <div class="collapse text-center d-none">' + review.reviewContents + '</div>'
-            } else {
-              str += '  <div class="review_contents mt-2">' + review.reviewContents + '</div>';
-            }
+            str += '  <div class="review_contents mt-2 text-wrap text-break">' + review.reviewContents + '</div>';
           }
           str += '</div>'
           str += '<div class="ms-auto btn-group">';
