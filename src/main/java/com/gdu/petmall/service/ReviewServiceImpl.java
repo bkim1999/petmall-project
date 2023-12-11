@@ -107,7 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
         , "end", myPageUtils.getEnd());
     
     List<ReviewDto> notReviewedList = reviewMapper.getNotReviewedList(map);
-    System.out.println("here!!!: " + notReviewedList);
+    
     return Map.of("notReviewedList", notReviewedList
         , "paging", myPageUtils.getAjaxPaging());
   }
@@ -137,8 +137,10 @@ public class ReviewServiceImpl implements ReviewService {
     
     String imagePath = myFileUtils.getProductImagePath();
     MultipartFile reviewImageMulti = multipartRequest.getFile("review_image");
-    
-    if(reviewImageMulti != null && !reviewImageMulti.isEmpty()) {
+    if(reviewImageMulti.getSize() == 0) {
+      addReviewImageResult = 1;
+    }
+    else if(reviewImageMulti != null && !reviewImageMulti.isEmpty()) {
       // 리뷰 이미지 추가
       String filesystemName = myFileUtils.getFilesystemName(reviewImageMulti.getOriginalFilename());
       File reviewImageFile = new File(imagePath, filesystemName);
