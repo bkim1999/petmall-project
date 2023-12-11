@@ -45,7 +45,7 @@ public class QnaController {
                 , RedirectAttributes redirectAttributes) throws Exception{
     boolean addResult = qnaService.addQna(multipartRequest);
     redirectAttributes.addFlashAttribute("addResult", addResult);
-    return "redirect:/qna/list.do";
+    return "redirect:/user/myPostList";
   }
   
   // 내가 작성한 Q&A 전체 목록으로 이동
@@ -73,7 +73,7 @@ public class QnaController {
 		  				,HttpServletRequest request, RedirectAttributes redirectAttributes ) throws Exception {
       int addReplyResult = qnaService.addReply(request, redirectAttributes);
       redirectAttributes.addFlashAttribute("addReplyResult", addReplyResult);
-      return "redirect:/user/myPostList";
+      return "redirect:/admin/qna_list.go";
   }
   
   // Q&A문의글 상세보기 
