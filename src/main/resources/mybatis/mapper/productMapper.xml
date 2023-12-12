@@ -218,4 +218,10 @@
      WHERE PRODUCT_NO = #{productNo}
   </update>
   
+  <select id="getProductImageInYesterday" resultType="ProductImageDto">
+    SELECT IMAGE_CODE, POSITION, PATH, FILESYSTEM_NAME
+      FROM PRODUCT_IMAGE_T
+     WHERE PATH LIKE '%' || TO_CHAR(SYSDATE - 1,'YYYY/MM/DD') ||'%'
+  </select>
+  
 </mapper>
