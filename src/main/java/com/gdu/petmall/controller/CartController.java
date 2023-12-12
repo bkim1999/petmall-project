@@ -44,12 +44,12 @@ public class CartController {
     return "redirect:/order/cart.go"; 
   }
   
+  
+  
   @ResponseBody
   @PostMapping(value="/order/delete.do", produces="application/json")
   public Map<String, Object> deleteCart(HttpServletRequest request) {
-   System.out.println("delete:" + request.getParameter("optionNo"));
-    System.out.println("delete:" + request.getParameter("userNo"));
-    return cartService.deleteCart(request);
+   return cartService.deleteCart(request);
   }
   
   @ResponseBody
@@ -65,8 +65,6 @@ public class CartController {
     System.out.println("plusrequest:" + request.getParameter("count"));
     return cartService.plusCart(request);
   }
-  
-  
   
 
 }
