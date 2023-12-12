@@ -5,121 +5,7 @@
 
 <style>
   
-  #main_title {
-    text-align: center;
-    font-size: 100px;
-  }
-  
-  
-  
-  .input-group {
-   padding-left: 840px;
-  }
-  
-  .blind_text{
-    text-align: right;
-   
-  }
-  
-  .text-center {
-    padding-right: 800px;
-  }
-  
-  #wrap_box {
-    padding-left: 550px; 
-    
-  }
-  
-  
-  #all_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-   
-   
-    
-  }
-  
-  #pay_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
-  #delivery_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
-  #cancell_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
-  #exchange_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
-  
-  #etc_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
-  
-  #category_box {
-    width:100px;
-    height: 100px;
-    border: 1px solid grey;
-    float: left;
-    margin: 19px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-right : auto;
-    padding-top: 38px;
-    box-sizing: border-box;
-  }
+ 
   .blind_text {
     
     display: none;
@@ -128,11 +14,101 @@
 
   }
   
-  .table_wrap {
-    padding-left:450px;
-    padding-right: 200px;
-   
+  #serch_btn {
+    
   }
+  
+   body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .blind_text {
+      display: none;
+      font-size: 14px;
+      white-space: pre-wrap;
+     
+    }
+
+    .main_wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #main_title {
+      text-align: center;
+    }
+
+    .wrap_9 {
+      text-align: center;
+    }
+
+    #wrap_box {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #wrap_box div {
+      margin: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    #category_box {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    #getFaqCategoryList {
+      margin-left: 10px;
+      height: 25px;
+    }
+
+    .table_wrap {
+      margin-top: 20px;
+    }
+
+    table {
+      width: 1000px;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .click_title {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    .table-li {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tfoot {
+      background-color: #f2f2f2;
+    }
+
+    .btn-outline-primary {
+      margin-left: 10px;
+    }
   
   
 </style>
@@ -141,24 +117,24 @@
   
   <div th:replace="~{/layout/header::header}"></div>
   
-  <H3 id="main_title">FAQ</H3>
+  <H3 id="main_title" style="font-size: 80px;">FAQ</H3>
   
   <div class="main_wrap">
 
     <div class="wrap wrap_9">
     
-      <div class="text-center">
+      <div class="text-center d-flex justify-content-center">
         <form method="get" th:action="@{/faq/search.do}">
           <div class="input-group mb-3">
             <input type="hidden" name="column" class="form-control" th:value="FAQ_TITLE">
             <input type="hidden" name="column" class="form-control" th:value="FAQ_NAME">
             <input type="hidden" name="column" class="form-control" th:value="FAQ_CONTENTS">
             <input type="text" id="searchInput" name="query" class="" placeholder="검색어 입력">
-            <button type="submit" class="btn btn-outline-primary btn-sm">검색</button>
+            <button type="submit" id="serch_btn" class="btn btn-outline-primary btn-sm">검색</button>
           </div>
           </div>
           <div id="wrap_box">
-            <div id="all_box" onclick="location.href=''">전체</div>
+            <div id="all_box"><a th:href="@{/faq/list.do}">전체</a></div>
             <div id="pay_box" onclick="fnChoiceCategory('주문/결제')">주문/결제</div>
             <div id="delivery_box" onclick="fnChoiceCategory('배송')">배송</div>
             <div id="cancell_box" onclick="fnChoiceCategory('배송 전 취소/변경')">배송전/취소변경</div>
@@ -174,11 +150,11 @@
             </div>
            </div>   
           <div class="table_wrap">
-            <table class="table" border="1" style="width: 1100px;">
+            <table class="table" border="1">
               <thead class="table-li">
                 <tr>
-                  <td style="width: 90px;">번호</td>
-                  <td style="width: auto;">카테고리</td>
+                  <td>번호</td>
+                  <td>카테고리</td>
                   <td>질문내용</td>
                 </tr>
               </thead>
@@ -189,14 +165,16 @@
                     <td><span th:text="${faq.faqName}"></span></td>
                     <td><span class="click_title" th:text="${faq.faqTitle}"></span></td>
                   </tr>
-                  <tr>
-                      <td class="blind_text"th:text="${faq.faqContents}"></td>
+                  <tr >
+                    <td colspan="1"></td>
+                    <td></td>
+                    <td class="blind_text" colspan="3" th:text="${faq.faqContents}"></td>
                   </tr>
                 </th:block>
               </tbody>
               <tfoot>
                 <tr>
-                  <td style="height: 300px;" colspan="4" th:utext="${paging}"></td>
+                  <td style="height: 300px;" colspan="3" th:utext="${paging}"></td>
                 </tr>
               </tfoot>
             </table>
@@ -244,6 +222,8 @@
                       str += '<td><span class="click_title">'+ cList.faqTitle + '</span></td>';
                       str += '</tr>';
                       str += '<tr>';
+                      str += '<td colspan="1"></td>'
+                      str += '<td></td>'      
                       str += '<td class="blind_text">'+ cList.faqContents + '</td>'; 
                       str += '</tr>';
                       $('.category_list').append(str)
@@ -273,6 +253,8 @@
                       str += '<td><span class="click_title">'+ cList.faqTitle + '</span></td>';
                       str += '</tr>';
                       str += '<tr>';
+                      str += '<td colspan="1"></td>'
+                      str += '<td></td>'       
                       str += '<td class="blind_text">'+ cList.faqContents + '</td>'; 
                       str += '</tr>';
                       $('.category_list').append(str)

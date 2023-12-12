@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gdu.petmall.dto.CategoryDto;
 import com.gdu.petmall.dto.FaqCategoryDto;
 import com.gdu.petmall.dto.FaqDto;
 
@@ -29,6 +28,10 @@ public interface FaqMapper {
   
   public List<FaqDto> getSearchCategoryList(Map<String, Object> map);
   public List<FaqDto> getSearchList(Map<String, Object> map);
+  public List<FaqDto> getSearchNameList(Map<String, Object> map);
+  public List<FaqDto> getSearchTitleList(Map<String, Object> map);
+  public List<FaqDto> getSearchContentsList(Map<String, Object> map);
+  
   
   
  

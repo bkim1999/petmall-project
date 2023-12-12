@@ -99,8 +99,15 @@ public class FaqServiceImpl implements FaqService {
     map.put("end", myPageUtils.getEnd());
    
     List<FaqDto> faqList = faqMapper.getSearchList(map);
+    List<FaqDto> getSearchNameList = faqMapper.getSearchNameList(map);
+    List<FaqDto> getSearchTitleList = faqMapper.getSearchTitleList(map);
     List<FaqCategoryDto> categoryfaqList = faqMapper.getFaqCategoryList();
+    List<FaqDto> getSearchContentsList = faqMapper.getSearchContentsList(map);
     
+    
+    model.addAttribute("getSearchContentsList", getSearchContentsList);
+    model.addAttribute("getSearchTitleList", getSearchTitleList);
+    model.addAttribute("getSearchNameList", getSearchNameList);
     model.addAttribute("categoryfaqList", categoryfaqList);
     model.addAttribute("faqList", faqList);
     model.addAttribute("paging", myPageUtils.getMvcPaging(request.getContextPath() + "/faq/search.do","column=" + column + "&query"));

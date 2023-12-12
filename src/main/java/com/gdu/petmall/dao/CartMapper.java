@@ -22,6 +22,5 @@ public interface CartMapper {
   // 카트 수량 수정
   public int updateCart(Map<String, Object> map);
   
-  public int deleteAllCart(List<CartDto> deleteAll);
   
 }

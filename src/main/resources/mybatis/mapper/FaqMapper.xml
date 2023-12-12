@@ -20,11 +20,6 @@
         <result column="FAQ_CATEGORY_NAME"     property="faqCategoryName" />
       </association>
   </resultMap>
-  
-  
-  
-  
-
 
   <select id="getFaqCount" resultType="int">
     SELECT COUNT(*)
@@ -76,7 +71,6 @@
     FROM FAQ_T
     WHERE STATUS = 1
     AND FAQ_NAME LIKE '%' || #{faqName} || '%'
-    
   </select>
   
   <select id="getSearchCategoryList" parameterType="Map" resultType="FaqDto">
@@ -135,6 +129,84 @@
               AND ${column} LIKE '%' || #{query} || '%')          
      WHERE RN BETWEEN #{begin} AND #{end}
   </select> 
+   
+  <select id="getSearchNameList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , FAQ_NAME
+         , FAQ_TITLE
+         , FAQ_CATEGORY_NO
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
+                   FAQ_NO
+                 , FAQ_NAME
+                 , FAQ_CATEGORY_NO
+                 , FAQ_TITLE
+                 , FAQ_CONTENTS
+                 , STATUS
+                 , DEPTH
+                 , GROUP_NO
+                 , GROUP_ORDER
+             FROM FAQ_T
+            WHERE STATUS = 1
+              AND FAQ_NAME LIKE '%' || #{query} || '%')          
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>  
+   
+  <select id="getSearchTitleList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , FAQ_NAME
+         , FAQ_TITLE
+         , FAQ_CATEGORY_NO
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
+                   FAQ_NO
+                 , FAQ_NAME
+                 , FAQ_CATEGORY_NO
+                 , FAQ_TITLE
+                 , FAQ_CONTENTS
+                 , STATUS
+                 , DEPTH
+                 , GROUP_NO
+                 , GROUP_ORDER
+             FROM FAQ_T
+            WHERE STATUS = 1
+              AND FAQ_TITLE LIKE '%' || #{query} || '%')          
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>   
+   
+  <select id="getSearchContentsList" parameterType="Map" resultType="FaqDto">
+    SELECT FAQ_NO
+         , FAQ_NAME
+         , FAQ_TITLE
+         , FAQ_CATEGORY_NO
+         , FAQ_CONTENTS
+         , STATUS
+         , DEPTH
+         , GROUP_NO
+         , GROUP_ORDER
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY GROUP_NO DESC, GROUP_ORDER ASC) AS RN, 
+                   FAQ_NO
+                 , FAQ_NAME
+                 , FAQ_CATEGORY_NO
+                 , FAQ_TITLE
+                 , FAQ_CONTENTS
+                 , STATUS
+                 , DEPTH
+                 , GROUP_NO
+                 , GROUP_ORDER
+             FROM FAQ_T
+            WHERE STATUS = 1
+              AND FAQ_CONTENTS LIKE '%' || #{query} || '%')          
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>   
    
   <delete id="deleteFaq" parameterType="int">
     DELETE 
