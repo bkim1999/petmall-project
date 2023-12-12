@@ -1,0 +1,39 @@
+#wrapper {
+  width: 1000px;
+  margin: 50px auto;
+}
+h1 {
+  text-align: center;
+  margin: 50px;
+}
+#review_list {
+  margin: 50px auto;
+  min-height: 500px;
+}
+.review{
+  min-height: 160px;
+  border-bottom: solid 1px gray;
+  margin: 10px;
+}
+.review:hover{
+  cursor: pointer;
+}
+.review_info {
+  max-width: 685px;
+  height: auto;
+}
+.review_title {
+  height: auto;
+}
+.thumbnail {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  padding-right: 30px;
+}
+.star {
+  color: gold;
+}
+.expand:hover, .collapse:hover {
+  cursor: pointer;
+}

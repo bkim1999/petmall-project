@@ -1,0 +1,85 @@
+
+body {
+  background-image: url('/image/cat_background.jpg');
+}
+h1 {
+  margin: 100px 0 50px 0;
+  text-align:center;
+}
+#wrapper {
+  width: 1000px;
+  margin: 100px auto;
+  background-color: white;
+  padding: 30px;
+  border: solid 1px black;
+}
+.preview-area {
+  margin: 30px;
+  padding: 10px;
+  border: 1px dotted gray;
+}
+.preview-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.preview-area.is-valid{
+  border: solid 2px green;
+}
+.preview-area.is-invalid{
+  border: solid 2px red;
+}
+
+.add-image-area, .preview-image-area {
+  border: 1px  gray;
+  border-style: dashed;
+  border-radius: 10%;
+  padding: 10px;
+  margin: 10px;
+}
+.add-image-area:hover, .preview-image-area:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+.btn_delete_image:hover {
+  font-size: 20px;
+  font-weight: bold;
+}
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin: 1px;
+}
+.btn_delete_image {
+  text-align: center;
+  color: red;
+  margin: 0;
+  height: 30px;
+}
+.btn-group {
+  margin: 10px auto;
+  width: 150px;
+}
+.star {
+  border: none;
+  background-color: unset;
+  width: 50px;
+  font-size: 30px;
+  padding: 10px;
+  color: gold;
+}
+.product-info {
+  margin: 50px auto;
+  width: 500px;
+  border: solid 1px black;
+}
+.product-info:hover {
+  cursor: pointer;
+}
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  text-align: center;
+}
