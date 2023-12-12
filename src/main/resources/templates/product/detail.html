@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{/layout/header :: head('상품 상세')}"></head>
-<link rel="stylesheet" th:href="@{/css/product/product_detail.css}">
+<link rel="stylesheet" th:href="@{/css/product/product_detail.css(ver=1.0)}">
 <body>
   <div th:replace="~{layout/header :: header}"></div>
   <div id="product_header" class="d-flex justify-content-center mt-5">
@@ -68,7 +68,7 @@
             <th:block th:each="option : ${optionList}">
               <option th:if="${option.optionCount > 0}" th:value="${option.optionNo}" th:data-add-price="${option.addPrice}" th:data-option-count="${option.optionCount}">
                 <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
-                <span th:if="${option.optionCount < 10}" th:text="|품절임박: ${option.optionCount}개 남음|"></span>
+                <span th:if="${option.optionCount < 10}" th:text="|(품절임박: ${option.optionCount}개 남음)|"></span>
               </option>
               <option th:if="${option.optionCount == 0}" class="text-danger" disabled>
                 <th:block th:text="|${option.optionName}(+${option.addPrice})|"></th:block>
@@ -131,4 +131,4 @@
   var productName = /*[[${product.productName}]]*/ '상품명이 없습니다.';
   var editProductResult = /*[[${editProductResult}]]*/ null;  // '', true, false
 </script>
-<script th:src="@{/js/product/product_detail.js}"></script>
+<script th:src="@{/js/product/product_detail.js(ver=1.0)}"></script>
