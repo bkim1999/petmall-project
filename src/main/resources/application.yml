@@ -3,8 +3,8 @@ spring:
   datasource:
     hikari:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: ENC(d9gDLKL5h/xu4g/e8qojeSyp9i8BtaNpI/mQxLV8h4G/hAO8Bscdude1NAquAc0XNgzVfhMWET8=)
-      username: ENC(+33+jn4TvwZOtwVrckRhQQ==)
+      jdbc-url: ENC(tOY2QviwEfEZLNg0J0f2ZicFoUA0m5VcfcgO8MyZA6qW3LtMH0O94dshs8Qnq75YOlw6XCdWo2kEtHVqEzQq2A==)
+      username: ENC(PlE0fsIsmRhDqnG5qjkWBQ==)
       password: ENC(QkWwSrPf1coy2prvfTwNgQ==)
   mail:
     host: smtp.gmail.com
