@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   
-<head th:replace="~{/layout/header::head('개인정보처리방침')}"></head>
+<head th:replace="~{layout/header::head('개인정보처리방침')}"></head>
 
 
 <style>
@@ -36,7 +36,7 @@
 </style>
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="home_wrap"><a th:href="@{/main.do}">HOME</a> > PRIVACY</div>
   <div><h1 class="headline">PRIVACY</h1></div>
@@ -441,7 +441,7 @@ Slack Technologies Inc. 미국
 
 
 
-   <div th:replace="~{/layout/footer::footer}"></div>
+   <div th:replace="~{layout/footer::footer}"></div>
    
 </body>
 </html>

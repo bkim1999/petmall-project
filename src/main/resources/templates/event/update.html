@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('이벤트작성게시판')}"></head>
+<head th:replace="~{layout/header::head('이벤트작성게시판')}"></head>
 
 <style>
   body {
@@ -42,7 +42,7 @@
 
 <body>
 
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
 
   <div class="event_add_wrap">
   <h1 style="color: #fff;">EVENT 수정</h1>
@@ -348,7 +348,7 @@ const fnCkeditor = () => {
 </script>  
   
   
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
 
 </body>
 </html>

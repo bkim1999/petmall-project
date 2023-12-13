@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   
-<head th:replace="~{/layout/header::head('관리자전용 Q&A게시판')}"></head>
+<head th:replace="~{layout/header::head('관리자전용 Q&A게시판')}"></head>
 
 <style>
   .answerWrap {
@@ -33,7 +33,7 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="big_wrap">
   <hr>
@@ -332,7 +332,7 @@
   fnAnswer();
  </script>
    
-   <div th:replace="~{/layout/footer::footer}"></div>
+   <div th:replace="~{layout/footer::footer}"></div>
    
 </body>
 </html>

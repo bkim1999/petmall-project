@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   
-<head th:replace="~{/layout/header::head('이용 약관 안내')}"></head>
+<head th:replace="~{layout/header::head('이용 약관 안내')}"></head>
 
 
 <style>
@@ -36,7 +36,7 @@
 </style>
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="home_wrap"><a th:href="@{/main.do}">HOME</a> > AGREEMENT</div>
   <div><h1 class="headline">AGREEMENT</h1></div>
@@ -290,7 +290,7 @@
 
 
 
-   <div th:replace="~{/layout/footer::footer}"></div>
+   <div th:replace="~{layout/footer::footer}"></div>
    
 </body>
 </html>
