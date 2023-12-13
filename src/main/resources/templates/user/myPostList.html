@@ -75,6 +75,12 @@
             <td>
               <select class="form-select" th:id="'title_' + ${post.qnaNo}" onchange="updateDisplayedTitle('${post.qnaNo}')" disabled>
                 <option value="1" th:selected="${post.title == 1}">[상품] 상품관련 문의</option>
+                <option value="1" th:selected="${post.title == 2}">[배송] 배송관련 문의</option>
+                <option value="1" th:selected="${post.title == 3}">[주문취소] 주문취소 문의</option>
+                <option value="1" th:selected="${post.title == 4}">[주소변경] 주소변경 문의</option>
+                <option value="1" th:selected="${post.title == 5}">[반품/환불] 반품/환불 문의</option>
+                <option value="1" th:selected="${post.title == 6}">[기타] 기타문의</option>
+              </select>
                 <!-- 다른 옵션들도 유사하게 작성 -->
               </select>
             </td>
