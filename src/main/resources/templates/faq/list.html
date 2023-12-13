@@ -4,113 +4,138 @@
 <head th:replace="~{layout/header::head('FAQ 게시판')}"></head>
 
 <style>
-  
- 
-  .blind_text {
-    
+  /* Reset some default styling */
+body, h3, p, div, span {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container for the entire page */
+.main_wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Main title style */
+#main_title {
+    text-align: center;
+    font-size: 80px;
+}
+
+/* Search box style */
+.text-center {
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+#serch_btn {
+    margin-left: 10px;
+}
+
+/* Styling for category boxes */
+#wrap_box {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+#wrap_box div:hover {
+    background-color: #e0e0e0; 
+}
+
+
+#wrap_box div {
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid rgb(179, 138, 77);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#category_box {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+#getFaqCategoryList {
+    margin-left: 10px;
+    height: 25px;
+    border-width: 0;
+}
+
+/* Styling for the table */
+.table_wrap {
+    margin-top: 20px;
+    border-spacing: 10px;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.all_td_1 {
+    /* Add any specific styling for the first row of the table here */
+}
+
+.all_td_2 {
+    /* Add any specific styling for the second row of the table here */
+}
+
+/* Styling for table cells */
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Styling for the clickable title */
+.click_title {
+    cursor: pointer;
+    color: black;
+    text-decoration: underline;
+}
+
+/* Styling for the blind text */
+.blind_text {
     display: none;
     font-size: 14px;
-    white-space: pre-wrap; /* 줄 바꿈 처리 */
+    white-space: pre-wrap;
+}
 
-  }
-  
-  #serch_btn {
+/* Styling for the footer */
+tfoot {
+    background-color: #f2f2f2;
+    text-align: center;
+    height: 300px;
+    padding: 15px;
+}
+
+/* Styling for the "검색" button */
+.btn-outline-primary {
+    margin-left: 10px;
+}
+
     
-  }
-  
-   body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    .blind_text {
-      display: none;
-      font-size: 14px;
-      white-space: pre-wrap;
-     
-    }
-
-    .main_wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    #main_title {
-      text-align: center;
-    }
-
-    .wrap_9 {
-      text-align: center;
-    }
-
-    #wrap_box {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #wrap_box div {
-      margin: 5px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    #category_box {
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-    }
-
-    #getFaqCategoryList {
-      margin-left: 10px;
-      height: 25px;
-    }
-
-    .table_wrap {
-      margin-top: 20px;
-    }
-
-    table {
-      width: 1000px;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .click_title {
-      cursor: pointer;
-      color: black;
-      text-decoration: underline;
-    }
-
-    .table-li {
-      background-color: #007bff;
-      color: white;
-    }
-
-    tfoot {
-      background-color: #f2f2f2;
-    }
-
-    .btn-outline-primary {
-      margin-left: 10px;
-    }
-  
-  
 </style>
 
 <body>
@@ -156,9 +181,9 @@
             <table class="table">
               <thead class="table-primary">
                 <tr>
-                  <td>번호</td>
-                  <td>카테고리</td>
-                  <td>질문내용</td>
+                  <td class="all_td_1">번호</td>
+                  <td class="all_td_1">카테고리</td>
+                  <td class="all_td_1">질문내용</td>
                 </tr>
               </thead>
               <tbody class="category_list">
@@ -169,8 +194,8 @@
                     <td><span class="click_title" th:text="${faq.faqTitle}"></span></td>
                   </tr>
                   <tr >
-                    <td colspan="1"></td>
-                    <td></td>
+                    <td class="all_td_2"></td>
+                    <td class="all_td_2"></td>
                     <td class="blind_text" colspan="3" th:text="${faq.faqContents}"></td>
                   </tr>
                 </th:block>
