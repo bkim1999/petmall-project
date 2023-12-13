@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   
-<head th:replace="~{/layout/header::head('이벤트상세게시판')}"></head>
+<head th:replace="~{layout/header::head('이벤트상세게시판')}"></head>
 
  
  <style>
@@ -31,22 +31,28 @@
     margin: auto;
   }
   .event_contents {
-    margin-bottom: 0;
+    margin: auto;
+    text-align: center;
   }
   p {
     background-color:rgb(183,175,163);
     margin-bottom: 0;
   }
+  .event_contents img {
+    width: 500px;
+    height: 500px;
+   
+  }
  </style>
   
 <body>  
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   
   <div class="detail_total_wrap">
   <h1 style="color: #fff;">EVENT</h1>
-  <input type="button" value="다른이벤트 보로가기" id="other_event" class="btn btn-danger">
+  <input type="button" value="다른이벤트 보러가기" id="other_event" class="btn btn-danger">
   <th:block th:if="${session.user != null}">
      <th:block th:if="${session.user.adminAuthorState == 0}">
       <input type="hidden">
@@ -90,7 +96,7 @@
    </div>
   </div>
   
-  <div th:utext="${event.contents}" class="event_contents"></div>
+  <div th:utext="${event.contents}" class="event_contents" style="width: 700px;"></div>
     
   </div>
    
@@ -116,7 +122,7 @@
    fnadmingo();
    </script>
    
-   <div th:replace="~{/layout/footer::footer}"></div>
+   <div th:replace="~{layout/footer::footer}"></div>
    
 </body>
 </html>

@@ -1,69 +1,74 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('Q&A 문의글 상세보기')}"></head>
+<head th:replace="~{layout/header::head('Q&A 문의글 상세보기')}"></head>
 
 <body>
 
-  <div th:replace="~{/layout/header::header}"></div>
-<style>
-.center-text {
-    text-align: center; /* 요소 안의 텍스트를 가운데 정렬합니다. */
-    margin: 0 auto; 
+  <div th:replace="~{layout/header::header}"></div>
+  <style>
+    .main_wrap {
+      width: 50%; /* 전체 컨텐츠의 폭을 조정합니다. */
+      margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 설정합니다. */
     }
-</style>
+
+    .center-text {
+      text-align: center; /* 요소 안의 텍스트를 가운데 정렬합니다. */
+      margin: 0 auto; /* 요소를 가운데로 정렬합니다. */
+    }
+  </style>
   <div class="main_wrap">
-	  
-	<div class="center-text">
-	    <h1>Q&A</h1>
-	</div>
+    
+  <div class="center-text">
+      <h1>Q&A</h1>
+  </div>
     <hr>
 
-		    <!-- Qna글 상세보기 -->
-				<div th:if="${session.user.userNo == qna.userDto.userNo}" class="text-center">
-				    <form id="frn_btn" method="post" th:action="@{/some/action}">
-				        <input type="hidden" name="qnaNo" th:value="${qna.qnaNo}">
-				        <input type="hidden" name="productNo" th:value="${qna.productNo}">
-				        <input type="hidden" name="title" th:value="${qna.title}">
-				        <input type="hidden" name="contents" th:value="${qna.contents}">
-						<input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
-				    </form>
-				</div>
-				
-				<input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
-		
-				  
-		        <h3 class="title mt-4" th:text="${qna.title}"></h3>
-		        <c:set var="groupNo" value="${param.groupNo}" />
-		        <div>작성일: <span th:text="${qna.createdAt}"></span></div>
-		        <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
-		        <div>문의 내용: <span th:text="${qna.contents}"></span></div>
-		        
-		
-	<!-- 스크립트 구문을 통해 해당 숫자에 따른 문자열 반환시킴 -->
-	<script th:inline="javascript">
-	  function updateDisplayedTitle() {
-	    const titleInput = document.querySelector('input[name="title"]');
-	    const displayedTitle = document.querySelector('.title');
-	    
-	    const titles = {
-	      '1': '[상품] 상품관련 문의',
-	      '2': '[배송] 배송관련 문의',
-	      '3': '[주문취소] 주문취소 문의',
-	      '4': '[주소변경] 주소변경 문의',
-	      '5': '[반품/환불] 반품/환불 문의',
-	      '6': '[기타] 기타문의'
-	    };
-	    
-	    const selectedValue = titleInput.value;
-	    displayedTitle.innerText = titles[selectedValue] || '';
-	  }
-	  document.querySelector('input[name="title"]').addEventListener('change', updateDisplayedTitle);
-	  updateDisplayedTitle(); // Update the displayed title initially
-	</script>
+        <!-- Qna글 상세보기 -->
+        <div th:if="${session.user.userNo == qna.userDto.userNo}" class="text-center">
+            <form id="frn_btn" method="post" th:action="@{/some/action}">
+                <input type="hidden" name="qnaNo" th:value="${qna.qnaNo}">
+                <input type="hidden" name="productNo" th:value="${qna.productNo}">
+                <input type="hidden" name="title" th:value="${qna.title}">
+                <input type="hidden" name="contents" th:value="${qna.contents}">
+            <input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
+            </form>
+        </div>
+        
+        <input type="hidden" id="state" name="adminAuthorState" th:value="${session.user.adminAuthorState}"> 
+    
+          
+            <h3 class="title mt-4" th:text="${qna.title}"></h3>
+            <c:set var="groupNo" value="${param.groupNo}" />
+            <div>작성일: <span th:text="${qna.createdAt}"></span></div>
+            <div>제품 번호: <span th:text="${qna.productNo}"></span></div>
+            <div>문의 내용: <span th:text="${qna.contents}"></span></div>
+            
+    
+  <!-- 스크립트 구문을 통해 해당 숫자에 따른 문자열 반환시킴 -->
+  <script th:inline="javascript">
+    function updateDisplayedTitle() {
+      const titleInput = document.querySelector('input[name="title"]');
+      const displayedTitle = document.querySelector('.title');
+      
+      const titles = {
+        '1': '[상품] 상품관련 문의',
+        '2': '[배송] 배송관련 문의',
+        '3': '[주문취소] 주문취소 문의',
+        '4': '[주소변경] 주소변경 문의',
+        '5': '[반품/환불] 반품/환불 문의',
+        '6': '[기타] 기타문의'
+      };
+      
+      const selectedValue = titleInput.value;
+      displayedTitle.innerText = titles[selectedValue] || '';
+    }
+    document.querySelector('input[name="title"]').addEventListener('change', updateDisplayedTitle);
+    updateDisplayedTitle(); // Update the displayed title initially
+  </script>
 
 
-	<!-- 첨부파일 다운로드 관련 코드 -->
+  <!-- 첨부파일 다운로드 관련 코드 -->
     <hr class="my-3">
     <h5>첨부 파일 다운로드</h5>
     <div>
@@ -80,51 +85,51 @@
     </div>
 
     <hr>
-	
-		<!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
-		
-		<div class="blind write_tr">
-		  <div class= "admin">
-			<h5>답변, 추가 문의사항 작성하기</h5>
-		    <c:set var="groupNo" value="${param.groupNo}" />
-		    <form method="post" th:action="@{/user/qnadetail/addReply.do}"enctype="multipart/form-data">
-		      <div class="input-group mb-3">
-		        <label class="input-group-text" id="inputGroup-sizing-default">작성자</label>
-		        <input type="text" name="email" th:value="${session.user.email}" readonly class="form-control">
-		        <input type="hidden" name="userNo" th:value="${session.user.userNo}">
-		      </div>
-		      <div class="input-group">
-		        <c:set var="groupNo" value="${param.groupNo}" />
-		        <label for="contents" class="input-group-text">내용</label>
-		        <textarea name="contents" id="contents" class="form-control" aria-label="With textarea"></textarea>
-		        <input type="hidden" name="groupNo" th:value="${groupNo}">
-		        <input type="hidden" name="depth" th:value="${qna.depth}">
-		        <input type="hidden" name="parentNo" th:value="${qna.qnaNo}">
-		        <button type="submit" name="qnaNo" th:value="${qna.qnaNo}" class="btn btn-primary btn-sm">답변달기</button>
-		      </div>
-		    </form>
-		  </div>
-		 </div>
+  
+    <!-- 해당 Q&A게시판에 대한 답글 및 추가 질문에 대한 답변 작성 코드-->
+    
+    <div class="blind write_tr">
+      <div class= "admin">
+      <h5>답변, 추가 문의사항 작성하기</h5>
+        <c:set var="groupNo" value="${param.groupNo}" />
+        <form method="post" th:action="@{/user/qnadetail/addReply.do}"enctype="multipart/form-data">
+          <div class="input-group mb-3">
+            <label class="input-group-text" id="inputGroup-sizing-default">작성자</label>
+            <input type="text" name="email" th:value="${session.user.email}" readonly class="form-control">
+            <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+          </div>
+          <div class="input-group">
+            <c:set var="groupNo" value="${param.groupNo}" />
+            <label for="contents" class="input-group-text">내용</label>
+            <textarea name="contents" id="contents" class="form-control" aria-label="With textarea"></textarea>
+            <input type="hidden" name="groupNo" th:value="${groupNo}">
+            <input type="hidden" name="depth" th:value="${qna.depth}">
+            <input type="hidden" name="parentNo" th:value="${qna.qnaNo}">
+            <button type="submit" name="qnaNo" th:value="${qna.qnaNo}" class="btn btn-primary btn-sm">답변달기</button>
+          </div>
+        </form>
+      </div>
+     </div>
 
 
 
     <hr>
-	
-	<h3>게시글 답변 및 내용</h3>
-	<div th:if="${commentList}">
-	    <div th:each="com : ${commentList}">
-	        <div>
-	            <div>작성자 이메일: <span th:text="${com.userDto.email}"></span></div>
-	            <div>이름: <span th:text="${com.userDto.name}"></span></div>
-	            <div>내용: <span th:text="${com.contents}"></span></div>
-	        </div>
-	    </div>
-	</div>
+  
+  <h3>게시글 답변 및 내용</h3>
+  <div th:if="${commentList}">
+      <div th:each="com : ${commentList}">
+          <div>
+              <div>작성자 이메일: <span th:text="${com.userDto.email}"></span></div>
+              <div>이름: <span th:text="${com.userDto.name}"></span></div>
+              <div>내용: <span th:text="${com.contents}"></span></div>
+          </div>
+      </div>
+  </div>
 
     <hr>
       <button type="button" id="btn_remove" class="btn btn-light btn_write">글 전체 내용삭제</button>
-	
-	<!-- 스크립트 기능으로 댓글 추가알림-->
+  
+  <!-- 스크립트 기능으로 댓글 추가알림-->
     <script th:inline="javascript">
       const fnAddReplyResult = () => {
         let addReplyResult = /*[[${addReplyResult}]]*/ '';
@@ -136,8 +141,8 @@
           }
         }
       };
-	
-	  <!-- 게시글 삭제 -->
+  
+    <!-- 게시글 삭제 -->
       const fnRemoveQna = () => {
         $('#btn_remove').click(() => {
           if (confirm('문의글을 삭제시 함께 문의한 추가 내용도 전부 삭제됩니다. 삭제할까요?')) {
@@ -146,7 +151,7 @@
           }
         });
       };
-	
+  
       const fnAddReply = () => {
         $('#reply_form').submit(() => {
           $('#groupNo').val(/*[[${groupNo}]]*/ '');
@@ -162,14 +167,14 @@
       };
        
       const fnState = () => {
-		var state =  $('#state').val();
-		if(state ==1)
-		{
-			$('.admin').show();
-		}else{
-			$('.admin').hide();
-		}
-	  };
+    var state =  $('#state').val();
+    if(state ==1)
+    {
+      $('.admin').show();
+    }else{
+      $('.admin').hide();
+    }
+    };
       
 
       $(document).ready(function () {
@@ -180,10 +185,9 @@
         fnState();
       });
     </script>
-
-	
-    <div th:replace="~{/layout/footer::footer}"></div>
-  </div>
+	</div>
+	<hr>
+    <div th:replace="~{layout/footer::footer}"></div>
 </body>
 
 </html>

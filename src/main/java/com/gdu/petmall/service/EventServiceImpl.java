@@ -344,7 +344,6 @@ public class EventServiceImpl implements EventService {
     int eventNo = Integer.parseInt(multipartRequest.getParameter("eventNo"));
     int state = Integer.parseInt(multipartRequest.getParameter("state"));
     
-    System.out.println("*********************"+state+"**************");
     
     List<MultipartFile> event_images = multipartRequest.getFiles("event_images");
     

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('이벤트게시판')}"></head>
+<head th:replace="~{layout/header::head('이벤트게시판')}"></head>
 
 <style>
 
@@ -117,7 +117,7 @@
 </style>
 
 <body>
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
  <div class="big_wrap">
     <img class="money" th:src="@{/image/money.png}" style="position: absolute; width: 20%; left: 0; top:150px; transform: rotate(-15deg);">
@@ -182,6 +182,6 @@
   <div></div>
   </div>
  </div>
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
 </body>
 </html>
