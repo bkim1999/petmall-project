@@ -6,12 +6,17 @@
 <body>
 
   <div th:replace="~{layout/header::header}"></div>
-<style>
-.center-text {
-    text-align: center; /* 요소 안의 텍스트를 가운데 정렬합니다. */
-    margin: 0 auto; 
+  <style>
+    .main_wrap {
+      width: 50%; /* 전체 컨텐츠의 폭을 조정합니다. */
+      margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 설정합니다. */
     }
-</style>
+
+    .center-text {
+      text-align: center; /* 요소 안의 텍스트를 가운데 정렬합니다. */
+      margin: 0 auto; /* 요소를 가운데로 정렬합니다. */
+    }
+  </style>
   <div class="main_wrap">
 	  
 	<div class="center-text">
@@ -182,8 +187,8 @@
     </script>
 
 	
-    <div th:replace="~{layout/footer::footer}"></div>
   </div>
+    <div th:replace="~{layout/footer::footer}"></div>
 </body>
 
 </html>
