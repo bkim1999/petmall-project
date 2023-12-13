@@ -87,11 +87,11 @@
  
 	<!-- 특정 게시글 조회   -->   
    <select id="getQna" parameterType="int" resultMap="QnaMap">
-       SELECT Q.QNA_NO, Q.TITLE, Q.CONTENTS, Q.CREATED_AT, Q.PRODUCT_NO, Q.STATUS, Q.USER_NO, Q.GROUP_NO
-       FROM USER_T U, QNA_T Q
-       WHERE U.USER_NO = Q.USER_NO
-       AND Q.QNA_NO = #{qnaNo}
-        AND Q.GROUP_NO = #{groupNo}
+	SELECT QNA.QNA_NO, QNA.TITLE, QNA.CONTENTS, QNA.CREATED_AT, QNA.PRODUCT_NO, QNA.STATUS, QNA.USER_NO, QNA.GROUP_NO, QNA.CHECK_FLAG
+	FROM USER_T U, QNA_T QNA
+	WHERE U.USER_NO = QNA.USER_NO
+       AND QNA.QNA_NO = #{qnaNo}
+        AND QNA.GROUP_NO = #{groupNo}
    </select>
 
 	<!-- 특정 정보로 게시글 삭제 -->   

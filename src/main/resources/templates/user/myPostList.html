@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('Q&A 문의글 상세보기')}"></head>
+<head th:replace="~{layout/header::head('Q&A 문의글 상세보기')}"></head>
 <body>
 <style>
   .btn_image {
@@ -18,7 +18,7 @@
     margin-top: 20px; /* Adjust margin as needed */
   }
 </style>
-<div th:replace="~{/layout/header::header}"></div>
+<div th:replace="~{layout/header::header}"></div>
 
 <div class="btn_image">
     <!-- First Image -->
@@ -32,7 +32,7 @@
 </div>
 
 <div class="center-text">
-    <h1>문의한 Q&A 게시글 목록</h1>
+    <h1>Q&A 게시글 목록</h1>
 </div>
 
 
@@ -49,18 +49,16 @@
       <table class="table align-middle">
         <thead>
           <tr>
-            <td>작성글 역순</td>
-            <td>작성글 번호</td>
-            <td>문의한 제품 번호</td>
+            <td>순서</td>
+            <td>제품 번호</td>
             <td>제목</td>
             <td>작성일자</td>
-            <td>게시글 확인하러가기</td>
+            <td>내용 확인하기</td>
           </tr>
         </thead>
         <tbody>
           <tr th:each="post, vs : ${myPostList}" th:if="${post.depth == 0}">
             <td th:text="${vs.index + 1}"></td>
-            <td th:text="${post.qnaNo}"></td>
             <td th:text="${post.productNo}"></td>
             <td>
               <select class="form-select" th:id="'title_' + ${post.qnaNo}" onchange="updateDisplayedTitle('${post.qnaNo}')" disabled>
@@ -76,8 +74,9 @@
             <td th:text="${post.createdAt}"></td>
 			<td>
 			    <a th:href="@{/user/qnadetail.do(qnaNo=${post.qnaNo},groupNo=${post.groupNo})}">
-			        <button>게시글 확인하기</button>
+			        <button th:text="${post.checkFlag == 0 ? '답변을 기다리는 중입니다.' : '답변이 완료되었습니다. 확인 부탁드립니다.'}"></button>
 			    </a>
+			</td>
 			</td>
           </tr>
         </tbody>
@@ -126,6 +125,6 @@
 	</script>
 
     
-    <div th:replace="~{/layout/footer::footer}"></div>
+    <div th:replace="~{layout/footer::footer}"></div>
 </body>
 </html>
