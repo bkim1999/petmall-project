@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header::head('Q&A 문의글 상세보기')}"></head>
+<head th:replace="~{layout/header::head('Q&A 문의글 상세보기')}"></head>
 <body>
 <style>
   .btn_image {
@@ -18,7 +18,7 @@
     margin-top: 20px; /* Adjust margin as needed */
   }
 </style>
-<div th:replace="~{/layout/header::header}"></div>
+<div th:replace="~{layout/header::header}"></div>
 
 <div class="btn_image">
     <!-- First Image -->
@@ -125,6 +125,6 @@
 	</script>
 
     
-    <div th:replace="~{/layout/footer::footer}"></div>
+    <div th:replace="~{layout/footer::footer}"></div>
 </body>
 </html>
