@@ -1,12 +1,14 @@
 package com.gdu.petmall.service;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -541,7 +543,33 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public void removeProduct(int productNo, RedirectAttributes redirectAttributes) {
     int removeProductResult = productMapper.deleteProduct(productNo);
-    redirectAttributes.addFlashAttribute("removeProductResult", removeProductResult);
+    int removeProductImageList = productMapper.deleteImageList(Map.of("productNo", productNo));
+    System.out.println("removeProductList:" + removeProductImageList);
+    redirectAttributes.addFlashAttribute("removeProductResult", removeProductResult == 1 && removeProductImageList != 0);
   }
   
+  @Override
+  public void productImageBatch() {
+    // 1. 어제 작성된 상품/리뷰의 이미지 목록
+    List<ProductImageDto> productImageList = productMapper.getProductImageInYesterday();
+    
+    
+    // 2. List<ProductImageDto> -> List<Path> (path는 경로+파일명으로 구성)
+    List<Path> productImagePathList = productImageList.stream()
+                                                  .map(productImageDto -> new File(productImageDto.getPath()).toPath())
+                                                  .collect(Collectors.toList());
+    
+    // 3. 어제 저장된 상품/리뷰 이미지 목록 (디렉토리)
+    File dir = new File(myFileUtils.getProductImagePathYesterday());
+    
+    // 4. 삭제할 File 객체들
+    File[] targets = dir.listFiles(file -> productImagePathList.contains(file.toPath()));
+    
+    // 5. 삭제
+    if(targets != null && targets.length !=0) {
+      for(File target : targets) {
+        target.delete();
+      }
+    }
+  }
 }

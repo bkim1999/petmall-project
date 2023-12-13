@@ -45,13 +45,19 @@ public class CartServiceImpl implements CartService {
                           .build();
      
     
-    
+     
      addCartList.add(cart);
+    
     }
     
     int addCartListResult = cartMapper.insertCart(addCartList);
+  
     model.addAttribute("addCartListResult", addCartListResult);
+    
+    
   }
+  
+  
   
   @Override
   public void getList(HttpServletRequest request, Model model) {
@@ -146,6 +152,8 @@ public class CartServiceImpl implements CartService {
     return Map.of("plusResult", plusResult);
   }
 
-  
-
+ 
+ 
+    
+    
 }

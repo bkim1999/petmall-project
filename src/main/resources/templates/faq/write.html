@@ -4,6 +4,19 @@
 <head th:replace="~{/layout/header::head('관리자 FAQ관리페이지')}"></head>
 
 <style>
+  .answerWrap {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    font-size: 30px;
+    line-height: 50px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+    padding-left: 85px;
+    padding-right: 60px;
+    text-align: center;
+  }
   
   #title { 
     text-align: center;
@@ -14,6 +27,30 @@
   
   .list {
     word-spacing: normal;
+  
+  }
+  
+  .nav_qna_list{
+    text-align: center;
+  }
+  
+  .big_wrap {
+    width: 1000px;
+    margin: auto;
+  }
+  
+  
+  .table  {
+    margin-top: 30px;
+    
+  }
+  
+  .text-center mt-3 {
+    margin-bottom: 20px;
+  }
+  
+  #paging{
+    text-align: center;
   }
   
 </style>
@@ -25,9 +62,24 @@
   
   <div th:replace="~{/layout/header::header}"></div>
   
-  <H3 id="title">관리자 페이지</H3>
-    
-    <div class="main_wrap">
+  <div class="big_wrap">
+ 
+  <hr>
+  
+    <div class="nav_qna_list">
+      <h1>FAQ 관리</h1>
+      <hr>
+      <a th:href="@{/faq/list.do}">
+        <input type="button" class="btn btn-light" value="FAQ확인하기">
+      </a>  
+      <a th:href="@{/admin/admin.go}">
+        <input type="button" class="btn btn-dark" value="관리자페이지돌아가기">
+      </a>
+    </div>
+  
+  <hr>
+   
+   <div class="main_wrap">
       <div class="form-group">
         <form id="add_frm" method="post" th:action="@{/faq/add.do}">
           <div class="form-group">
@@ -49,7 +101,7 @@
       </div>
       <div class="form-group">
         <label for="faqContents" class="form-label mt-4">내용</label>
-        <input type="text" class="form-control not-empty" name="faqContents" id="faqContents">
+        <input type="textarea" class="form-control not-empty" name="faqContents" id="faqContents">
         <div class="invalid-feedback"></div>
       </div>
       <div class="text-center mt-3">
@@ -60,35 +112,39 @@
       </div>
     </form>
    </div>
+  
+  <hr>
+  
   <div class="table_wrap">
    <form id="update_frm" method="post" th:action="@{/faq/update.do}">
-    <table class="table" border="1">
-      <thead class="table-li">
+    <table class="table table-hover table_font" border="1">
+      <thead class="table-primary">
         <tr>
           <td>번호</td>
           <td>카테고리</td>
           <td>제목</td>
           <td>답변내용</td>
+          <td></td>
         </tr>
       </thead>
       <tbody>
         <th:block th:each="a,vs:${adminList}">
           <tr class="list">
             <td th:text="${beginNo - vs.index}"></td>
-            <td><input type="text" name="faqName" th:value="${a.faqName}" size="4"></input></td>
-            <td><input type="text" name="faqTitle" th:value="${a.faqTitle}"></input></td>
-            <td><input type="text" name="faqContents" th:value="${a.faqContents}" ></span></td>
+            <td><input type="text" class="form-control not-empty" name="faqName" th:value="${a.faqName}" size="4"></input></td>
+            <td><input type="text" class="form-control not-empty" name="faqTitle" th:value="${a.faqTitle}" size="10"></input></td>
+            <td><input type="text" class="form-control not-empty" name="faqContents" th:value="${a.faqContents}" size="30"></span></td>
            <td>
               <input type="hidden"  id="faqNo" name="faqNo" th:value="${a.faqNo}">  
-              <button type="submit" id="modify_btn">수정</button>
-              <button type="button" id="delete_btn">삭제</button>
+              <button type="submit" id="modify_btn" class="btn btn-dark">수정</button>
+              <button type="button" id="delete_btn" class="btn btn-dark">삭제</button>
             </td>
           </tr>
         </th:block>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="4" th:utext="${paging}"></td>
+          <td id="paging" colspan="5" th:utext="${paging}"></td>
         </tr>
       </tfoot>
     </table>

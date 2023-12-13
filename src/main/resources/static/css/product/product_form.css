@@ -1,0 +1,77 @@
+body {
+  background-image: url('/image/cat_background.jpg');
+}
+.ck.ck-editor {
+  max-width: 1000px;
+}
+.ck-editor__editable {
+  min-height: 400px;
+}
+.ck-content {
+  color: gray;
+}
+h1 {
+  margin: 100px 0 50px 0;
+  text-align:center;
+}
+#wrapper {
+  width: 1000px;
+  margin: 100px auto;
+  background-color: white;
+  padding: 30px;
+  border: solid 1px black;
+}
+.ck-editor.is-valid {
+  border: solid 2px green;
+}
+.ck-editor.is-invalid {
+  border: solid 2px red;
+}
+.option {
+  padding: 30px 0;
+  border-top: 0.5px solid gray;
+}
+.preview-area {
+  margin: 30px;
+  padding: 10px;
+  border: 1px dotted gray;
+}
+.preview-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.preview-area.is-valid{
+  border: solid 2px green;
+}
+.preview-area.is-invalid{
+  border: solid 2px red;
+}
+
+.add-image-area, .preview-image-area {
+  border: 1px  gray;
+  border-style: dashed;
+  border-radius: 10%;
+  padding: 10px;
+  margin: 10px;
+}
+.add-image-area:hover, .preview-image-area:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+.btn_delete_image:hover {
+  font-size: 20px;
+  font-weight: bold;
+}
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin: 1px;
+}
+.btn_delete_image {
+  text-align: center;
+  color: red;
+  margin: 0;
+  height: 30px;
+}

@@ -23,5 +23,4 @@ public interface CartMapper {
   public int updateCart(Map<String, Object> map);
   
   
-  
 }

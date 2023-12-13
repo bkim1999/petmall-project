@@ -26,7 +26,6 @@ public class FaqController {
   public String faqList(HttpServletRequest request, Model model) {
     faqService.customerFaqList(request, model);
     model.addAttribute("getFaqCategoryList", faqService.getloadFaqCategoryList());
-    System.out.println("사용자:" + faqService.getloadFaqCategoryList());
     return "/faq/list";
   }
   
@@ -34,15 +33,13 @@ public class FaqController {
   public String faqWrite(HttpServletRequest request, Model model) {
     faqService.adminList(request, model);
     model.addAttribute("faqCategoryList", faqService.getloadFaqCategoryList()); 
-   System.out.println("관리자:" + model);
-    return "/faq/write";
+   return "/faq/write";
   }
  
   
   @PostMapping(value="/faq/add.do")
   public String add(HttpServletRequest request, RedirectAttributes redirectAttributes) {
     int addResult = faqService.addFaq(request);
-    System.out.println("addResult" + addResult);
     redirectAttributes.addFlashAttribute("addResult", addResult);
     return "redirect:/faq/write.do";
   }
@@ -51,7 +48,6 @@ public class FaqController {
   @GetMapping(value="/faq/search.do")
   public String search(HttpServletRequest request, Model model) {
     faqService.getSearchList(request, model);
-    System.out.println("서치" + request.getParameter("FAQ_CONTENTS"));
     model.addAttribute("customerFaqCategoryList", faqService.getloadFaqCategoryList());
     return "faq/list";
   }
@@ -72,9 +68,7 @@ public class FaqController {
   @ResponseBody
   @PostMapping(value="/faq/serchCategory.do" , produces="application/json")
   public Map<String, Object> serchCategory(HttpServletRequest request, Model model) {
-    System.out.println("카테고리:" + request.getParameter("faqName"));
-    System.out.println("카테고리:" + request.getParameter("category"));
-    return faqService.getloadCategorySearchList(request, model);
+   return faqService.getloadCategorySearchList(request, model);
   } 
   
 }
