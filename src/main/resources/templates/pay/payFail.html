@@ -6,15 +6,16 @@
 <body>
   
   <div th:replace="~{layout/header::header}"></div>
-    <div class="main_wrap">
+    <div class="main_wrap" style="text-align: center;">
 
   <div class="wrap wrap 9"><h1>결제 실패 페이지</h1></div>
   <div>해당 결제를 시도하던 도중 오류 혹은 잔액부족으로 실패하셨습니다.</div>
+  <br/>
 
       <div class="text-center">
         <div class="d-inline-block mr-3">
           <a th:href="@{/order/myOrderList}">
-            <button type="button" class="btn btn-outline-primary">결제 이어서 진행 하러가기</button>
+            <button type="button" class="btn btn-outline-primary">결제 다시 진행 하러가기</button>
           </a>
         </div>
       
