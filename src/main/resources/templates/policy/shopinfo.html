@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   
-<head th:replace="~{/layout/header::head('이용안내')}"></head>
+<head th:replace="~{layout/header::head('이용안내')}"></head>
 
 <style>
   .headline {
@@ -106,7 +106,7 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <div class="info_wrap">
   <div class="home_wrap"><a th:href="@{/main.do}">HOME</a> > 이용안내</div>
@@ -485,7 +485,7 @@
     show_etc();
   </script>
 
-   <div th:replace="~{/layout/footer::footer}"></div>
+   <div th:replace="~{layout/footer::footer}"></div>
    
 </body>
 </html>
