@@ -14,13 +14,15 @@ public interface CartMapper {
   public List<CartDto> getCartList(int userNo); 
   
   // 카트 추가
-  public int insertCart(List<CartDto> addCartList);
+  public int insertCart(int userNo, int optionNo, int count);
   
   // 카트 삭제
   public int deleteCart(Map<String, Object> map);
   
   // 카트 수량 수정
   public int updateCart(Map<String, Object> map);
+
+  
   
   
 }

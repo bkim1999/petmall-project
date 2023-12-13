@@ -32,15 +32,14 @@ public class CartController {
   
   @GetMapping(value="/order/cart.go")
   public String cartList(HttpServletRequest request, Model model){
-    System.out.println("optionNo:" + request.getParameter("option_no"));
     cartService.getList(request, model);
     return "/order/cart";
   }
   
   @PostMapping(value="/order/addCart.do")
-  public String addCart(@ModelAttribute CartOptionListDto cartListDto,Model model) {
-    System.out.println("ddd:" + cartListDto);
-    cartService.addCart(cartListDto, model);
+  public String addCart(@ModelAttribute CartOptionListDto cartList,Model model) {
+    System.out.println("ddd:" + cartList);
+    cartService.addCart(cartList, model);
     return "redirect:/order/cart.go"; 
   }
   

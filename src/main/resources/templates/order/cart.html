@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('cart')}"></head>
+<head th:replace="~{layout/header::head('cart')}"></head>
 
 <style>
   .img_line{
@@ -62,7 +62,7 @@
 
 <body>
 
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
  
   <h1 id="cart_title">Cart</h1>
@@ -75,19 +75,20 @@
     <form id="frm_btn"> 
       <table class="b">
         <thead border="1">
-          <tr><th class="img_line">이미지  상품명 상품옵션  가격  배송비  적립금  할인율  수량  합계금액</th></tr>
+          <tr>
+            <th class="img_line">이미지  상품명 상품옵션  가격  배송비 할인율  수량  합계금액</th>
+          </tr>
         </thead>
         <tbody>
          <th:block th:each="c:${cartList}"> 
             <tr class="a">
               <td class="cart_info_td">
                 <input type="checkbox" class="cart_checkbox" checked="checked">
-                <img th:if="${c.productImageDto != null}" th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail">
+                <img th:if="${c.productImageDto != null}" th:src="|${c.productImageDto.path}/${c.productImageDto.filesystemName}|" th:alt="Thumbnail" style="width: 100;">
                 <input type="text" class="pr_Name"       th:value="${c.productDto.productName}" size="8" readonly>
                 <input type="text" class="optionName"    th:value="${c.productOptionDto.optionName}" name="optionName" size="11" readonly>
                 <input type="text" class="pr_Price"      th:value="${c.productDto.productPrice}+'원'" size="5" readonly>
                 <input type="text" class="deliveryPrice" th:value="3000원" size="5" readonly>
-                <input type="text" class="reserves"      th:value="적립금" size="4">
                 <input type="text" class="discount"      th:value="${c.eventDto.discountPercent} + '%'" size="3" readonly>
                 <span id="count_span">
                   <input  type="text"   class="totalCount" th:value="${c.count}" size="1" readonly>
@@ -136,7 +137,7 @@
       <input type="hidden" name="productName" th:value="${order.productDto.productName}">
       <input type="hidden" name="productPrice" th:value="${order.productDto.productPrice}">
       <input type="hidden" name="eventDiscount" th:value="${order.eventDto.discountPercent}">
-      <input tyoe="hidden" name="totalPrice">
+      <input type="hidden" name="totalPrice">
       </th:block>
         <button type="submit" id="order_btn" class="btn btn-warning btn btn-primary btn-lg">구매</button>
         <a th:href="@{/product/list.do}">
@@ -145,7 +146,7 @@
     </form>
    </div>
     
- 
+  <hr>
  
 
 <script th:inline="javascript">
@@ -286,6 +287,8 @@
 </script>
 
 
+
+<div th:replace="~{layout/footer::footer}"></div>
 
 </body>
 </html>

@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 
-import com.gdu.petmall.dto.CartDto;
 import com.gdu.petmall.dto.CartOptionListDto;
 
 public interface CartService {
