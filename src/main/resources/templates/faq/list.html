@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{/layout/header::head('FAQ 게시판')}"></head>
+<head th:replace="~{layout/header::head('FAQ 게시판')}"></head>
 
 <style>
   
@@ -93,7 +93,7 @@
 
     .click_title {
       cursor: pointer;
-      color: blue;
+      color: black;
       text-decoration: underline;
     }
 
@@ -115,7 +115,7 @@
 
 <body>
   
-  <div th:replace="~{/layout/header::header}"></div>
+  <div th:replace="~{layout/header::header}"></div>
   
   <H3 id="main_title" style="font-size: 80px;">FAQ</H3>
   
@@ -149,9 +149,12 @@
               </select>
             </div>
            </div>   
+           
+           <hr>
+           
           <div class="table_wrap">
-            <table class="table" border="1">
-              <thead class="table-li">
+            <table class="table">
+              <thead class="table-primary">
                 <tr>
                   <td>번호</td>
                   <td>카테고리</td>
@@ -271,7 +274,7 @@
  
 
 
-  <div th:replace="~{/layout/footer::footer}"></div>
+  <div th:replace="~{layout/footer::footer}"></div>
   
 </body>
 </html>

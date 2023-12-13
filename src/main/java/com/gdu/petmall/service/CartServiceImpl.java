@@ -45,17 +45,14 @@ public class CartServiceImpl implements CartService {
                           .build();
      
     
-     
-     addCartList.add(cart);
     
+     
+    int addCartListResult = cartMapper.insertCart(userNo,optionNo,count);
+    model.addAttribute("addCartListResult", addCartListResult);
     }
     
-    int addCartListResult = cartMapper.insertCart(addCartList);
-  
-    model.addAttribute("addCartListResult", addCartListResult);
-    
-    
   }
+
   
   
   
