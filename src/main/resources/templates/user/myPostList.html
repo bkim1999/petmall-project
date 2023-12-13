@@ -72,12 +72,12 @@
               
             </td>
             <td th:text="${post.createdAt}"></td>
-			<td>
-			    <a th:href="@{/user/qnadetail.do(qnaNo=${post.qnaNo},groupNo=${post.groupNo})}">
-			        <button th:text="${post.checkFlag == 0 ? '답변을 기다리는 중입니다.' : '답변이 완료되었습니다. 확인 부탁드립니다.'}"></button>
-			    </a>
-			</td>
-			</td>
+      <td>
+          <a th:href="@{/user/qnadetail.do(qnaNo=${post.qnaNo},groupNo=${post.groupNo})}">
+              <button th:text="${post.checkFlag == 0 ? '답변을 기다리는 중입니다.' : '답변이 완료되었습니다. 확인 부탁드립니다.'}"></button>
+          </a>
+      </td>
+      </td>
           </tr>
         </tbody>
       </table>
@@ -87,42 +87,42 @@
   <hr>
     
     <!-- 해당 스크립트 구문을 통해서 title을 숫자로 받은 값을 다시 문자로 변환 시킨다.  -->
-	<script th:inline="javascript">
-	  function updateDisplayedTitle() {
-	    const titleSelect = document.getElementById('title');
-	    const displayedTitle = document.getElementById('displayedTitle');
-	    const selectedValue = titleSelect.value;
-	
-	    switch (selectedValue) {
-	      case '1':
-	        displayedTitle.innerText = '[상품] 상품관련 문의';
-	        break;
-	      case '2':
-	        displayedTitle.innerText = '[배송] 배송관련 문의';
-	        break;
-	      case '3':
-	        displayedTitle.innerText = '[주문취소] 주문취소 문의';
-	        break;
-	      case '4':
-	        displayedTitle.innerText = '[주소변경] 주소변경 문의';
-	        break;
-	      case '5':
-	        displayedTitle.innerText = '[반품/환불] 반품/환불 문의';
-	        break;
-	      case '6':
-	        displayedTitle.innerText = '[기타] 기타문의';
-	        break;
-	      default:
-	        displayedTitle.innerText = '';
-	        break;
-	    }
-	    titleSelect.disabled = true;
-	  }
-	
-	  document.addEventListener('DOMContentLoaded', function () {
-	    updateDisplayedTitle(); 
-	  });
-	</script>
+  <script th:inline="javascript">
+    function updateDisplayedTitle() {
+      const titleSelect = document.getElementById('title');
+      const displayedTitle = document.getElementById('displayedTitle');
+      const selectedValue = titleSelect.value;
+  
+      switch (selectedValue) {
+        case '1':
+          displayedTitle.innerText = '[상품] 상품관련 문의';
+          break;
+        case '2':
+          displayedTitle.innerText = '[배송] 배송관련 문의';
+          break;
+        case '3':
+          displayedTitle.innerText = '[주문취소] 주문취소 문의';
+          break;
+        case '4':
+          displayedTitle.innerText = '[주소변경] 주소변경 문의';
+          break;
+        case '5':
+          displayedTitle.innerText = '[반품/환불] 반품/환불 문의';
+          break;
+        case '6':
+          displayedTitle.innerText = '[기타] 기타문의';
+          break;
+        default:
+          displayedTitle.innerText = '';
+          break;
+      }
+      titleSelect.disabled = true;
+    }
+  
+    document.addEventListener('DOMContentLoaded', function () {
+      updateDisplayedTitle(); 
+    });
+  </script>
 
     
     <div th:replace="~{/layout/footer::footer}"></div>
