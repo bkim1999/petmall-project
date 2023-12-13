@@ -27,8 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addInterceptors(InterceptorRegistry registry) {
 	
 	  registry.addInterceptor(new AutoLoginInterceptor(autoLoginMapper, userMapper))
-      .addPathPatterns("/**");
-      .addPathPatterns("/**") 
+      .addPathPatterns("/**")
       .excludePathPatterns(); 
 	 
 	  registry.addInterceptor(new ShouldNotLoginInterceptor())
@@ -44,13 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   	  .addPathPatterns("/review/**")
       .addPathPatterns("/user/mypage/orderList.do"
                      , "/order/**"
-                     , "/pay/**");
-  	  .addPathPatterns("/review/list.do"
-  	                 , "/review/addReview.form"
-  	                 , "/review/addReview.do"
-  	                 , "/review/editReview.form"
-  	                 , "/review/editReview.do"
-  	                 , "/review/removeReview.do")
+                     , "/pay/**")
       .addPathPatterns("/admin/**");
     
     registry.addInterceptor(new AdminAuthRequiredInterceptor())
