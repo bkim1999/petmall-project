@@ -37,34 +37,22 @@ public class CartServiceImpl implements CartService {
         int userNo = cartDto.getUserDto().getUserNo();
         int optionNo = cartDto.getProductOptionDto().getOptionNo();
         int count = cartDto.getCount();
-       
         
-        
-        boolean isDuplicate = addCartList.stream().anyMatch(cart ->
-                                                            cart.getUserDto().getUserNo() == userNo &&
-                                                            cart.getProductOptionDto().getOptionNo() == optionNo &&
-                                                            cart.getCount() == count);
-          
-        if (!isDuplicate) {
-        
-            CartDto cart = CartDto.builder()
-               .userDto(UserDto.builder().userNo(userNo).build())
-               .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
-               .count(count)
-               .build();
-              addCartList.add(cart);
-            }
-    
+    CartDto cart = CartDto.builder()
+                          .userDto(UserDto.builder().userNo(userNo).build())
+                          .productOptionDto(ProductOptionDto.builder().optionNo(optionNo).build())
+                          .count(count)
+                          .build();
      
     
+    
+     
+    int addCartListResult = cartMapper.insertCart(userNo,optionNo,count);
+    model.addAttribute("addCartListResult", addCartListResult);
     }
     
-    int addCartListResult = cartMapper.insertCart(addCartList);
-  
-    model.addAttribute("addCartListResult", addCartListResult);
-    
-    
   }
+
   
   
   

@@ -88,19 +88,7 @@
                                       FROM EVENT_T WHERE EVENT_NO = (SELECT MAX(EVENT_NO) 
                                                                        FROM EVENT_T WHERE SYSDATE BETWEEN START_AT AND END_AT))
     </select>
-        
-    <insert id="insertCart" parameterType="List">
-      <foreach collection="addCartList" item="cart" separator=";">
-        MERGE INTO CART_T USING DUAL
-           ON (OPTION_NO = #{cart.productOptionDto.optionNo} AND USER_NO = #{cart.userDto.userNo})
-         WHEN MATCHED THEN
-       UPDATE SET COUNT = COUNT + #{cart.count}
-         WHEN NOT MATCHED THEN
-       INSERT (OPTION_NO, USER_NO, COUNT)
-       VALUES (#{cart.productOptionDto.optionNo}, #{cart.userDto.userNo}, #{cart.count})
-      </foreach>
-    </insert>
-   
+     
     <update id="updateCart" parameterType="map">
        UPDATE CART_T
           SET COUNT = #{count}
@@ -117,7 +105,16 @@
          WHERE OPTION_NO = #{optionNo}
            AND USER_NO = #{userNo} 
     </delete>           
-      
-   
-   
+     
+     <insert id="insertCart" parameterType="int">
+        MERGE INTO CART_T USING DUAL
+           ON (OPTION_NO = #{optionNo} AND USER_NO = #{userNo})
+         WHEN MATCHED THEN
+       UPDATE SET COUNT = COUNT + #{count}
+         WHEN NOT MATCHED THEN
+       INSERT (OPTION_NO, USER_NO, COUNT)
+       VALUES (#{optionNo}, #{userNo}, #{count})
+    </insert>
+
+
 </mapper>
