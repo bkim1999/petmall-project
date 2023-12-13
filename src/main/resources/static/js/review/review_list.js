@@ -29,8 +29,6 @@ const fnGetReviewList = () => {
         return false;
       }
       $.each(resData.reviewList, function(i, review){
-        
-        console.log(review);
         let str = '';
         str += '<div class="review d-flex mt-3" data-product-no="' + review.productDto.productNo + '">';
         if(review.reviewImageDto !== null){
@@ -162,7 +160,6 @@ function fnEditReview(){
 }
 
 const fnAddReviewResult = () => {
-  console.log(addReviewResult);
   if(addReviewResult !== null){
     if(addReviewResult === true){
       alert('성공적으로 등록되었습니다.');
@@ -173,7 +170,6 @@ const fnAddReviewResult = () => {
 }
 
 const fnEditReviewResult = () => {
-  console.log(editReviewResult);
   if(editReviewResult !== null){
     if(editReviewResult === true){
       alert('성공적으로 수정되었습니다.');
@@ -186,7 +182,7 @@ const fnEditReviewResult = () => {
 const fnRemoveReviewResult = () => {
   console.log(removeReviewResult);
   if(removeReviewResult !== null){
-    if(removeReviewResult == 1){
+    if(removeReviewResult == true){
       alert('성공적으로 삭제되었습니다.');
     } else {
       alert('리뷰 삭제에 실패하였습니다.');

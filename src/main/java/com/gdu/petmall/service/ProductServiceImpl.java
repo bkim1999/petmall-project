@@ -543,7 +543,9 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public void removeProduct(int productNo, RedirectAttributes redirectAttributes) {
     int removeProductResult = productMapper.deleteProduct(productNo);
-    redirectAttributes.addFlashAttribute("removeProductResult", removeProductResult);
+    int removeProductImageList = productMapper.deleteImageList(Map.of("productNo", productNo));
+    System.out.println("removeProductList:" + removeProductImageList);
+    redirectAttributes.addFlashAttribute("removeProductResult", removeProductResult == 1 && removeProductImageList != 0);
   }
   
   @Override
