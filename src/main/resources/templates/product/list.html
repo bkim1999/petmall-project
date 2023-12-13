@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{/layout/header :: head('상품 목록')}"></head>
-<link rel="stylesheet" th:href="@{/css/product/product_list.css}">
+<head th:replace="~{layout/header :: head('상품 목록')}"></head>
+<link rel="stylesheet" th:href="@{/css/product/product_list.css(ver=1.0)}">
 <body>
   <div th:replace="~{layout/header :: header}"></div>
   <div id="wrapper">
@@ -29,6 +29,6 @@
 </body>
 <script th:inline="javascript">
   var categoryNo = /*[[${categoryNo}]]*/ 0;
-  var removeProductResult = /*[[${removeProductResult}]]*/ null;  // '', 0, 1  
+  var removeProductResult = /*[[${removeProductResult}]]*/ null;  // '', true, false  
 </script>
-<script th:src="@{/js/product/product_list.js}"></script>
+<script th:src="@{/js/product/product_list.js(ver=1.1)}"></script>

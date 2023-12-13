@@ -20,21 +20,15 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
   
-	
-  private final RequiredLoginInterceptor requiredLoginInterceptor;
-  private final ShouldNotLoginInterceptor shouldNotLoginInterceptor;
   private final AutoLoginMapper autoLoginMapper;
   private final UserMapper userMapper;
 
-@Override
+  @Override
   public void addInterceptors(InterceptorRegistry registry) {
-	
 	
 	  registry.addInterceptor(new AutoLoginInterceptor(autoLoginMapper, userMapper))
       .addPathPatterns("/**") 
       .excludePathPatterns(); 
-	  
-	  
 	 
 	  registry.addInterceptor(new ShouldNotLoginInterceptor())
   	  .addPathPatterns("/user/join.form"
@@ -51,14 +45,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
   	                 , "/review/addReview.do"
   	                 , "/review/editReview.form"
   	                 , "/review/editReview.do"
-  	                 , "/review/removeReview.do");
+  	                 , "/review/removeReview.do")
+      .addPathPatterns("/admin/**");
     
     registry.addInterceptor(new AdminAuthRequiredInterceptor())
-    .addPathPatterns("/product/addProduct.form"
-                   , "/product/addProduct.do"
-                   , "/product/editProduct.form"
-                   , "/product/editProduct.do"
-                   , "/product/removeProduct.do");
+      .addPathPatterns("/product/addProduct.form"
+                     , "/product/addProduct.do"
+                     , "/product/editProduct.form"
+                     , "/product/editProduct.do"
+                     , "/product/removeProduct.do")
+      .addPathPatterns("/admin/**");
     
   }
   

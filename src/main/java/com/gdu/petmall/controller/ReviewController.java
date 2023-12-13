@@ -30,7 +30,6 @@ public class ReviewController {
   private final ReviewService reviewService;
   private final ProductService productService;
   
-  
   @ResponseBody
   @GetMapping(value="/getReviewList.do", produces="application/json")
   public Map<String, Object> loadReviewList(HttpServletRequest request){
@@ -69,8 +68,7 @@ public class ReviewController {
   
   @PostMapping(value="/removeReview.do")
   public String removeReview(int reviewNo, RedirectAttributes redirectAttributes) {
-    int removeReviewResult = reviewService.removeReview(reviewNo);
-    redirectAttributes.addFlashAttribute("removeReviewResult", removeReviewResult);
+    reviewService.removeReview(reviewNo, redirectAttributes);
     return "redirect:/review/list.do";
   }
   

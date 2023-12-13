@@ -13,6 +13,9 @@ div {
   text-align: center;
   margin: 0 1px;
 }
+#category_list .nav-item > a:hover {
+  color: black;
+}
 #category_list .nav-item:hover {
   cursor: pointer;
 }

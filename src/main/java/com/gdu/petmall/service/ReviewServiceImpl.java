@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gdu.petmall.dao.ProductMapper;
 import com.gdu.petmall.dao.ReviewMapper;
@@ -167,9 +168,10 @@ public class ReviewServiceImpl implements ReviewService {
   }
   
   @Override
-  public int removeReview(int reviewNo) {
+  public void removeReview(int reviewNo, RedirectAttributes redirectAttributes) {
     int removeReviewResult = reviewMapper.deleteProductReview(reviewNo);
-    return removeReviewResult;
+    int removeReviewImageList = productMapper.deleteImageList(Map.of("reviewNo", reviewNo));
+    redirectAttributes.addFlashAttribute("removeReviewResult", removeReviewResult==1);
   }
   
   @Override

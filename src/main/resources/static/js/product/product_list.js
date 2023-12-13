@@ -145,7 +145,8 @@ const fnScroll = () => {
 
 const fnRemoveProductResult = () => {
   if(removeProductResult !== null){
-    if(removeProductResult == 1){
+    console.log(removeProductResult)
+    if(removeProductResult == true){
       alert('성공적으로 삭제되었습니다.');
     } else {
       alert('상품 삭제에 실패하였습니다.');

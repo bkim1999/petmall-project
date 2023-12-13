@@ -27,6 +27,7 @@ public interface ProductMapper {
   public int updateProductOption(ProductOptionDto productOption);
   public int deleteProductOption(int optionNo);
   public int deleteProductImage(String filesystemName);
+  public int deleteImageList(Map<String, Object> map);
   public int deleteProduct(int productNo);
   public int updateProductHit(int productNo);
   public List<ProductImageDto> getProductImageInYesterday();
