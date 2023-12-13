@@ -27,8 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addInterceptors(InterceptorRegistry registry) {
 	
 	  registry.addInterceptor(new AutoLoginInterceptor(autoLoginMapper, userMapper))
-      .addPathPatterns("/**")
-      .excludePathPatterns(); 
+      .addPathPatterns("/**");
 	 
 	  registry.addInterceptor(new ShouldNotLoginInterceptor())
   	  .addPathPatterns("/user/join.form"
@@ -40,7 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	 
     registry.addInterceptor(new RequiredLoginInterceptor())
   	  .addPathPatterns("/mypage")
-  	  .addPathPatterns("/review/**")
+  	  .addPathPatterns("/review/**").excludePathPatterns("/review/getReviewList.do")
       .addPathPatterns("/user/mypage/orderList.do"
                      , "/order/**"
                      , "/pay/**")

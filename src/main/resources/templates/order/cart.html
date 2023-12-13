@@ -4,58 +4,157 @@
 <head th:replace="~{layout/header::head('cart')}"></head>
 
 <style>
-  .img_line{
-     padding-left: 0px;
-     word-spacing: 40px;
-     text-align: left;
-     
-     
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: rgb(255, 255, 255);
+    color: #333;
   }
-  .cart_info_td {
-    padding-top: 50px;
-    
+
+  .all_1 {
+     border-top: none; 
+     border-bottom: none;
+     border-left: none; 
+     border-right: none; 
   }
   
-  #cart_title{
-    font-size: 70px;
+  .all_1 span {
+     font-weight: bold;
+     font-size: 50px;
+   }
+  
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #all{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .wrap_div1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  h1 {
+    color: #333;
     text-align: center;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    font-size: 60px;
   }
   
   #center_title{
     text-align: center;
+    color: #333;
   }
   
-  .b {
-    margin-left: auto;
-    margin-right: auto;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin: 0 auto;
   }
   
-  #wrap_div1{
-    border-radius: 30px;
-    
-    
+  .img_line{
+   text-align: center;
   }
   
-  #all {
-     margin-left: auto;
-     margin-right: auto;
-     width: 300px;
-     height: 50px;
-     text-align: left;
-     font-size: larger;
-     
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
   }
   
-  #frm_order {
-    padding-top: 50px;
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
     text-align: center;
+    text-decoration: none;
+    background-color: rgb(255, 128, 64);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: rgb(192, 192, 192);
+  }
+  
+  img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+  }
+  
+  input[type="text"] {
+    width: calc(10% - 16px); 
+    padding: 8px;
+    margin: 4px;
+    box-sizing: border-box;
+    display: inline-block; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  tr.selected {
+    background-color: #ffe6e6;
+  }
+  
+  .totalPrice_span, .delivery_price, .finalTotalPrice_span {
+    font-weight: bold;
+    color: #FF5722;
+  }
+  
+  #cart_title {
+    color: rgb(0, 0, 0);
+  }
+  
+  #center_title {
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
   
   .a-block {
+    padding-top: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
     text-align: center;
-    font-size: 50px;
+  }
+  
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
   
 </style>
@@ -68,7 +167,7 @@
   <h1 id="cart_title">Cart</h1>
   <hr>
   
-  <div>
+  <div class="container">
     <div>
       <h3 id="center_title">장바구니</h3>
     </div>
@@ -76,7 +175,7 @@
       <table class="b">
         <thead border="1">
           <tr>
-            <th class="img_line">이미지  상품명 상품옵션  가격  배송비 할인율  수량  합계금액</th>
+            <th class="img_line">이미지    상품명    상품옵션    가격    배송비    할인율    수량    합계금액</th>
           </tr>
         </thead>
         <tbody>
@@ -97,7 +196,7 @@
                   <button type="button" class="minus_btn btn btn-danger btn btn-primary btn-sm" >-</button>
                   <input  type="hidden" class="minus_cartcount" name="count" th:value="${c.count}"></input>
                 </span>                                   
-                <input type="text"   name=""         class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
+                <input type="text"   name="productPrice" class="finaltotalprice" th:value="${(c.productDto.productPrice + c.productOptionDto.addPrice) * c.count * (1 - c.eventDto.discountPercent / 100.0) + '원'}" size="7"  readonly>
                 <input type="hidden" name="userNo"   class="" th:value="${c.userDto.userNo}">
                 <input type="hidden" name="productNo"class="productNo" th:value="${c.productDto.productNo}"size="3" >
                 <input type="hidden" name="optionNo" class="delete_optionNo" th:value="${c.productOptionDto.optionNo}" size="3">
@@ -109,24 +208,24 @@
         </table>
       </form>
      </div> 
-  <hr>
+ 
     
     
     
    <div class="a-block">결제 예정 금액</div>
    <div class="wrap_div1">
-    <table border="1" id="all">
+    <table id="all">
       <tbody>
         <tr>
-          <td><span class="totalPrice_span"></span></td>
-          <td><span class="plus">+</span></td> 
-          <td><span class="delivery_price"></span></td>
-          <td><span class="inequality">=</span></td>
-          <td><span class="finalTotalPrice_span + '원'"></span></td>
+          <td class="all_1"><span class="totalPrice_span"></span></td>
+          <td class="all_1"><span class="plus">+</span></td> 
+          <td class="all_1"><span class="delivery_price"></span></td>
+          <td class="all_1"><span class="inequality">=</span></td>
+          <td class="all_1"><span class="finalTotalPrice_span + '원'"></span></td>
         </tr>
       </tbody>
     </table>
-   </div>
+   
     
    <div> 
     <form id="frm_order" th:action="@{/order/detail.do}" method="get">
@@ -145,9 +244,28 @@
         </a> 
     </form>
    </div>
-    
+    </div>
   <hr>
  
+
+
+
+
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    var totalPrices = document.querySelectorAll('.finaltotalprice');
+
+    totalPrices.forEach(function (totalPrice) {
+      var originalValue = totalPrice.value;
+      var intValue = parseInt(originalValue, 10);
+      totalPrice.value = intValue + '원';
+    });
+  });
+  
+</script>
+
 
 <script th:inline="javascript">
    

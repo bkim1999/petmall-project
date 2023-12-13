@@ -85,8 +85,7 @@
       </div>
       <div id="total_price_area">총 상품금액: <span id="total_price">0</span> 원</div>
       <div id="btn_area" class="btn-group">
-        <button type="button" id="btn_add_cart" class="btn btn-light btn-lg">장바구니 담기</button>
-        <button type="button" id="btn_add_order" class="btn btn-success btn-lg">바로 주문</button>
+        <button type="button" id="btn_add_cart" class="btn btn-success btn-lg">장바구니 담기</button>
       </div>
       <th:block th:if="${session.user} != null">
         <form th:if="${session.user.adminAuthorState == 1}" id="frm_edit_remove_product">
